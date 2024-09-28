@@ -1,1 +1,2 @@
-# empire-history-cards
+# Empire History Cards
+Being built at Northeastern University...
