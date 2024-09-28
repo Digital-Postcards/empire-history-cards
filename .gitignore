@@ -128,3 +128,20 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# python virtual environment
+.venv/
+
+# python cache
+__pycache__/
+
+# script generated data files
+extractedLocations.json
+messages.json
+postmarkedFiles.json
+
+# google auth credential file
+service.json
+
+# local data directory
+scripts/*/data/
