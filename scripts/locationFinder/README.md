@@ -21,12 +21,12 @@ This script is designed to extract locations (cities and countries) from textual
 
 # Running the script
 
-Simply run [`./index.sh`](scripts/locationFinder/index.sh)
+Simply run [`./index.sh`](./index.sh)
 
 ## What happens?
 Two kinds of scripts are executed when the bash script is run:
-- [`python/index.py`](scripts/locationFinder/python/index.py): uses the Google Drive API and performs the actual action of pulling files (with help from `python/docx_downloader.py`) from the Drive to the local filesystem and converting it to readable markdown format.
-- [`js/index.js`](scripts/locationFinder/js/index.js): parses the markdown files, creates a list of postmarked files and messages (with help from `js/transcriptParser.js`) as well as delegates the process of extracting locations to another python script (`python/location_extractor.py`)
+- [`python/index.py`](./python/index.py): uses the Google Drive API and performs the actual action of pulling files (with help from `python/docx_downloader.py`) from the Drive to the local filesystem and converting it to readable markdown format.
+- [`js/index.js`](./js//index.js): parses the markdown files, creates a list of postmarked files and messages (with help from `js/transcriptParser.js`) as well as delegates the process of extracting locations to another python script (`python/location_extractor.py`)
 
 ## Results
 
