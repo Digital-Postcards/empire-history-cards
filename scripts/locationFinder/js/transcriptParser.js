@@ -32,9 +32,10 @@ const createPostmarkedFileData = async () => {
         for await (const line of lines) {
             let isPostmarked = false;
             if (line.trim().toLowerCase().startsWith("postmarked")) {
-                isPostmarked = line.split(":")[1]
-                    .slice(0, 4) // since the line can begin with => 'Postmarked: Yes' or 'Postmarked:Yes'
-                    .trim().toLowerCase() === "yes";
+                let postmarkedLine = line.split(":")[1];
+                if (postmarkedLine)
+                    isPostmarked = postmarkedLine.slice(0, 4) // since the line can begin with => 'Postmarked: Yes' or 'Postmarked:Yes'
+                        .trim().toLowerCase() === "yes";
             }
             if (isPostmarked) {
                 let postmarkedFileData = {
@@ -76,7 +77,7 @@ const extractLocation = () => {
     let locationJSON = [];
     for (let message of messages) {
         console.log("\nExtracting possible locations from " + message.name + "...");
-        const data = spawnSync("python", ["../python/location_extractor.py", message.message ]);
+        const data = spawnSync("python", ["./python/location_extractor.py", message.message ]);
         let output = data.stdout.toString();
         if (output !== "") {
             output = output.replace("\n", "");
@@ -87,7 +88,7 @@ const extractLocation = () => {
             fileName: message.name,
             path: message.path,
             postMark: message.postmark,
-            possibleLocations: output.trim()
+            possibleLocations: output
         }
         locationJSON.push(locationData);
     }
