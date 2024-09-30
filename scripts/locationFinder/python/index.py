@@ -31,7 +31,7 @@ def main():
     files = list_docx_files(service, folder_id)
 
     # save docx files locally
-    for file in files[:20]:
+    for file in files:
         file_id = file['id']
         file_name = os.path.join(local_docx_folder, file['name'])
         download_docx_file(service, file_id, file_name)
