@@ -1,6 +1,6 @@
-import { navLinkType } from "types"
+import { NavLinkType } from "types"
 
-const MAIN_NAV_LINKS: navLinkType[] = [
+const MAIN_NAV_LINKS: NavLinkType[] = [
     {
         label: "Home",
         path: "/"
@@ -19,7 +19,7 @@ const MAIN_NAV_LINKS: navLinkType[] = [
     }
 ]
 
-const SIDEBAR_NAV_LINKS: navLinkType[] = [
+const SIDEBAR_NAV_LINKS: NavLinkType[] = [
     {
         label: "Map",
         icon: "mapicon",
