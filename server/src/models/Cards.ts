@@ -1,34 +1,43 @@
-import { Schema, model, Document } from 'mongoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
+import 'reflect-metadata';
+import { IImage } from './Images'; 
 
-export interface ICard extends Document {
-  number: string;
-  item: string;
-  date: string;
-  place: string;
-  postmarked: string;
-  company: string;
-  companyInformation: string;
-  description: string;
-  analysis: string;
-  message: string;
-  imageLinks: string[]; 
+// Define the ICard class with Typegoose decorators
+class ICard {
+  @prop({ required: true, unique: true })
+  public number!: number;
+
+  @prop()
+  public item?: string;
+
+  @prop()
+  public date?: string;
+
+  @prop()
+  public postmarked?: string;
+
+  @prop()
+  public place?: string;
+
+  @prop()
+  public company?: string;
+
+  @prop()
+  public companyInformation?: string;
+
+  @prop()
+  public description?: string;
+
+  @prop()
+  public analysis?: string;
+
+  @prop()
+  public message?: string;
+
+  @prop({ type: () => [IImage], _id: false })  // Prevents _id for embedded documents
+  public images?: IImage[];
 }
 
-const cardSchema = new Schema<ICard>({
-  number: { type: String, unique: true  },
-  item: { type: String},
-  date: { type: String},
-  postmarked: { type: String},
-  place: { type: String},
-  company: { type: String},
-  companyInformation: { type: String},
-  description: { type: String},
-  analysis: { type: String},
-  message: { type: String},
-  imageLinks: [{ type: String }]
-});
-
-// Create and export the Postcard model
-const Cards = model<ICard>('Cards', cardSchema);
-
-export default Cards;
+// Create a Typegoose model for ICard
+const CardModel = getModelForClass(ICard);
+export default CardModel;
