@@ -1,0 +1,121 @@
+.cards-carousel>img {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    animation: carousel 15s linear infinite;
+    transform: translateX(100%);
+}
+
+.cards-carousel>img:nth-child(1) {
+    animation-name: first-img, carousel;
+    animation-duration: 15s;
+    animation-iteration-count: 1, infinite;
+    animation-delay: 0s, 15s;
+    transform: translateX(0%);
+}
+
+.cards-carousel>img:nth-child(2) {
+    animation-delay: Calc(15s * .33);
+}
+
+.cards-carousel>img:nth-child(3) {
+    animation-delay: Calc(15s * .66);
+}
+
+@keyframes first-img {
+    0% {
+        transform: translateX(0%);
+    }
+
+    7.5%,
+    33% {
+        transform: translateX(0);
+    }
+
+    40.5%,
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes carousel {
+    0% {
+        transform: translateX(100%);
+    }
+
+    7.5%,
+    33% {
+        transform: translateX(0);
+    }
+
+    40.5%,
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes first-img-responsive {
+    0% {
+        transform: translateX(0%);
+    }
+
+    5.5%,
+    25% {
+        transform: translateX(0);
+    }
+
+    30.5%,
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes carousel-responsive {
+    0% {
+        transform: translateX(100%);
+    }
+
+    5.5%,
+    25% {
+        transform: translateX(0);
+    }
+
+    30.5%,
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.cards-carousel>img:last-child {
+    display: none;
+}
+
+@media screen and (max-width: 766px) {
+    .cards-carousel>img {
+        height: 100%;
+        object-fit: cover;
+        animation: carousel-responsive 20s linear infinite;
+    }
+
+    .cards-carousel>img:nth-child(1) {
+        animation-name: first-img-responsive, carousel-responsive;
+        animation-duration: 20s;
+        animation-iteration-count: 1, infinite;
+        animation-delay: 0s, 20s;
+    }
+
+    .cards-carousel>img:nth-child(2) {
+        animation-delay: Calc(20s * .25);
+    }
+
+    .cards-carousel>img:nth-child(3) {
+        animation-delay: Calc(20s * .50);
+    }
+
+    .cards-carousel>img:nth-child(4) {
+        animation-delay: Calc(20s * .75);
+        display: block;
+    }
+}
