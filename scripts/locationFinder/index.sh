@@ -5,10 +5,10 @@ cd "$(dirname "${BASH_SOURCE[0]}")"/
 # enable the virtual environment, if it exists
 if [ -d ".venv" ]; then
   source ./.venv/bin/activate
+else
+  echo "!! RECOMMENDED: Highly recommended to use a virtual environment when you run Python scripts !!"
 fi
 # start the python script
-python python/index.py
-# start the node script
-node --env-file=.env js/index.js
+python index.py
 # deactivate the virtual environment
 deactivate
