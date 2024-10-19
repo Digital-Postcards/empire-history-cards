@@ -38,6 +38,8 @@ class ICard {
   public images?: IImage[];
 }
 
+export { ICard }; 
+
 // Create a Typegoose model for ICard
 const CardModel = getModelForClass(ICard);
 export default CardModel;
