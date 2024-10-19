@@ -136,7 +136,7 @@ dist
 __pycache__/
 
 # script generated data files
-extractedLocations.json
+locations.json
 messages.json
 postmarkedFiles.json
 
