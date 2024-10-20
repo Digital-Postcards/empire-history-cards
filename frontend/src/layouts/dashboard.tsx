@@ -13,8 +13,10 @@ const DashboardLayout = () => {
             `}
             >
                 <CollapsibleSideBar collapseSidebar={setSidebarOpen} isCollapseSidebar={sideBarOpen} />
-                <div className="grid grid-cols-5 gap-3">
-                    <Outlet />
+                <div className="overflow-hidden">
+                    <div className="h-full grid grid-cols-5 gap-3 overflow-scroll">
+                        <Outlet />
+                    </div>
                 </div>
             </div>
         </React.Fragment>
