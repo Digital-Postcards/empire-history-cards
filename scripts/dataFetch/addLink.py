@@ -2,7 +2,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 # Load the Excel file (replace with the correct path to your Excel file)
-excel_file = './image_links.xlsx' 
+excel_file = './lostImage.xlsx' 
 df = pd.read_excel(excel_file)
 
 # Connect to MongoDB

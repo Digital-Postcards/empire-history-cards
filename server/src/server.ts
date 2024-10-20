@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
-import { connect } from 'mongoose';  // Mongoose is still used internally by Typegoose
-import CardModel from './models/Cards';  // Import the Typegoose model
+import { connect } from 'mongoose';  // Mongoose is used by Typegoose
+import CardModel from './models/Cards';  // Import the Card model
+import TagModel from './models/Tags';  // Import the Tag model
 
 // Create Express app
 const app = express();
@@ -12,18 +13,41 @@ connect(mongoURI)
   .then(() => console.log('MongoDB connected...'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// POST route to create or update a postcard
+// Function to process tags for a card
+async function processTags(tags: string[], cardId: string) {
+  for (const tagName of tags) {
+    // Find the tag by name or create a new one
+    const tag = await TagModel.findOneAndUpdate(
+      { name: tagName },
+      { $addToSet: { cards: cardId } },  // Add the card's ObjectID to the tag
+      { new: true, upsert: true }  // Create a new tag if it doesn't exist
+    );
+    // Update the numberOfCards field
+    tag.numberOfCards = tag.cards.length;
+    await tag.save();
+  }
+}
+
+// POST route to create or update a postcard and handle associated tags
 app.post('/api/postcards', async (req: Request, res: Response) => {
   console.log("POST /api/postcards hit with data:", req.body);
+
   try {
+    const { tags, ...cardData } = req.body;  // Separate tags from other card data
+
     // Use the Typegoose CardModel for the database operations
     const existingPostcard = await CardModel.findOneAndUpdate(
-      { number: req.body.number },  // Query to find by 'number'
-      { $set: req.body },           // Update the document with the new data
-      { new: true, upsert: true }   // Create a new document if not found (upsert)
+      { number: cardData.number },  // Query to find by 'number'
+      { $set: cardData },           // Update the document with the new data
+      { new: true, upsert: true }   // Create a new document if not found
     );
 
-    res.status(201).json(existingPostcard);  // Return the updated or inserted document
+    if (tags && tags.length > 0) {
+      // Process the tags and link them to the card
+      await processTags(tags, existingPostcard._id.toString());
+    }
+
+    res.status(201).json(existingPostcard);
   } catch (err) {
     console.error('Error saving postcard:', err);
     res.status(500).json({ error: 'Error saving postcard' });
