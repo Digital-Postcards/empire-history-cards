@@ -1,11 +1,15 @@
 import NavLinkType from "./navlink.types";
 import {
-    GoToExhibitProps
+    GoToExhibitProps,
+    MasonryListProps,
+    ChoiceCardProps
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 
 export type {
     NavLinkType,
     GoToExhibitProps,
-    OptionType
+    OptionType,
+    MasonryListProps,
+    ChoiceCardProps
 }
