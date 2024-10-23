@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 interface GoToExhibitProps {
     imageURL: string;
     exhibitTypeMessage: string;
@@ -16,8 +18,8 @@ interface MasonryListProps {
 interface ChoiceCardProps {
     title: string;
     image: string;
-    description: string;
-    type: "postcard" | "tradecard"
+    type: "postcard" | "tradecard",
+    children: ReactNode | ReactNode[]
 }
 
 export type {

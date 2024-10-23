@@ -40,7 +40,10 @@ const WIKI_IMAGES: MasonryListProps = {
   ]
 }
 
+const DUMMY_TAGS: string[] = ["Animalization", "Emasculation", "Mammy Stereotype"];
+
 export {
     CAROUSEL_IMAGE_URLS,
-    WIKI_IMAGES
+    WIKI_IMAGES,
+    DUMMY_TAGS
 }

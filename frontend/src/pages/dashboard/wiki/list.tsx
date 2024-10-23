@@ -9,11 +9,11 @@ const WikiList = () => {
 
     return (
         <>
-            <div className="col-span-4 p-6">
+            <div className="col-span-6 p-6">
                 <h2 className="text-2xl mb-6 font-bold">{type === "postcard" ? "Postcards" : "Tradecards"}</h2>
                 <MasonryList data={WIKI_IMAGES.data} />
             </div>
-            <div className="col-span-1 py-6 px-2 pr-6">
+            <div className="col-span-2 py-6 px-2 pr-6">
                 <TagFilter />
             </div>
         </>
