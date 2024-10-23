@@ -29,7 +29,7 @@ const WikiDetail = () => {
                     </p>
                 </InfoSection>
             </div>
-            <div className="md:col-span-2 col-span-8 md:py-6 pt-6 md:pr-4 px-6 md:order-2 order-1">
+            <div className="md:col-span-2 col-span-8 md:py-6 pt-6 md:px-0 px-6 md:pr-4 md:order-2 order-1">
                 <CardInfoBox />
             </div>
         </>
