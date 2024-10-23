@@ -3,7 +3,7 @@ import { ChoiceCard } from "components/dashboard/wiki";
 const Wiki = () => {
     return (
         <>
-            <div className="col-span-8 flex justify-center">
+            <div className="col-span-8 flex md:flex-row flex-col justify-center">
                 <ChoiceCard
                     type="postcard"
                     title="Postcards"

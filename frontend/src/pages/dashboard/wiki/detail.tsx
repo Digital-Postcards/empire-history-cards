@@ -5,7 +5,7 @@ import InfoSection from "components/dashboard/wiki/infosection";
 const WikiDetail = () => {
     return (
         <>
-            <div className="col-span-6 p-6 h-fit pb-12">
+            <div className="md:col-span-6 col-span-8 p-6 h-fit pb-12 md:order-1 order-2">
                 <CardViewer />
                 <InfoSection label="History">
                     <p>
@@ -29,7 +29,7 @@ const WikiDetail = () => {
                     </p>
                 </InfoSection>
             </div>
-            <div className="col-span-2 py-6 pr-4">
+            <div className="md:col-span-2 col-span-8 md:py-6 pt-6 md:pr-4 px-6 md:order-2 order-1">
                 <CardInfoBox />
             </div>
         </>

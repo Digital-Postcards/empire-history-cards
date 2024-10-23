@@ -8,7 +8,7 @@ const TagFilter = () => {
         { label: "Tag name 3", value: "Tag name 3" }
     ]
     return (
-        <div className="border rounded-xl p-4">
+        <div className="border rounded-xl p-4 bg-background">
             <h3 className="font-bold">Choose Tags</h3>
             <Select
                 defaultValue={[options[2]]}
