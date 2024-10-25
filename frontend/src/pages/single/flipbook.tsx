@@ -1,44 +1,66 @@
 import { ContentContainer } from "components/common"
+import { FlipBookInfo, FlipBookPage } from "components/single";
 import HTMLFlipBook from "react-pageflip";
+import { FlipBookPageDataType } from "types";
+import { FLIPBOOK_PAGE_DATA } from "utils";
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { Button } from "shadcn/components/ui/button";
 
 const Flipbook = () => {
+
+    const [currentPageInfoIndex, setCurrentPageInfoIndex] = useState<number>(0);
+    const ref = useRef();
+
+    const handlePageFlip = () => {
+        {/* @ts-ignore */}
+        setCurrentPageInfoIndex(ref?.current.pageFlip().getCurrentPageIndex());
+    }
+
+    const gotoNext = () => {
+        if(ref.current)
+            {/* @ts-ignore */}
+            ref?.current.pageFlip().flipNext();
+    }
+
+    const gotoPrevious = () => {
+        if(ref.current)
+            {/* @ts-ignore */}
+            ref?.current.pageFlip().flipPrev();
+    }
+
     return (
         <ContentContainer>
             {/* @ts-ignore */}
             <HTMLFlipBook
+                ref={ref}
                 className="mx-auto"
                 width={600}
                 height={800}
+                maxShadowOpacity={0.4}
+                onFlip={handlePageFlip}
             >
-                <div className="bg-neutral-300 h-full rounded-lg p-6">
-                    <div className="mt-2">
-                        <div className="w-48 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed top-20 left-0"></div>
-                        <img className="mx-auto h-[680px] border-white border-[1rem]" src="/images/wiki/two.jpg" />
-                        <div className="w-36 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed bottom-20 right-0"></div>
-                    </div>
-                </div>
-                <div className="bg-neutral-300 h-full rounded-lg p-6">
-                    <div className="mt-2">
-                        <div className="w-48 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed top-20 left-0"></div>
-                        <img className="mx-auto h-[700px] border-white border-[1rem]" src="/images/wiki/one.jpg" />
-                        <div className="w-36 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed bottom-20 right-0"></div>
-                    </div>
-                </div>
-                <div className="bg-neutral-300 h-full rounded-lg p-6">
-                    <div className="mt-2">
-                        <div className="w-48 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed top-20 left-0"></div>
-                        <img className="mx-auto h-[700px] border-white border-[1rem]" src="/images/wiki/six.jpg" />
-                        <div className="w-36 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed bottom-20 right-0"></div>
-                    </div>
-                </div>
-                <div className="bg-neutral-300 h-full rounded-lg p-6">
-                    <div className="mt-2">
-                        <div className="w-48 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed top-20 left-0"></div>
-                        <img className="mx-auto h-[700px] border-white border-[1rem]" src="/images/wiki/four.jpg" />
-                        <div className="w-36 h-10 bg-neutral-100 opacity-50 -rotate-45 fixed bottom-20 right-0"></div>
-                    </div>
-                </div>
+                {
+                    FLIPBOOK_PAGE_DATA.map((flipbook_page: FlipBookPageDataType, index: number) => {
+                        return (
+                            <FlipBookPage
+                                pageNumber={index + 1}
+                                image={flipbook_page.image}
+                                info={flipbook_page.info}
+                            />
+                        )
+                    })
+                }
             </HTMLFlipBook>
+            <div className="mt-3 flex justify-between items-center px-8">
+                <FlipBookInfo currentPageInfoIndex={currentPageInfoIndex} />
+                <div className="flex items-center">
+                    <Button disabled={currentPageInfoIndex === 0} size={"icon"} className="mx-1" onClick={gotoPrevious}><ChevronLeft /></Button>
+                    <Button disabled={currentPageInfoIndex >= FLIPBOOK_PAGE_DATA.length - 2} size={"icon"} className="mx-1" onClick={gotoNext}><ChevronRight /></Button>
+                </div>
+                <FlipBookInfo currentPageInfoIndex={currentPageInfoIndex + 1} />
+            </div>
         </ContentContainer>
     )
 }

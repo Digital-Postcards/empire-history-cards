@@ -22,8 +22,15 @@ interface ChoiceCardProps {
     children: ReactNode | ReactNode[]
 }
 
+interface FlipBookPageDataType {
+    pageNumber?: number; 
+    image: string;
+    info: string;
+}
+
 export type {
     GoToExhibitProps,
     MasonryListProps,
-    ChoiceCardProps
+    ChoiceCardProps,
+    FlipBookPageDataType
 }

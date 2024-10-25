@@ -1,9 +1,10 @@
-import { CAROUSEL_IMAGE_URLS, WIKI_IMAGES, DUMMY_TAGS } from "./dummy";
+import { CAROUSEL_IMAGE_URLS, WIKI_IMAGES, DUMMY_TAGS, FLIPBOOK_PAGE_DATA } from "./dummy";
 import { MAIN_NAV_LINKS } from "./constants";
 
 export {
     CAROUSEL_IMAGE_URLS,
     MAIN_NAV_LINKS,
     WIKI_IMAGES,
-    DUMMY_TAGS
+    DUMMY_TAGS,
+    FLIPBOOK_PAGE_DATA
 }

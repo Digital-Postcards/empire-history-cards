@@ -2,7 +2,8 @@ import NavLinkType from "./navlink.types";
 import {
     GoToExhibitProps,
     MasonryListProps,
-    ChoiceCardProps
+    ChoiceCardProps,
+    FlipBookPageDataType
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 
@@ -11,5 +12,6 @@ export type {
     GoToExhibitProps,
     OptionType,
     MasonryListProps,
-    ChoiceCardProps
+    ChoiceCardProps,
+    FlipBookPageDataType
 }
