@@ -17,7 +17,7 @@ const HomePage = () => {
                 culture exhibit, we request that you keep the following question in mind: how can contextualizing racist and sexist
                 historical images help us to identify and dismantle contemporary systemic biases?
             </p>
-            <div className="mt-12 flex flex-wrap gap-4 justify-between">
+            <div className="mt-12 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                 <GoToExhibit
                     imageURL=""
                     exhibitTypeMessage="on the map"

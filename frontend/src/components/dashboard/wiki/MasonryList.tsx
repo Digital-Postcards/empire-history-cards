@@ -8,11 +8,19 @@ const MasonryList = (props: MasonryListProps) => {
         >
             <Masonry gutter={"1rem"}>
                 {props?.data.map((item: any) => {
-                    return <img
-                        onClick={() => window.location.href = "/exhibit/wiki" + item.cardURL}
-                        className="rounded-md shadow-xl cursor-pointer hover:-translate-y-1 hover:shadow-3xl transition-all duration-300"
-                        src={item.image}
-                    />
+                    return (
+                        <div className="group h-fit relative cursor-pointer hover:-translate-y-1 hover:shadow-3xl transition-all duration-300">
+                            <img
+                                onClick={() => window.location.href = "/exhibit/wiki" + item.cardURL}
+                                className="rounded-lg shadow-xl"
+                                src={item.image}
+                            />
+                            <div className="absolute bottom-0 md:h-48 h-60 w-[100%] p-3 flex-col justify-end text-background rounded-b-lg bg-gradient-to-t from-black to-transparent md:group-hover:flex flex md:hidden">
+                                <p className="md:text-lg text-md font-bold">Postcard #20</p>
+                                <p className="text-sm md:block">Lorem ipsum odor amet, consectetuer adipiscing elit. Suscipit felis dolor arcu etiam in mus. Sed litora...</p>
+                            </div>
+                        </div>
+                    )
                 })}
             </Masonry>
         </ResponsiveMasonry>

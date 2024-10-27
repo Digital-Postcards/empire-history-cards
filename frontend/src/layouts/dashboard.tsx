@@ -3,7 +3,7 @@ import React, { ReactNode, useState } from "react";
 import { Outlet } from 'react-router-dom';
 
 const DashboardLayout = () => {
-    const [sideBarOpen, setSidebarOpen] = useState(true);
+    const [sideBarOpen, setSidebarOpen] = useState(false);
     return (
         <React.Fragment>
             <div className={`

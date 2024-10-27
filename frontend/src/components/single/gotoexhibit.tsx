@@ -7,7 +7,7 @@ const GoToExhibit = (props: GoToExhibitProps) => {
             <div
                 className="
                     relative
-                    w-96 h-72
+                    w-full h-72
                     flex flex-col justify-end
                     text-white
                     rounded-lg

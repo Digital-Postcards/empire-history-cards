@@ -48,7 +48,7 @@ const CollapsibleSideBar = (props: CollapsibleSideBarProps) => {
                 onClick={() => props?.collapseSidebar(!props?.isCollapseSidebar)}
                 variant={"outline"}
                 size={"icon"}
-                className="text-neutral-400 self-end"
+                className="text-neutral-400 self-end md:block hidden"
             >
                 {props?.isCollapseSidebar && <><ChevronsLeft className="h-5 w-5" /></>}
                 {!props?.isCollapseSidebar && <ChevronsRight className="h-5 w-5" />}
