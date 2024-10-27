@@ -1,5 +1,5 @@
 import { CardInfoBox } from "components/dashboard/wiki";
-import CardViewer from "components/dashboard/wiki/cardviewer";
+import { CardViewer } from "components/dashboard/wiki/cardviewer";
 import InfoSection from "components/dashboard/wiki/infosection";
 
 const WikiDetail = () => {

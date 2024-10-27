@@ -3,7 +3,9 @@ import {
     GoToExhibitProps,
     MasonryListProps,
     ChoiceCardProps,
-    FlipBookPageDataType
+    FlipBookPageDataType,
+    CardImageInViewerProps,
+    CardViewerToolbarProps
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 
@@ -13,5 +15,7 @@ export type {
     OptionType,
     MasonryListProps,
     ChoiceCardProps,
-    FlipBookPageDataType
+    FlipBookPageDataType,
+    CardImageInViewerProps,
+    CardViewerToolbarProps
 }

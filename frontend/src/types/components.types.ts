@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 interface GoToExhibitProps {
     imageURL: string;
@@ -28,9 +28,26 @@ interface FlipBookPageDataType {
     info: string;
 }
 
+interface CardImageInViewerProps {
+    orientation: "portrait" | "landscape";
+    rotate: number;
+    isBlur: boolean;
+    imageURL: string
+}
+
+interface CardViewerToolbarProps extends CardImageInViewerProps {
+    handleRotate: () => any;
+    setIsBlur: Dispatch<SetStateAction<boolean>>;
+    nextImage: () => any;
+    previousImage: () => any;
+
+}
+
 export type {
     GoToExhibitProps,
     MasonryListProps,
     ChoiceCardProps,
-    FlipBookPageDataType
+    FlipBookPageDataType,
+    CardImageInViewerProps,
+    CardViewerToolbarProps
 }
