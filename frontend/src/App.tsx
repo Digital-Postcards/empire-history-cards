@@ -13,6 +13,7 @@ import WikiList from 'pages/dashboard/wiki/list';
 import { Project } from 'pages/single';
 import { Flipbook } from 'pages/single';
 import { History } from 'pages/single';
+import MapViewer from 'pages/dashboard/map';
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
             <Route path="wiki/:cardId" element={<WikiDetail />} />
             <Route path="wiki/list" element={<WikiList />} />
             <Route path="wiki/*" element={<p>What's up</p>} />
-            <Route path="map" element={<p>Map</p>}></Route>
+            <Route path="map" element={<MapViewer />}></Route>
             <Route path="themes" element={<p>Themes</p>}></Route>
             <Route path="*" element={<p>What's up?</p>}></Route>
           </Route>
