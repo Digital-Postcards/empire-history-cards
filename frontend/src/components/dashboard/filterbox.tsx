@@ -1,0 +1,12 @@
+import { ReactNode } from "react"
+
+const FilterBox = (props: {label: string, children: ReactNode}) => {
+    return (
+        <div className="border rounded-xl p-4 bg-background">
+            <h3 className="font-bold">{props?.label}</h3>
+            {props?.children}
+        </div>
+    )
+}
+
+export default FilterBox;

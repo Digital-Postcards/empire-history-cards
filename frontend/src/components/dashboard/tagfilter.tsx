@@ -1,5 +1,6 @@
 import Select from "react-select";
 import { OptionType } from "types";
+import FilterBox from "./filterbox";
 
 const TagFilter = () => {
     const options: OptionType[] = [
@@ -8,8 +9,7 @@ const TagFilter = () => {
         { label: "Tag name 3", value: "Tag name 3" }
     ]
     return (
-        <div className="border rounded-xl p-4 bg-background">
-            <h3 className="font-bold">Choose Tags</h3>
+        <FilterBox label="Choose tags">
             <Select
                 defaultValue={[options[2]]}
                 isMulti
@@ -27,7 +27,7 @@ const TagFilter = () => {
                     },
                 })}
             />
-        </div>
+        </FilterBox>
     )
 }
 
