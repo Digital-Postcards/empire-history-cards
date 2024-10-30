@@ -1,6 +1,6 @@
 import NavLinkType from "./navlink.types";
 import {
-    GoToExhibitProps,
+    SingleLayoutProps,
     MasonryListProps,
     ChoiceCardProps,
     FlipBookPageDataType,
@@ -11,7 +11,7 @@ import OptionType from "./tagFilterOption.types";
 
 export type {
     NavLinkType,
-    GoToExhibitProps,
+    SingleLayoutProps,
     OptionType,
     MasonryListProps,
     ChoiceCardProps,

@@ -1,10 +1,10 @@
-import TagFilter from "components/dashboard/tagfilter";
-import MasonryList from "components/dashboard/wiki/MasonryList";
+import TagFilter from "components/tagfilter";
+import MasonryList from "components/cards/MasonryList";
 import { FilterIcon, MenuIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { WIKI_IMAGES } from "utils";
 
-const WikiList = () => {
+const CardList = () => {
 
     const params = new URLSearchParams(window.location.search)
     const type = params.get("type");
@@ -32,4 +32,4 @@ const WikiList = () => {
     )
 }
 
-export default WikiList;
+export default CardList;

@@ -1,4 +1,4 @@
-import { ChoiceCard } from "components/dashboard/wiki";
+import { ChoiceCard } from "components/cards";
     
 const Wiki = () => {
     return (

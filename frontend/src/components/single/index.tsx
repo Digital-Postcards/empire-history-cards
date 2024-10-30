@@ -1,13 +1,11 @@
-import HeaderCarousel from "./carousel";
+import HeaderCollage from "./carousel";
 import ScrollableNavTabs from "./scrollablenavtabs";
-import GoToExhibit from "./gotoexhibit";
 import FlipBookPage from "./flipbookpage";
 import FlipBookInfo from "./flipbookinfo";
 
 export {
-    HeaderCarousel,
+    HeaderCollage,
     ScrollableNavTabs,
-    GoToExhibit,
     FlipBookPage,
     FlipBookInfo
 }

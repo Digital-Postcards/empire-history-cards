@@ -1,8 +1,8 @@
-import { CardInfoBox } from "components/dashboard/wiki";
-import { CardViewer } from "components/dashboard/wiki/cardviewer";
-import InfoSection from "components/dashboard/wiki/infosection";
+import { CardInfoBox } from "components/cards";
+import { CardViewer } from "components/cards/cardviewer";
+import InfoSection from "components/cards/infosection";
 
-const WikiDetail = () => {
+const CardDetail = () => {
     return (
         <>
             <div className="md:col-span-6 col-span-8 p-6 h-fit pb-12 md:order-1 order-2">
@@ -36,4 +36,4 @@ const WikiDetail = () => {
     )
 }
 
-export default WikiDetail;
+export default CardDetail;

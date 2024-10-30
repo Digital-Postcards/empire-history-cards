@@ -1,5 +1,4 @@
 import { ContentContainer } from "components/common"
-import { GoToExhibit } from "components/single";
 
 const HomePage = () => {
     return (
@@ -17,23 +16,6 @@ const HomePage = () => {
                 culture exhibit, we request that you keep the following question in mind: how can contextualizing racist and sexist
                 historical images help us to identify and dismantle contemporary systemic biases?
             </p>
-            <div className="mt-12 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                <GoToExhibit
-                    imageURL=""
-                    exhibitTypeMessage="on the map"
-                    exhibitURL="/exhibit/map"
-                />
-                <GoToExhibit
-                    imageURL="/images/exhibitcards/themes.png"
-                    exhibitTypeMessage="theme based"
-                    exhibitURL="/exhibit/themes"
-                />
-                <GoToExhibit
-                    imageURL="/images/exhibitcards/wiki.png"
-                    exhibitTypeMessage="as a wiki"
-                    exhibitURL="/exhibit/wiki"
-                />
-            </div>
         </ContentContainer>
     )
 }

@@ -5,7 +5,7 @@ const ContentContainer = (props: {
 }) => {
     return (
         <div className={
-            `md:w-2/3 md:p-2 p-12 md:pt-12 mx-auto`
+            `md:w-2/3 md:p-2 p-12 md:pt-24 mx-auto`
         }>
             {props?.children}
         </div>

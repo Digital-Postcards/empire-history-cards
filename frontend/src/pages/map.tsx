@@ -5,8 +5,8 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import Point from '@arcgis/core/geometry/Point';
 import Graphic from "@arcgis/core/Graphic";
 import FeatureReductionCluster from '@arcgis/core/layers/support/FeatureReductionCluster';
-import TagFilter from "components/dashboard/tagfilter";
-import MapTypeFilter from "components/dashboard/maptypefilter";
+import TagFilter from "components/tagfilter";
+import MapTypeFilter from "components/maptypefilter";
 import { DUMMY_COORDINATES } from "utils";
 
 const MapViewer = () => {

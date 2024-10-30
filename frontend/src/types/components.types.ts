@@ -1,9 +1,7 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
 
-interface GoToExhibitProps {
-    imageURL: string;
-    exhibitTypeMessage: string;
-    exhibitURL: string;
+interface SingleLayoutProps {
+    withCardsHeader: boolean
 }
 
 type MasonryType = {
@@ -44,7 +42,7 @@ interface CardViewerToolbarProps extends CardImageInViewerProps {
 }
 
 export type {
-    GoToExhibitProps,
+    SingleLayoutProps,
     MasonryListProps,
     ChoiceCardProps,
     FlipBookPageDataType,

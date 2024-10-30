@@ -1,13 +1,15 @@
 import { CAROUSEL_IMAGE_URLS } from "utils";
 
-const HeaderCarousel = () => {
+const HeaderCollage = () => {
     return (
-        <div className="cards-carousel fixed top-0 w-screen h-[50vh] overflow-hidden pl-0 m-0">
+        <div className="w-screen fixed top-0 h-[100%] grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-2 overflow-hidden">
             {CAROUSEL_IMAGE_URLS.map((url: string) => {
-                return <img src={url} />
+                return (
+                    <div style={{ background: `url(${url})`, backgroundPosition: "center", backgroundSize: "cover" }} className="h-100 w-100"></div>
+                )
             })}
         </div>
     )
 }
 
-export default HeaderCarousel;
+export default HeaderCollage;

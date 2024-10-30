@@ -2,7 +2,7 @@ import { NavLinkType } from "types"
 
 const MAIN_NAV_LINKS: NavLinkType[] = [
     {
-        label: "Home",
+        label: "Introduction",
         path: "/"
     },
     {
@@ -10,39 +10,26 @@ const MAIN_NAV_LINKS: NavLinkType[] = [
         path: "/history"
     },
     {
-        label: "Project",
-        path: "/project"
-    },
-    {
-        label: "Flipbook",
+        label: "Scrapbook",
         path: "/flipbook"
-    }
-]
-
-const SIDEBAR_NAV_LINKS: NavLinkType[] = [
+    },
     {
         label: "Map",
-        icon: "mapicon",
-        path: "/exhibit/map"
-    },
-    {
-        label: "Wiki",
-        icon: "wikiicon",
-        path: "/exhibit/wiki"
+        path: "/map"
     },
     {
         label: "Themes",
-        icon: "tagsicon",
-        path: "/exhibit/themes"
+        path: "/themes"
     },
     {
-        label: "Home",
-        icon: "homeicon",
-        path: "/"
+        label: "Cards",
+        path: "/cards"
+    },
+    {
+        label: "Ethics of Representation",
+        path: "/ethics-of-representation"
     }
 ]
-
 export {
     MAIN_NAV_LINKS,
-    SIDEBAR_NAV_LINKS
 }
