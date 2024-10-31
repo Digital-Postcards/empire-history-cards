@@ -36,6 +36,25 @@ class ICard {
 
   @prop({ type: () => [IImage], _id: false })  // Prevents _id for embedded documents
   public images?: IImage[];
+
+  @prop({ type: () => Object }) 
+  public originalLocation?: {
+    latitude: number;
+    longitude: number;
+  };
+
+  @prop({ type: () => Object })  
+  public postCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+
+  @prop({ type: () => Object }) 
+  public destinationCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+
 }
 
 export { ICard }; 
