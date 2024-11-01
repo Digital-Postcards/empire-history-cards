@@ -1,5 +1,5 @@
 import { HeaderCollage } from "components/single"
-import { ScrollableNavTabs } from "components/single"
+import { ScrollableNavTabs } from "components/common"
 import { Outlet } from "react-router-dom"
 import { SingleLayoutProps } from "types"
 

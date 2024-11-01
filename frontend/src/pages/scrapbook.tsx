@@ -1,5 +1,4 @@
 import { ContentContainer } from "components/common"
-import { FlipBookInfo, FlipBookPage } from "components/single";
 import HTMLFlipBook from "react-pageflip";
 import { FlipBookPageDataType } from "types";
 import { FLIPBOOK_PAGE_DATA } from "utils";
@@ -7,8 +6,9 @@ import { FLIPBOOK_PAGE_DATA } from "utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "shadcn/components/ui/button";
+import { ScrapBookInfo, ScrapBookPage } from "components/scrapbook";
 
-const Flipbook = () => {
+const Scrapbook = () => {
 
     const [currentPageInfoIndex, setCurrentPageInfoIndex] = useState<number>(0);
     const ref = useRef();
@@ -44,7 +44,7 @@ const Flipbook = () => {
                 {
                     FLIPBOOK_PAGE_DATA.map((flipbook_page: FlipBookPageDataType, index: number) => {
                         return (
-                            <FlipBookPage
+                            <ScrapBookPage
                                 pageNumber={index + 1}
                                 image={flipbook_page.image}
                                 info={flipbook_page.info}
@@ -54,15 +54,15 @@ const Flipbook = () => {
                 }
             </HTMLFlipBook>
             <div className="mt-3 flex justify-between items-center px-8">
-                <FlipBookInfo currentPageInfoIndex={currentPageInfoIndex} />
+                <ScrapBookInfo currentPageInfoIndex={currentPageInfoIndex} />
                 <div className="flex items-center">
                     <Button disabled={currentPageInfoIndex === 0} size={"icon"} className="mx-1" onClick={gotoPrevious}><ChevronLeft /></Button>
                     <Button disabled={currentPageInfoIndex >= FLIPBOOK_PAGE_DATA.length - 2} size={"icon"} className="mx-1" onClick={gotoNext}><ChevronRight /></Button>
                 </div>
-                <FlipBookInfo currentPageInfoIndex={currentPageInfoIndex + 1} />
+                <ScrapBookInfo currentPageInfoIndex={currentPageInfoIndex + 1} />
             </div>
         </ContentContainer>
     )
 }
 
-export default Flipbook;
+export default Scrapbook;

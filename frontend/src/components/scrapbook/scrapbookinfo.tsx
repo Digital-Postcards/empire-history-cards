@@ -7,7 +7,7 @@ import {
   } from "shadcn/components/ui/hover-card";
 import { FLIPBOOK_PAGE_DATA } from "utils";
 
-const FlipBookInfo = (props: {currentPageInfoIndex: number}) => {
+const ScrapBookInfo = (props: {currentPageInfoIndex: number}) => {
     const isDisabled: boolean = props?.currentPageInfoIndex === FLIPBOOK_PAGE_DATA.length;
     return (
         <HoverCard>
@@ -27,4 +27,4 @@ const FlipBookInfo = (props: {currentPageInfoIndex: number}) => {
     )
 }
 
-export default FlipBookInfo;
+export default ScrapBookInfo;
