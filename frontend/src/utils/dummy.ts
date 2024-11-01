@@ -11,30 +11,37 @@ const CAROUSEL_IMAGE_URLS: string[] = [
 const WIKI_IMAGES: MasonryListProps = {
   data: [
     {
+      type: "postcard",
       image: "/images/wiki/one.jpg",
       cardURL: "/abcdef"
     },
     {
+      type: "postcard",
       image: "/images/wiki/two.jpg",
       cardURL: "/abcdef"
     },
     {
+      type: "postcard",
       image: "/images/wiki/three.jpg",
       cardURL: "/abcdef"
     },
     {
+      type: "postcard",
       image: "/images/wiki/four.jpg",
       cardURL: "/abcdef"
     },
     {
+      type: "postcard",
       image: "/images/wiki/five.jpg",
       cardURL: "/abcdef"
     },
     {
+      type: "postcard",
       image: "/images/wiki/six.jpg",
       cardURL: "/abcdef"
     },
     {
+      type: "postcard",
       image: "/images/wiki/seven.jpg",
       cardURL: "/abcdef"
     }

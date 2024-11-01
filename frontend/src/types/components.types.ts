@@ -5,6 +5,7 @@ interface SingleLayoutProps {
 }
 
 type MasonryType = {
+    type: "postcard" | "tradecard";
     image: string;
     cardURL: string;
 }
@@ -18,6 +19,7 @@ interface ChoiceCardProps {
     image: string;
     type: "postcard" | "tradecard",
     children: ReactNode | ReactNode[]
+    classes?: string 
 }
 
 interface FlipBookPageDataType {

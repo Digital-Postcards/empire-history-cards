@@ -11,7 +11,7 @@ const MasonryList = (props: MasonryListProps) => {
                     return (
                         <div key={item.cardURL} className="group h-fit relative cursor-pointer hover:-translate-y-1 hover:shadow-3xl transition-all duration-300">
                             <img
-                                onClick={() => window.location.href = "/exhibit/wiki" + item.cardURL}
+                                onClick={() => window.location.href = "/cards/" + item.type + item.cardURL}
                                 className="rounded-lg"
                                 src={item.image}
                             />

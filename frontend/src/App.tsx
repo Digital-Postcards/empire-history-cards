@@ -12,8 +12,8 @@ import {
   ScrapBook,
   History,
   MapViewer,
-  CardList,
-  CardDetail
+  CardDetail,
+  Cards
 } from "pages";
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
           </Route>
           <Route path="" element={<BaseSingleLayout withCardsHeader={false} />}>
             <Route path="map" element={<MapViewer />}></Route>
-            <Route path="cards" element={<CardList />}></Route>
+            <Route path="cards" element={<Cards />}></Route>
             <Route path="cards/:cardType/:cardId" element={<CardDetail />}></Route>
           </Route>
           <Route path="*" element={<p>What's up?</p>}></Route>
