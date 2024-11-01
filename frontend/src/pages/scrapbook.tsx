@@ -53,7 +53,7 @@ const Scrapbook = () => {
                     })
                 }
             </HTMLFlipBook>
-            <div className="mt-3 flex justify-between items-center px-8">
+            <div className="mt-3 flex justify-between items-center px-8 pb-24">
                 <ScrapBookInfo currentPageInfoIndex={currentPageInfoIndex} />
                 <div className="flex items-center">
                     <Button disabled={currentPageInfoIndex === 0} size={"icon"} className="mx-1" onClick={gotoPrevious}><ChevronLeft /></Button>
