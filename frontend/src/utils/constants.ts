@@ -28,6 +28,10 @@ const MAIN_NAV_LINKS: NavLinkType[] = [
     {
         label: "Ethics of Representation",
         path: "/ethics-of-representation"
+    },
+    {
+        label: "About",
+        path: "/about"
     }
 ]
 export {
