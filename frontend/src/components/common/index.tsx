@@ -1,11 +1,11 @@
 import ContentContainer from "./contentcontainer";
-import ScrollableNavTabs from "./scrollablenavtabs";
+import StickyNavTabs from "./stickynavtabs";
 import Loader from "./loader";
 import ChoiceOfCards from "./choiceofcards";
 
 export {
     ContentContainer,
-    ScrollableNavTabs,
+    StickyNavTabs,
     Loader,
     ChoiceOfCards
 }
