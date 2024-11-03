@@ -40,7 +40,10 @@ interface CardViewerToolbarProps extends CardImageInViewerProps {
     setIsBlur: Dispatch<SetStateAction<boolean>>;
     nextImage: () => any;
     previousImage: () => any;
+}
 
+interface FilterItemProps {
+    withVerticalMargin?: boolean
 }
 
 export type {
@@ -49,5 +52,6 @@ export type {
     ChoiceCardProps,
     FlipBookPageDataType,
     CardImageInViewerProps,
-    CardViewerToolbarProps
+    CardViewerToolbarProps,
+    FilterItemProps
 }

@@ -5,7 +5,8 @@ import {
     ChoiceCardProps,
     FlipBookPageDataType,
     CardImageInViewerProps,
-    CardViewerToolbarProps
+    CardViewerToolbarProps,
+    FilterItemProps
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 
@@ -17,5 +18,6 @@ export type {
     ChoiceCardProps,
     FlipBookPageDataType,
     CardImageInViewerProps,
-    CardViewerToolbarProps
+    CardViewerToolbarProps,
+    FilterItemProps
 }
