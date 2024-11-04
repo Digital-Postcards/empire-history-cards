@@ -1,8 +1,6 @@
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import 'reflect-metadata';
-import { IImage } from './Images'; 
-import { ITag } from './Tags';
-
+import { IImage } from './image';
+import { ITag } from './tag';
 
 class ICard {
   @prop({ required: true, unique: true })
@@ -35,39 +33,38 @@ class ICard {
   @prop()
   public message?: string;
 
-  @prop({ type: () => [IImage], _id: false })  
+  @prop({ type: () => [IImage], _id: false })
   public images?: IImage[];
 
-  @prop({ type: () => Object }) 
+  @prop({ type: () => Object })
   public originalLocation?: {
     latitude: number;
     longitude: number;
   };
 
-  @prop({ type: () => Object })  
+  @prop({ type: () => Object })
   public postCoordinates?: {
     latitude: number;
     longitude: number;
   };
 
-  @prop({ type: () => Object }) 
+  @prop({ type: () => Object })
   public destinationCoordinates?: {
     latitude: number;
     longitude: number;
   };
 
-  @prop({ type: () => [ITag], _id: false })  
-  public iTags?: ITag[];
+  @prop({ type: () => [ITag], _id: false })
+  public tags?: ITag[];
 
-  @prop({ default: false })  // Add boolean field with default value
+  @prop({ default: false })
   public isInScrapbook?: boolean;
 
-  @prop({ default: false }) 
-  publisBlurByDefaultic ?: boolean;
-
+  @prop({ default: false })
+  public isBlurByDefault?: boolean;
 }
 
-export { ICard }; 
+export { ICard };
 
 const CardModel = getModelForClass(ICard);
 export default CardModel;

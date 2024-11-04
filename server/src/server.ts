@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { connect } from 'mongoose';  // Mongoose is used by Typegoose
-import CardModel from './models/Cards';  // Import the Card model
-import TagModel from './models/Tags';  // Import the Tag model
+import CardModel from './models/card';  // Import the Card model
+import TagModel from './models/tag';  // Import the Tag model
 
 // Create Express app
 const app = express();
