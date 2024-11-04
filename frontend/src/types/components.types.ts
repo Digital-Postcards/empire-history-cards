@@ -5,6 +5,7 @@ interface SingleLayoutProps {
 }
 
 type MasonryType = {
+    type: "postcard" | "tradecard";
     image: string;
     cardURL: string;
 }
@@ -18,6 +19,7 @@ interface ChoiceCardProps {
     image: string;
     type: "postcard" | "tradecard",
     children: ReactNode | ReactNode[]
+    classes?: string 
 }
 
 interface FlipBookPageDataType {
@@ -38,7 +40,10 @@ interface CardViewerToolbarProps extends CardImageInViewerProps {
     setIsBlur: Dispatch<SetStateAction<boolean>>;
     nextImage: () => any;
     previousImage: () => any;
+}
 
+interface FilterItemProps {
+    withVerticalMargin?: boolean
 }
 
 export type {
@@ -47,5 +52,6 @@ export type {
     ChoiceCardProps,
     FlipBookPageDataType,
     CardImageInViewerProps,
-    CardViewerToolbarProps
+    CardViewerToolbarProps,
+    FilterItemProps
 }

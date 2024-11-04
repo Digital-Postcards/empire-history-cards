@@ -1,7 +1,7 @@
 import React from "react";
 import { FlipBookPageDataType } from "types";  
 
-const FlipBookPage = React.forwardRef((props: FlipBookPageDataType, ref: any) => {
+const ScrapBookPage = React.forwardRef((props: FlipBookPageDataType, ref: any) => {
 
     let isEvenPage: boolean = false;
     if (props?.pageNumber)
@@ -21,4 +21,4 @@ const FlipBookPage = React.forwardRef((props: FlipBookPageDataType, ref: any) =>
     )
 })
 
-export default FlipBookPage;
+export default ScrapBookPage;

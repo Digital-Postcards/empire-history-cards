@@ -1,14 +1,14 @@
-import { OptionType } from "types";
+import { FilterItemProps, OptionType } from "types";
 import FilterBox from "./filterbox";
 import Select from "react-select";
 
-const MapTypeFilter = () => {
+const MapTypeFilter = (props: FilterItemProps) => {
     const options: OptionType[] = [
         { label: "Modern", value: "Modern" },
         { label: "Historic", value: "Historic" },
     ]
     return (
-        <FilterBox label="Map type">
+        <FilterBox label="Map type" classes={props?.withVerticalMargin ? "my-2" : ""}>
             <Select
                 defaultValue={options[0]}
                 name="maps"

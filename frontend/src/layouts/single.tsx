@@ -1,5 +1,5 @@
 import { HeaderCollage } from "components/single"
-import { ScrollableNavTabs } from "components/single"
+import { StickyNavTabs } from "components/common"
 import { Outlet } from "react-router-dom"
 import { SingleLayoutProps } from "types"
 
@@ -28,7 +28,7 @@ const BaseSingleLayout = (props: SingleLayoutProps) => {
                 </>
             }
             <div className={`relative z-10 ${props?.withCardsHeader && "pt-[45vh]"}`}>
-                <ScrollableNavTabs />
+                <StickyNavTabs />
                 <div className="bg-neutral-200 min-h-screen">
                     {/* each separate page goes here */}
                     <Outlet />

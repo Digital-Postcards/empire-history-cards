@@ -1,4 +1,4 @@
-import { ContentContainer } from "components/common"
+import { ChoiceOfCards, ContentContainer } from "components/common"
 
 const HomePage = () => {
     return (
@@ -16,6 +16,7 @@ const HomePage = () => {
                 culture exhibit, we request that you keep the following question in mind: how can contextualizing racist and sexist
                 historical images help us to identify and dismantle contemporary systemic biases?
             </p>
+            <ChoiceOfCards classes="mt-12" />
         </ContentContainer>
     )
 }

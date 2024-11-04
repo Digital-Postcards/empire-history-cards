@@ -2,18 +2,18 @@ import HomePage from "./home";
 import About from "./about";
 import History from "./history";
 import Project from "./project";
-import Flipbook from "./flipbook";
+import ScrapBook from "./scrapbook";
 import MapViewer from "./map";
 import CardDetail from "./carddetail";
-import CardList from "./cardlist";
+import Cards from "./choice";
 
 export {
     HomePage,
     About,
-    Flipbook,
+    ScrapBook,
     History,
     Project,
     MapViewer,
     CardDetail,
-    CardList
+    Cards
 }
