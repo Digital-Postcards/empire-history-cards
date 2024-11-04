@@ -1,8 +1,9 @@
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import 'reflect-metadata';
 import { IImage } from './Images'; 
+import { ITag } from './Tags';
 
-// Define the ICard class with Typegoose decorators
+
 class ICard {
   @prop({ required: true, unique: true })
   public number!: number;
@@ -34,7 +35,7 @@ class ICard {
   @prop()
   public message?: string;
 
-  @prop({ type: () => [IImage], _id: false })  // Prevents _id for embedded documents
+  @prop({ type: () => [IImage], _id: false })  
   public images?: IImage[];
 
   @prop({ type: () => Object }) 
@@ -55,10 +56,18 @@ class ICard {
     longitude: number;
   };
 
+  @prop({ type: () => [ITag], _id: false })  
+  public iTags?: ITag[];
+
+  @prop({ default: false })  // Add boolean field with default value
+  public isInScrapbook?: boolean;
+
+  @prop({ default: false }) 
+  publisBlurByDefaultic ?: boolean;
+
 }
 
 export { ICard }; 
 
-// Create a Typegoose model for ICard
 const CardModel = getModelForClass(ICard);
 export default CardModel;

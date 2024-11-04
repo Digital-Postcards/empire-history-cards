@@ -22,8 +22,7 @@ async function processTags(tags: string[], cardId: string) {
       { $addToSet: { cards: cardId } },  // Add the card's ObjectID to the tag
       { new: true, upsert: true }  // Create a new tag if it doesn't exist
     );
-    // Update the numberOfCards field
-    tag.numberOfCards = tag.cards.length;
+
     await tag.save();
   }
 }
