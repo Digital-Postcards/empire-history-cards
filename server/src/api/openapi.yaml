@@ -43,6 +43,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Card"
+        "400":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/NotFound"              
   /cards/scrapbook:
     get:
       summary: Returns a list of cards for the scrapbook
@@ -57,6 +61,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ScrapbookCard"
+        "400":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /cards/{id}:
     get:
       summary: Represents a card
@@ -76,6 +84,10 @@ paths:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Card"
+        "400":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /themes:
     get:
       summary: Returns a list of themes
@@ -91,6 +103,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Theme"
+        "400":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /map/allcardswithlocation:
     get:
       summary: Get location data for the map
@@ -118,7 +134,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/LocationWithCard"
-
+        "400":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   schemas:
@@ -148,7 +167,26 @@ components:
         images:
           type: array
           items:
-            type: string
+            type: object
+            properties:
+              size:
+                type: object
+                properties:
+                  height:
+                    type: number
+                  width:
+                    type: number
+                required:
+                  - height
+                  - width
+              orientation:
+                type: number
+              link:
+                type: string
+            required:
+              - size
+              - orientation
+              - link
         isBlurByDefault:
           type: boolean
       required:
@@ -220,3 +258,26 @@ components:
         - description
         - themes
         - image
+  responses:
+    Error:
+      description: A JSON object with error information
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
