@@ -1,0 +1,222 @@
+openapi: 3.0.0
+info:
+  title: Digital Postcards API
+  description: API built for the Digital humanities project built at Northeastern in collaboration with Stony Brook University
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:3002/api
+    description: Development server
+
+paths:
+  /cards:
+    get:
+      summary: Returns a list of cards
+      description: >
+        This route returns a paginated list of cards, with a limit of 20 cards per response. It also applied relevant filtering
+        via tags or years, as required by the request.
+      parameters:
+        - in: query
+          name: type
+          description: The type of card to fetch
+          schema:
+            type: string
+            enum: [postcard, tradecard]
+        - in: query
+          name: year
+          description: The year to filter the card list by
+          schema: 
+            type: number
+        - in: query
+          name: withTags
+          description: The tags to filter the card list by
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: A JSON array of cards and relevant metadata
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+  /cards/scrapbook:
+    get:
+      summary: Returns a list of cards for the scrapbook
+      description: >
+        This route returns a list of cards required to be rendered on the scrapbook, along with metadata to be displayed in the scrapbook
+      responses:
+        "200":
+          description: A JSON array of cards and relevant metadata
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScrapbookCard"
+  /cards/{id}:
+    get:
+      summary: Represents a card
+      description: >
+        This route returns a tradecard or a postcard along with all associated metadata including images and tags
+      parameters:
+        - in: path
+          name: id
+          description: The unique ID of the card to be fetched
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A JSON object representing the card
+          content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Card"
+  /themes:
+    get:
+      summary: Returns a list of themes
+      description: >
+        This route returns a list of all the themes present in the database, sorted in decreasing order of number of cards in each theme,
+        if required by the request
+      responses:
+        "200":
+          description: A JSON array of themes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Theme"
+  /map/allcardswithlocation:
+    get:
+      summary: Get location data for the map
+      description: >
+        This route returns a list of all locations required to be plotted on the map along with relevant card metadata
+      parameters:
+        - in: query
+          name: year
+          description: The year to filter the card list by
+          schema: 
+            type: number
+        - in: query
+          name: withTags
+          description: The tags to filter the card list by
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: A JSON array of location and card data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LocationWithCard"
+
+
+components:
+  schemas:
+    Card:
+      type: object
+      properties:
+        _id:
+          type: string
+        description:
+          type: string
+        analysis:
+          type: string
+        message:
+          type: string
+        company:
+          type: string
+        companyInformation:
+          type: string
+        postmarked:
+          type: string
+        date:
+          type: string
+        themes:
+          type: array
+          items:
+            type: object
+        images:
+          type: array
+          items:
+            type: string
+        isBlurByDefault:
+          type: boolean
+      required:
+        - _id
+        - description
+        - analysis
+        - message
+        - company
+        - companyInformation
+        - postmarked
+        - date
+        - themes
+        - images
+        - isBlurByDefault
+    Theme:
+      type: object
+      properties:
+        _id:
+          type: string
+        themeName:
+          type: string
+        numberOfCards:
+          type: string
+      required:
+        - _id
+        - themeName
+        - numberOfCards
+    LocationWithCard:
+      type: object
+      properties:
+        _id:
+          type: string
+        fromLocation:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+        toLocation:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+        origin:
+          type: string
+      required:
+        - _id
+        - fromLocation
+        - toLocation
+        - origin
+    ScrapbookCard:
+      type: object
+      properties:
+        _id:
+          type: string
+        description:
+          type: string
+        themes:
+          type: array
+          items:
+            type: string
+        image:
+          type: string
+      required:
+        - _id
+        - description
+        - themes
+        - image
