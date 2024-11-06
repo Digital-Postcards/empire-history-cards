@@ -3,24 +3,20 @@ import { connect } from 'mongoose';  // Mongoose is used by Typegoose
 import CardModel from './models/card';  // Import the Card model
 import TagModel from './models/tag';  // Import the Tag model
 
-// Create Express app
 const app = express();
-app.use(express.json()); // Middleware to parse JSON requests
+app.use(express.json()); 
 
-// Connect to MongoDB using the Mongoose connect function (Typegoose uses Mongoose under the hood)
 const mongoURI = 'mongodb+srv://NEU-historicPostcardProject:adminNEU@devconnector.wdklp6m.mongodb.net/?retryWrites=true&w=majority'; 
 connect(mongoURI)
   .then(() => console.log('MongoDB connected...'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// Function to process tags for a card
 async function processTags(tags: string[], cardId: string) {
   for (const tagName of tags) {
-    // Find the tag by name or create a new one
     const tag = await TagModel.findOneAndUpdate(
       { name: tagName },
-      { $addToSet: { cards: cardId } },  // Add the card's ObjectID to the tag
-      { new: true, upsert: true }  // Create a new tag if it doesn't exist
+      { $addToSet: { cards: cardId } },  
+      { new: true, upsert: true } 
     );
 
     await tag.save();
