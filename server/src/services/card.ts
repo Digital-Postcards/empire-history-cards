@@ -1,1 +1,46 @@
-export {}
+import CardModel from "../models/card";
+
+export default class CardService {
+    public async getCardsByFilter(query: any, projection?: any) {
+        const { type, year, withTags, isInScrapbook, originalLocation, page = 1, limit = 20, isPopulate = true } = query;
+        const _query: any = {};
+
+        if (type) _query.item = type;
+        if (year) _query.date = { $regex: year };
+        if (isInScrapbook) _query.isInScrapbook = isInScrapbook;
+        if (originalLocation) _query.originalLocation = originalLocation;
+
+        let cards;
+        if (!isPopulate) {
+            cards = await CardModel.find(_query, projection)
+                .skip((+page - 1) * +limit)
+                .limit(+limit)
+        } else {
+            cards = await CardModel.find(_query, projection)
+                .skip((+page - 1) * +limit)
+                .limit(+limit)
+                .populate("themes imageLinks");
+        }
+
+        if (isInScrapbook) {
+            let cardsForScrapBook: any = [];
+            cards.forEach((card: any) => {
+                cardsForScrapBook.push({
+                    _id: card._id,
+                    description: card.description.slice(0, 300) + "...",
+                    themes: card.themes.map((theme: any) => {
+                        return theme.name
+                    }),
+                    image: card.imageLinks[0]
+                });
+            });
+            return cardsForScrapBook;
+        }
+        return cards;
+    }
+
+    public async getCardById(id: string) {
+        return await CardModel.findById(id).populate("themes imageLinks");
+    }
+}
+

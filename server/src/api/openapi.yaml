@@ -144,27 +144,35 @@ components:
     Card:
       type: object
       properties:
-        _id:
-          type: string
+        _id: {}
         description:
           type: string
         analysis:
           type: string
         message:
           type: string
+          nullable: true
         company:
           type: string
+          nullable: true
         companyInformation:
           type: string
+          nullable: true
         postmarked:
           type: string
+          nullable: true
         date:
           type: string
         themes:
           type: array
           items:
             type: object
-        images:
+            properties:
+              name:
+                type: string
+              numberOfCards:
+                type: number
+        imageLinks:
           type: array
           items:
             type: object
@@ -181,6 +189,7 @@ components:
                   - width
               orientation:
                 type: number
+                nullable: true
               link:
                 type: string
             required:
@@ -199,59 +208,62 @@ components:
         - postmarked
         - date
         - themes
-        - images
+        - imageLinks
         - isBlurByDefault
     Theme:
       type: object
       properties:
-        _id:
-          type: string
-        themeName:
+        _id: {}
+        name:
           type: string
         numberOfCards:
-          type: string
+          type: number
       required:
         - _id
-        - themeName
+        - name
         - numberOfCards
     LocationWithCard:
       type: object
       properties:
-        _id:
-          type: string
-        fromLocation:
+        _id: {}
+        destinationLocation:
           type: object
           properties:
             latitude:
               type: number
             longitude:
               type: number
-        toLocation:
+        postLocation:
           type: object
           properties:
             latitude:
               type: number
             longitude:
               type: number
-        origin:
-          type: string
+        originalLocation:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+          required:
+            - latitude
+            - longitude
       required:
         - _id
-        - fromLocation
-        - toLocation
-        - origin
+        - originalLocation
     ScrapbookCard:
       type: object
       properties:
-        _id:
-          type: string
+        _id: {}
         description:
           type: string
         themes:
           type: array
           items:
             type: string
-        image:
+        images:
           type: string
       required:
         - _id

@@ -1,4 +1,4 @@
-import { getModelForClass, prop } from '@typegoose/typegoose';
+import { getModelForClass, prop, PropType, Ref } from '@typegoose/typegoose';
 import { IImage } from './image';
 import { ITag } from './tag';
 
@@ -33,29 +33,29 @@ class ICard {
   @prop()
   public message?: string;
 
-  @prop({ type: () => [IImage], _id: false })
-  public images?: IImage[];
+  @prop({ ref: () => IImage, _id: false }, PropType.ARRAY)
+  public imageLinks?: Ref<IImage>[];
 
-  @prop({ type: () => Object })
+  @prop()
   public originalLocation?: {
     latitude: number;
     longitude: number;
   };
 
-  @prop({ type: () => Object })
-  public postCoordinates?: {
+  @prop()
+  public postLocation?: {
     latitude: number;
     longitude: number;
   };
 
-  @prop({ type: () => Object })
-  public destinationCoordinates?: {
+  @prop()
+  public destinationLocation?: {
     latitude: number;
     longitude: number;
   };
 
-  @prop({ type: () => [ITag], _id: false })
-  public tags?: ITag[];
+  @prop({ ref: () => ITag }, PropType.ARRAY)
+  public themes?: Ref<ITag>[];
 
   @prop({ default: false })
   public isInScrapbook?: boolean;
@@ -63,8 +63,6 @@ class ICard {
   @prop({ default: false })
   public isBlurByDefault?: boolean;
 }
-
-export { ICard };
 
 const CardModel = getModelForClass(ICard);
 export default CardModel;

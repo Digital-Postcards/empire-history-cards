@@ -1,30 +1,29 @@
 import { Request, Response, NextFunction } from "express";
-import CardModel from "../models/card";
+import { CardService } from "../services";
 
 export class CardController {
+    private cardService: CardService = new CardService();
+
+    constructor() {
+        this.getPaginatedCards = this.getPaginatedCards.bind(this);
+        this.getCardByID = this.getCardByID.bind(this);
+        this.getCardsForScrapbook = this.getCardsForScrapbook.bind(this);
+    }
+
     async getPaginatedCards(req: Request, res: Response, next: NextFunction) {
-        const { type, year, withTags, page = 1, limit = 20 } = req.query;
-        const query: any = {};
-
-        if (type) query.type = type;
-        if (year) query.date = { $regex: year };
-        if (withTags) query.tags = { $in: withTags.toString().split(',') };
-
         try {
-            const cards = await CardModel.find(query)
-                .skip((+page - 1) * +limit)
-                .limit(+limit);
+            const cards = await this.cardService.getCardsByFilter(req.query);
             res.status(200).json(cards);
         } catch (error) {
             res.status(400).json({ message: (error as Error).message });
         }
     }
 
-    async getCardByID(req: Request, res: Response, next: NextFunction) {
+    async getCardByID(req: Request, res: Response) {
         try {
-            const card = await CardModel.findById(req.params.id);
-            if (!card) return res.status(404).json({ message: 'Card not found' });
-            res.status(200).json(card);
+            const card = await this.cardService.getCardById(req.params?.id);
+            if (!card) res.status(404).json({ message: 'Card not found' });
+            else res.status(200).json(card);
         } catch (error) {
             res.status(400).json({ message: (error as Error).message });
         }
@@ -32,8 +31,13 @@ export class CardController {
 
     async getCardsForScrapbook(req: Request, res: Response, next: NextFunction) {
         try {
-            const scrapbookCards = await CardModel.find({ isInScrapbook: true });
-            res.status(200).json(scrapbookCards);
+            const cards = await this.cardService.getCardsByFilter({ isInScrapbook: true }, {
+                _id: true,
+                description: true,
+                imageLinks: true,
+                themes: true
+            });
+            res.status(200).json(cards);
         } catch (error) {
             res.status(400).json({ message: (error as Error).message });
         }

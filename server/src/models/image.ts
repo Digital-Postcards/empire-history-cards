@@ -19,7 +19,7 @@ class IImage {
 	public size?: Size;
 
 	@prop()
-	public orientation?: string;
+	public orientation?: number;
 
 	@prop({ required: true })
 	public cardNumber!: number;

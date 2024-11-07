@@ -1,21 +1,32 @@
 import { Request, Response, NextFunction } from "express";
-import CardModel from "../models/card";
+import { CardService } from "../services";
 
 export class MapController {
+    private cardService: CardService = new CardService();
+
+    constructor() {
+        this.getAllLocations = this.getAllLocations.bind(this);
+    }
+
     async getAllLocations(req: Request, res: Response, next: NextFunction) {
-        const { year, withTags } = req.query;
-        const query: any = {};
-
-        if (year) query.date = { $regex: year };
-        if (withTags) query.tags = { $in: withTags.toString().split(',') };
-
         try {
-            const cardsWithLocations = await CardModel.find(query, {
-                originalLocation: 1,
-                postCoordinates: 1,
-                destinationCoordinates: 1,
-            });
-            res.status(200).json(cardsWithLocations);
+            const cards = await this.cardService.getCardsByFilter(
+                {
+                    ...req.query, 
+                    originalLocation: { $type: 3 },
+                    isPopulate: false,
+                    limit: null,
+                    page: null
+                },
+                {
+                    _id: 1,
+                    number: 1,
+                    originalLocation: 1,
+                    postLocation: 1,
+                    destinationLocation: 1,
+                }
+            );
+            res.status(200).json(cards);
         } catch (error) {
             res.status(400).json({ message: (error as Error).message });
         }
