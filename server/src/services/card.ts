@@ -36,6 +36,16 @@ export default class CardService {
             });
             return cardsForScrapBook;
         }
+
+        if (withTags) {
+            let tagsToFilter = withTags[0].split(",");
+            let filteredCards = cards.filter((card: any) => {
+                let themes = card.themes.map((theme: any) => { return theme.name });
+                return themes.some((theme: string) => tagsToFilter.includes(theme))
+            });
+            return filteredCards;
+        }
+
         return cards;
     }
 
