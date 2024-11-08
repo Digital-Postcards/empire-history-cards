@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import io
+import re
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -21,31 +22,43 @@ def connect_to_database():
 def update_doc_in_database(database, file_name, card_type):
     file_url = '/images/'+ card_type + '/' + file_name
     collection = database['iimages']
-    try:
-        cursor = collection.update_one({ 'name': file_name.split('.')[0] }, { '$set': { 'link': file_url } })
-        print('Updated ' + file_name + ' in database\n')
-    except:
-        print('Error updating document in database')
+
+    cursor = collection.find_one({ 'name': file_name.split('.')[0] })
+    image_path = cursor.get('link')
+    pattern = re.compile(r"/images/[a-z]+cards/[A-Za-z0-9]+\.[a-z]+", re.IGNORECASE)
+    match = pattern.match(image_path)
+
+    if match != None:
+        print('Document is already up to date\n')
+    else:
+        try:
+            cursor = collection.update_one({ 'name': file_name.split('.')[0] }, { '$set': { 'link': file_url } })
+            print('Updated ' + file_name + ' in database\n')
+        except:
+            print('Error updating document in database')
     
 def pull_image(service, files, local_folder_path):
     # connect to db
     database = connect_to_database()
     for file in files:
-        file_name = os.path.join(local_folder_path, file.get('name'))
-        if os.path.exists(file_name):
-            print('Local copy of ' + file.get('name') + ' exists')
-        else:
-            request = service.files().get_media(fileId=file.get('id'))
-            fh = io.FileIO(file_name, 'wb')
-            downloader = MediaIoBaseDownload(fh, request)
-            done = False
-            while not done:
-                status, done = downloader.next_chunk()
-                print(f"Downloaded {int(status.progress() * 100)}% of {file.get('name')}")
-            fh.close()
+        if file.get('mimeType') == 'image/jpeg' or file.get('mimeType') == 'image/png':
+            file_name = os.path.join(local_folder_path, file.get('name'))
+            if os.path.exists(file_name):
+                print('Local copy of ' + file.get('name') + ' exists')
+            else:
+                request = service.files().get_media(fileId=file.get('id'))
+                fh = io.FileIO(file_name, 'wb')
+                downloader = MediaIoBaseDownload(fh, request)
+                done = False
+                while not done:
+                    status, done = downloader.next_chunk()
+                    print(f"Downloaded {int(status.progress() * 100)}% of {file.get('name')}")
+                fh.close()
 
-        # update in database here
-        update_doc_in_database(database, file.get('name'), 'postcards' if 'postcards' in local_folder_path else 'tradecard')
+            # update in database here
+            update_doc_in_database(database, file.get('name'), 'postcards' if 'postcards' in local_folder_path else 'tradecard')
+        else:
+            print('File ' + file.get('name') + ' is not an image\n')
 
 # authenticate using the service account credentials
 def authenticate_google_drive_api():
