@@ -22,6 +22,18 @@ app.use(
   }),
 );
 
+// resolve static directory path based on local filesystem
+const staticImageDirectory: string | undefined = process.env.IMAGES_DIR;
+const staticOptions: any = {
+  dotfiles: 'deny',
+  etag: true,
+  immutable: true,
+  maxAge: '1d',
+}
+// configure static directories to serve images
+app.use("/static/images/postcards", express.static(staticImageDirectory + "/postcards", staticOptions));
+app.use("/static/images/tradecards", express.static(staticImageDirectory + "/tradecards", staticOptions));
+
 // use these routes
 app.use("/api/themes", themeRouter);
 app.use("/api/map", mapRouter);
