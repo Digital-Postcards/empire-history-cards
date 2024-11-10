@@ -2,6 +2,14 @@ import { getModelForClass, prop, PropType, Ref } from '@typegoose/typegoose';
 import { IImage } from './image';
 import { ITag } from './tag';
 
+class Coordinates {
+	@prop()
+	public latitude?: number;
+
+	@prop()
+	public longitude?: number;
+}
+
 class ICard {
   @prop({ required: true, unique: true })
   public number!: number;
@@ -37,22 +45,13 @@ class ICard {
   public imageLinks?: Ref<IImage>[];
 
   @prop()
-  public originalLocation?: {
-    latitude: number;
-    longitude: number;
-  };
+  public originalLocation?: Coordinates;
 
   @prop()
-  public postLocation?: {
-    latitude: number;
-    longitude: number;
-  };
+  public postLocation?: Coordinates;
 
   @prop()
-  public destinationLocation?: {
-    latitude: number;
-    longitude: number;
-  };
+  public destinationLocation?: Coordinates;
 
   @prop({ ref: () => ITag }, PropType.ARRAY)
   public themes?: Ref<ITag>[];

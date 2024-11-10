@@ -1,16 +1,11 @@
-import express, { Express, Request, Response } from "express";
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import * as OpenApiValidator from 'express-openapi-validator';
 
 // import routes
 import { cardRouter, mapRouter, themeRouter } from "./routes";
-import dbconnect from "./utils/dbconnect";
 
-const app: Express = express();
-const port = process.env.PORT || 3002;
-
-// connect to the database
-dbconnect();
+const app: Application = express();
 
 // Use middlewares
 app.use(cors());
@@ -53,6 +48,4 @@ app.use((err: any, req: Request, res: Response, next: any) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+export default app;
