@@ -22,10 +22,23 @@ interface ChoiceCardProps {
     classes?: string 
 }
 
+type ScrapBookImage = {
+    link: string;
+    size: {
+        height: number;
+        width: number;   
+    }
+    name: string;
+    cardNumber: number;
+    orientation: number | null;
+}
+
 interface FlipBookPageDataType {
-    pageNumber?: number; 
-    image: string;
-    info: string;
+    _id: string;
+    pageNumber?: number;
+    image: ScrapBookImage;
+    description: string;
+    themes: string[]
 }
 
 interface CardImageInViewerProps {
