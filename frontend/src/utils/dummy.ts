@@ -1,5 +1,3 @@
-import { MasonryListProps } from "types";
-
 const CAROUSEL_IMAGE_URLS: string[] = [
     "/images/carousel/one.jpg",
     "/images/carousel/four.jpg",
@@ -7,46 +5,6 @@ const CAROUSEL_IMAGE_URLS: string[] = [
     "/images/carousel/three.jpg",
     "/images/carousel/two.jpg"
 ];
-
-const WIKI_IMAGES: MasonryListProps = {
-  data: [
-    {
-      type: "postcard",
-      image: "/images/wiki/one.jpg",
-      cardURL: "/abcdef"
-    },
-    {
-      type: "postcard",
-      image: "/images/wiki/two.jpg",
-      cardURL: "/abcdef"
-    },
-    {
-      type: "postcard",
-      image: "/images/wiki/three.jpg",
-      cardURL: "/abcdef"
-    },
-    {
-      type: "postcard",
-      image: "/images/wiki/four.jpg",
-      cardURL: "/abcdef"
-    },
-    {
-      type: "postcard",
-      image: "/images/wiki/five.jpg",
-      cardURL: "/abcdef"
-    },
-    {
-      type: "postcard",
-      image: "/images/wiki/six.jpg",
-      cardURL: "/abcdef"
-    },
-    {
-      type: "postcard",
-      image: "/images/wiki/seven.jpg",
-      cardURL: "/abcdef"
-    }
-  ]
-}
 
 const DUMMY_TAGS: string[] = ["Animalization", "Emasculation", "Mammy Stereotype"];
 
@@ -67,7 +25,6 @@ const DUMMY_COORDINATES = [
 
 export {
     CAROUSEL_IMAGE_URLS,
-    WIKI_IMAGES,
     DUMMY_TAGS,
     DUMMY_COORDINATES
 }

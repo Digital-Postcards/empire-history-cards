@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react"
 import CardImageInViewer from "./image";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCw } from "lucide-react";
 import { Button } from "shadcn/components/ui/button";
-import { CardViewerToolbarProps } from "types";
+import { CardViewerProps, CardViewerToolbarProps } from "types";
 
 const CardViewerToolbarIcon = (props: {isIconOnly: boolean, onClick?: () => any, children: ReactNode}) => {
     let size: any = props?.isIconOnly ? "icon" : "default";
@@ -39,32 +39,25 @@ const CardViewerToolbar = (props: CardViewerToolbarProps) => {
     )
 }
 
-const CardViewer = () => {
-    const [images, setImages] = useState<{image: string, orientation: "portrait" | "landscape"}[]>([
-        // {image: "/images/wiki/one.jpg", orientation: "portrait"},
-        {image: "/images/wiki/three.jpg", orientation: "landscape"},
-        {image: "/images/wiki/two.jpg", orientation: "portrait"},
-        {image: "/images/wiki/four.jpg", orientation: "portrait"},
-    ]);
-
+const CardViewer = (props: CardViewerProps) => {
     const [currentImageInViewer, setCurrentImageInViewer] = useState<number>(0);
-    const [isBlur, setIsBlur] = useState<boolean>(true);
+    const [isBlur, setIsBlur] = useState<boolean>(props?.isBlur);
     const [rotate, setRotate] = useState<number>(0);
-    const [orientation, setOrientation] = useState<"portrait" | "landscape">(images[currentImageInViewer].orientation);
+    const [orientation, setOrientation] = useState<number|  null>(props?.images[currentImageInViewer].orientation);
 
     useEffect(() => {
-        setOrientation(images[currentImageInViewer].orientation);
+        setOrientation(props?.images[currentImageInViewer].orientation);
     }, [currentImageInViewer])
 
     const nextImage = () => {
-        setCurrentImageInViewer((currentImageInViewer + 1) % images.length);
-        setIsBlur(true);
+        setCurrentImageInViewer((currentImageInViewer + 1) % props?.images.length);
+        setIsBlur(props?.isBlur);
         setRotate(0);
     }
 
     const previousImage = () => {
-        setCurrentImageInViewer((currentImageInViewer - 1 + images.length) % images.length);
-        setIsBlur(true);
+        setCurrentImageInViewer((currentImageInViewer - 1 + props?.images.length) % props?.images.length);
+        setIsBlur(props?.isBlur);
         setRotate(0);
     }
 
@@ -76,17 +69,17 @@ const CardViewer = () => {
         <div className="relative flex flex-col w-full h-[66vh] border rounded-lg">
             <div className="h-full bg-neutral-100 flex justify-center items-center overflow-hidden">
                 <CardImageInViewer
-                    orientation={images[currentImageInViewer].orientation}
+                    orientation={props?.images[currentImageInViewer].orientation}
                     rotate={rotate}
                     isBlur={isBlur}
-                    imageURL={images[currentImageInViewer].image}
+                    imageURL={props?.images[currentImageInViewer].link}
                 />
             </div>
             <CardViewerToolbar
                 orientation={orientation}
                 rotate={rotate}
                 isBlur={isBlur}
-                imageURL={images[currentImageInViewer].image}
+                imageURL={props?.images[currentImageInViewer].link}
                 handleRotate={handleRotate}
                 setIsBlur={setIsBlur}
                 nextImage={nextImage}

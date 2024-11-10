@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { CardImageInViewerProps } from "types";
 
 const CardImageInViewer = (props: CardImageInViewerProps) => {
-    const [imageWidth, setImageWidth] = useState(props?.orientation === "portrait" ? 400 : 700);
+    const [imageWidth, setImageWidth] = useState(props?.orientation === 1 ? 400 : 700);
     useEffect(() => {
-        setImageWidth(props?.orientation === "portrait" ? 400 : 500)
+        setImageWidth(props?.orientation === 1 ? 400 : 500)
         if (props?.rotate !== 0)
             setImageWidth(imageWidth === 400 ? 500 : 400);
-        console.log(imageWidth)
     }, [props?.orientation, props?.rotate]);
 
     let computedClasses = "border-white border-[1rem] transition-all duration-300 ease-in ";
@@ -26,7 +25,7 @@ const CardImageInViewer = (props: CardImageInViewerProps) => {
         <img
             height={550}
             width={imageWidth}
-            src={props?.imageURL}
+            src={process.env.REACT_APP_SERVER_URL + "/static" + props?.imageURL}
             className={computedClasses}
         />
     )

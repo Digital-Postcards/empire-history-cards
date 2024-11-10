@@ -1,13 +1,15 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
+import { Image } from "./singlecard.types";
 
 interface SingleLayoutProps {
     withCardsHeader: boolean
 }
 
-type MasonryType = {
-    type: "postcard" | "tradecard";
-    image: string;
-    cardURL: string;
+export type MasonryType = {
+    item: "postcard" | "tradecard";
+    number: number;
+    imageLinks: string;
+    _id: string;
 }
 
 interface MasonryListProps {
@@ -41,8 +43,21 @@ interface FlipBookPageDataType {
     themes: string[]
 }
 
+interface CardInfoBoxProps {
+    tags: string[];
+    date: string;
+    location: string;
+    company: string;
+    companyInformation: string;
+}
+
+interface CardViewerProps {
+    images: Image[],
+    isBlur: boolean
+}
+
 interface CardImageInViewerProps {
-    orientation: "portrait" | "landscape";
+    orientation: number | null;
     rotate: number;
     isBlur: boolean;
     imageURL: string
@@ -66,5 +81,7 @@ export type {
     FlipBookPageDataType,
     CardImageInViewerProps,
     CardViewerToolbarProps,
-    FilterItemProps
+    FilterItemProps,
+    CardInfoBoxProps,
+    CardViewerProps
 }

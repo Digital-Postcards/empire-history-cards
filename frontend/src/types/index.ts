@@ -6,9 +6,12 @@ import {
     FlipBookPageDataType,
     CardImageInViewerProps,
     CardViewerToolbarProps,
-    FilterItemProps
+    FilterItemProps,
+    CardInfoBoxProps,
+    CardViewerProps
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
+import SingleCard from "./singlecard.types";
 
 export type {
     NavLinkType,
@@ -19,5 +22,8 @@ export type {
     FlipBookPageDataType,
     CardImageInViewerProps,
     CardViewerToolbarProps,
-    FilterItemProps
+    FilterItemProps,
+    CardInfoBoxProps,
+    SingleCard,
+    CardViewerProps
 }
