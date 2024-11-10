@@ -1,4 +1,6 @@
-import { NavLinkType } from "types"
+import { NavLinkType } from "types";
+
+const API_URL = process.env.REACT_APP_SERVER_URL + "/api";
 
 const MAIN_NAV_LINKS: NavLinkType[] = [
     {
@@ -35,5 +37,6 @@ const MAIN_NAV_LINKS: NavLinkType[] = [
     }
 ]
 export {
+    API_URL,
     MAIN_NAV_LINKS,
 }
