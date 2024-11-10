@@ -6,6 +6,7 @@ import ScrapBook from "./scrapbook";
 import MapViewer from "./map";
 import CardDetail from "./carddetail";
 import Cards from "./choice";
+import Themes from "./themes";
 
 export {
     HomePage,
@@ -15,5 +16,6 @@ export {
     Project,
     MapViewer,
     CardDetail,
-    Cards
+    Cards,
+    Themes
 }

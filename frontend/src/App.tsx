@@ -13,7 +13,8 @@ import {
   History,
   MapViewer,
   CardDetail,
-  Cards
+  Cards,
+  Themes
 } from "pages";
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
             <Route path="history" element={<History />}></Route>
             <Route path="project" element={<Project />}></Route>
             <Route path="flipbook" element={<ScrapBook />}></Route>
-            <Route path="themes" element={<p>Themes</p>}></Route>
+            <Route path="themes" element={<Themes />}></Route>
             <Route path="ethics-of-representation" element={<p>Ethics of representation</p>}></Route>
           </Route>
           <Route path="" element={<BaseSingleLayout withCardsHeader={false} />}>
