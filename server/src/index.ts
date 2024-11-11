@@ -1,6 +1,9 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import * as OpenApiValidator from 'express-openapi-validator';
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 // import routes
 import { cardRouter, mapRouter, themeRouter } from "./routes";
