@@ -7,6 +7,7 @@ import MapViewer from "./map";
 import CardDetail from "./carddetail";
 import Cards from "./choice";
 import Themes from "./themes";
+import Ethics from "./ethics";
 
 export {
     HomePage,
@@ -17,5 +18,6 @@ export {
     MapViewer,
     CardDetail,
     Cards,
-    Themes
+    Themes,
+    Ethics
 }

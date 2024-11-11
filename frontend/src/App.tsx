@@ -14,7 +14,8 @@ import {
   MapViewer,
   CardDetail,
   Cards,
-  Themes
+  Themes,
+  Ethics
 } from "pages";
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
             <Route path="project" element={<Project />}></Route>
             <Route path="flipbook" element={<ScrapBook />}></Route>
             <Route path="themes" element={<Themes />}></Route>
-            <Route path="ethics-of-representation" element={<p>Ethics of representation</p>}></Route>
+            <Route path="ethics-of-representation" element={<Ethics />}></Route>
           </Route>
           <Route path="" element={<BaseSingleLayout withCardsHeader={false} />}>
             <Route path="map" element={<MapViewer />}></Route>
