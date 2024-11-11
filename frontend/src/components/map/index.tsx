@@ -4,10 +4,11 @@ import L from "leaflet";
 import { useApi } from "hooks";
 import { useEffect } from "react";
 import { Loader } from "components/common";
+import logo from "./location.png";
 
 const customIcon = new L.Icon({
-    iconUrl: "http://via.placeholder.com/1280x720",
-    iconSize: new L.Point(40, 47),
+    iconUrl: logo,
+    iconSize: new L.Point(30, 30),
 })
 
 const LeafletMap = () => {
