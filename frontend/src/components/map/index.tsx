@@ -1,98 +1,66 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import Map from "@arcgis/core/Map";
-import MapView from "@arcgis/core/views/MapView";
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import Point from '@arcgis/core/geometry/Point';
-import Graphic from "@arcgis/core/Graphic";
-import FeatureReductionCluster from '@arcgis/core/layers/support/FeatureReductionCluster';
-import { DUMMY_COORDINATES } from "utils";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import L from "leaflet";
+import { useApi } from "hooks";
+import { useEffect } from "react";
+import { Loader } from "components/common";
 
-const MapViewer = (props: { setLoading: Dispatch<SetStateAction<boolean>> }) => {
+const customIcon = new L.Icon({
+    iconUrl: "http://via.placeholder.com/1280x720",
+    iconSize: new L.Point(40, 47),
+})
 
-    const mapDiv = useRef(null);
+const LeafletMap = () => {
 
-    const createMapMarkers = (coordinates: any) => {
-        let markers: any = [];
-        coordinates.forEach((coordinate: any) => {
-            const point = new Point({
-                longitude: coordinate.longitude,
-                latitude: coordinate.latitude,
-            });
+    const {
+        data,
+        error,
+        isLoading,
+        fetchData
+    } = useApi("/map/allcardswithlocation", { method: "GET" });
 
-            // Add the point to the graphics layer
-            markers.push(new Graphic({
-                geometry: point,
-                symbol: {
-                    // @ts-ignore
-                    type: 'simple-fill',
-                }
-            }));
-        });
-        return markers;
-    }
-
-    const createFeatureLayer = (markers: any) => {
-        return new FeatureLayer({
-            source: markers,
-            objectIdField: "wun2r3423i4en",
-            featureReduction: new FeatureReductionCluster({
-                clusterRadius: "100px",
-                clusterMinSize: "30px",
-                clusterMaxSize: "80px",
-                labelingInfo: [{
-                    deconflictionStrategy: "none",
-                    labelExpressionInfo: {
-                        expression: "Text($feature.cluster_count, '#,###')"
-                    },
-                    symbol: {
-                        type: "text",
-                        color: "white",
-                        font: {
-                            size: "14px"
-                        }
-                    },
-                    labelPlacement: "center-center",
-                }]
-            })
-        })
-    }
-
-    const createMapView = (mapDiv: any, webmap: any) => {
-        return new MapView({
-            container: mapDiv.current, // The id or node representing the DOM element containing the view.
-            map: webmap, // An instance of a Map object to display in the view.
-            center: [-117.1490, 32.7353],
-            scale: 10000000, // Represents the map scale at the center of the view.,
-            constraints: {
-                minZoom: 3
-            }
-        });
-
+    const getData = async () => {
+        await fetchData();
     }
 
     useEffect(() => {
-        // perform API call to get coordinates data
-
-        const markers = createMapMarkers(DUMMY_COORDINATES);
-        const layer = createFeatureLayer(markers);
-
-        if (mapDiv.current) {
-            const webmap = new Map({
-                basemap: "streets"
-            });
-            const view = createMapView(mapDiv, webmap);
-            view.when(() => {
-                webmap.add(layer);
-                props?.setLoading(false);
-            })
-            return () => view && view.destroy()
-        }
+        getData()
     }, []);
 
-    return (
-        <div className="col-span-8 h-[100vh] overflow-hidden" ref={mapDiv}></div>
+    if (isLoading)
+        return <Loader isFullSize={true} />
+    
+    if (!data)
+        return <p>Failed to fetch map data</p>;
 
+    if (error)
+        return <p>Server error</p>
+
+    return (
+        <MapContainer
+            className="overflow-hidden col-span-8"
+            center={[45.4, -75.7]}
+            zoom={8}
+            minZoom={4}
+            scrollWheelZoom={true}
+        >
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <MarkerClusterGroup
+                chunkedLoading
+                spiderfyOnMaxZoom={true}
+                showCoverageOnHover={true}
+            >
+                {
+                    (data as any).map((item: any) => {
+                        return <Marker position={[item?.originalLocation.latitude, item?.originalLocation.longitude]} icon={customIcon}></Marker> 
+                    })
+                }
+            </MarkerClusterGroup>
+        </MapContainer>
     )
 }
 
-export default MapViewer;
+export default LeafletMap;
