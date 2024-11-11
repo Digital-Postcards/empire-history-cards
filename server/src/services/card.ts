@@ -31,7 +31,7 @@ export default class CardService {
                     themes: card.themes.map((theme: any) => {
                         return theme.name
                     }),
-                    image: card.imageLinks[0]
+                    image: "/static" + card.imageLinks[0].link
                 });
             });
             return cardsForScrapBook;
