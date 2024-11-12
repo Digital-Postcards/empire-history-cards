@@ -24,6 +24,9 @@ def update_doc_in_database(database, file_name, card_type):
     collection = database['iimages']
 
     cursor = collection.find_one({ 'name': file_name.split('.')[0] })
+    if not cursor:
+        print('Could not find ' + file_name.split('.')[0] + ' in database\n')
+        return
     image_path = cursor.get('link')
     pattern = re.compile(r"/images/[a-z]+cards/[A-Za-z0-9]+\.[a-z]+", re.IGNORECASE)
     match = pattern.match(image_path)
@@ -44,28 +47,27 @@ def update_doc_in_database(database, file_name, card_type):
             collection.update_one({ 'name': file_name.split('.')[0], 'item': 'tradecard' }, { '$set': { 'link': file_url } })
             print('Updated ' + file_name + ' in database to be ' + file_url)
     
-def pull_image(service, files, local_folder_path):
+def pull_image(service, file, local_folder_path):
     # connect to db
     database = connect_to_database()
-    for file in files:
-        if file.get('mimeType') == 'image/jpeg' or file.get('mimeType') == 'image/png':
-            file_name = os.path.join(local_folder_path, file.get('name'))
-            if os.path.exists(file_name):
-                print('Local copy of ' + file.get('name') + ' exists')
-            else:
-                request = service.files().get_media(fileId=file.get('id'))
-                fh = io.FileIO(file_name, 'wb')
-                downloader = MediaIoBaseDownload(fh, request)
-                done = False
-                while not done:
-                    status, done = downloader.next_chunk()
-                    print(f"Downloaded {int(status.progress() * 100)}% of {file.get('name')}")
-                fh.close()
-
-            # update in database here
-            update_doc_in_database(database, file.get('name'), 'postcards' if 'postcards' in local_folder_path else 'tradecards')
+    if file.get('mimeType') == 'image/jpeg' or file.get('mimeType') == 'image/png':
+        file_name = os.path.join(local_folder_path, file.get('name'))
+        if os.path.exists(file_name):
+            print('Local copy of ' + file.get('name') + ' exists')
         else:
-            print('File ' + file.get('name') + ' is not an image\n')
+            request = service.files().get_media(fileId=file.get('id'))
+            fh = io.FileIO(file_name, 'wb')
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+                print(f"Downloaded {int(status.progress() * 100)}% of {file.get('name')}")
+            fh.close()
+
+        # update in database here
+        update_doc_in_database(database, file.get('name'), 'postcards' if 'postcards' in local_folder_path else 'tradecards')
+    else:
+        print('File ' + file.get('name') + ' is not an image\n')
 
 # authenticate using the service account credentials
 def authenticate_google_drive_api():
@@ -73,12 +75,24 @@ def authenticate_google_drive_api():
     drive_service = build('drive', 'v3', credentials=creds)
     return drive_service
 
-def iterate_files_in_folder(service, folder_id):
-    results = service.files().list(
-        q=f"'{folder_id}' in parents",
-        pageSize=100, fields="nextPageToken, files(id, name, mimeType)"
-    ).execute()
-    return results.get("files", [])
+def get_files_in_folder(service, folder_id):
+    files = []
+    page_token = None
+    while True:
+        response = service.files().list(
+            q=f"'{folder_id}' in parents",
+            pageSize=500,   # keep it larger than the maximum number of files in any folder, otherwise goes into an infinte loop
+            fields="files(id, name, mimeType), nextPageToken"
+        ).execute()
+        for file in response.get('files', []):
+            if file['mimeType'] == 'application/vnd.google-apps.folder':
+                files.extend(get_files_in_folder(service, file['id']))
+            else:
+                files.append(file)
+        page_token = response.get('nextPageToken')
+        if not page_token:
+            break
+    return files
 
 def main():
     # get environment variables
@@ -96,22 +110,20 @@ def main():
     service = authenticate_google_drive_api()
 
     # get postcards
-    postcards_sub_folders = iterate_files_in_folder(service, postcards_folder_id)
+    postcard_files = get_files_in_folder(service, postcards_folder_id)
     # get tradecards
-    tradecards_sub_folders = iterate_files_in_folder(service, tradecards_folder_id)
+    tradecard_files = get_files_in_folder(service, tradecards_folder_id)
     
     # add a custom field to track card type
-    postcards_sub_folders = [dict(item, type='postcard') for item in postcards_sub_folders]
-    tradecards_sub_folders = [dict(item, type='tradecard') for item in tradecards_sub_folders]
+    postcard_files = [dict(item, type='postcard') for item in postcard_files]
+    tradecard_files = [dict(item, type='tradecard') for item in tradecard_files]
 
     # combine lists
-    combined_subfolders = postcards_sub_folders + tradecards_sub_folders
+    combined_files = postcard_files + tradecard_files
 
-    for subfolder in combined_subfolders:
-        # get cards in each subfolder
-        cards = iterate_files_in_folder(service, subfolder["id"])
+    for file in combined_files:
         # download images and store locally
-        pull_image(service, cards, local_postcards_folder if subfolder.get('type') == "postcard" else local_tradecards_folder)
+        pull_image(service, file, local_postcards_folder if file.get('type') == "postcard" else local_tradecards_folder)
 
 if __name__ == '__main__':
     main()
