@@ -36,7 +36,11 @@ const MAIN_NAV_LINKS: NavLinkType[] = [
         path: "/about"
     }
 ]
+
+const MAX_ZOOM_FOR_MAP: number = 8;
+
 export {
     API_URL,
     MAIN_NAV_LINKS,
+    MAX_ZOOM_FOR_MAP
 }

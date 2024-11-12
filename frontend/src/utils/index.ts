@@ -1,10 +1,11 @@
 import { CAROUSEL_IMAGE_URLS, DUMMY_TAGS, DUMMY_COORDINATES } from "./dummy";
-import { API_URL, MAIN_NAV_LINKS } from "./constants";
+import { API_URL, MAIN_NAV_LINKS, MAX_ZOOM_FOR_MAP } from "./constants";
 
 export {
     API_URL,
     CAROUSEL_IMAGE_URLS,
     MAIN_NAV_LINKS,
     DUMMY_TAGS,
-    DUMMY_COORDINATES
+    DUMMY_COORDINATES,
+    MAX_ZOOM_FOR_MAP
 }
