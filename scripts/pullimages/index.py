@@ -36,6 +36,13 @@ def update_doc_in_database(database, file_name, card_type):
             print('Updated ' + file_name + ' in database\n')
         except:
             print('Error updating document in database')
+        
+        tradecard_pattern = re.compile(r"/images/tradecard/[A-Za-z0-9]+\.jpg", re.IGNORECASE)
+        tradecard_match = pattern.match(image_path)
+
+        if tradecard_match != None:
+            collection.update_one({ 'name': file_name.split('.')[0], 'item': 'tradecard' }, { '$set': { 'link': file_url } })
+            print('Updated ' + file_name + ' in database to be ' + file_url)
     
 def pull_image(service, files, local_folder_path):
     # connect to db
@@ -56,7 +63,7 @@ def pull_image(service, files, local_folder_path):
                 fh.close()
 
             # update in database here
-            update_doc_in_database(database, file.get('name'), 'postcards' if 'postcards' in local_folder_path else 'tradecard')
+            update_doc_in_database(database, file.get('name'), 'postcards' if 'postcards' in local_folder_path else 'tradecards')
         else:
             print('File ' + file.get('name') + ' is not an image\n')
 
