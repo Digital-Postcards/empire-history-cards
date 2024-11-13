@@ -71,7 +71,7 @@ interface CardViewerToolbarProps extends CardImageInViewerProps {
 }
 
 interface FilterItemProps {
-    withVerticalMargin?: boolean
+    withVerticalMargin?: boolean;
 }
 
 export type {

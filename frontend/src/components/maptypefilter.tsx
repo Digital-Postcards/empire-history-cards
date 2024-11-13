@@ -1,14 +1,22 @@
 import { FilterItemProps, OptionType } from "types";
 import FilterBox from "./filterbox";
-import Select from "react-select";
+import Select, { ActionMeta } from "react-select";
+import Option from "types/tagFilterOption.types";
+import { Dispatch, SetStateAction } from "react";
 
-const MapTypeFilter = (props: FilterItemProps) => {
+const MapTypeFilter = (props: { filterOptions?: FilterItemProps, setMapType: Dispatch<SetStateAction<string | undefined>> }) => {
     const options: OptionType[] = [
-        { label: "Modern", value: "Modern" },
         { label: "Historic", value: "Historic" },
-    ]
+        { label: "Modern", value: "Modern" }
+    ];
+
+    const onChange = (option: Option | null, actionMeta: ActionMeta<Option>) => {
+        if (props?.setMapType)
+            props?.setMapType(option?.value.toLowerCase())
+    }
+
     return (
-        <FilterBox label="Map type" classes={props?.withVerticalMargin ? "my-2" : ""}>
+        <FilterBox label="Map type" classes={props?.filterOptions?.withVerticalMargin ? "my-2" : ""}>
             <Select
                 defaultValue={options[0]}
                 name="maps"
@@ -24,6 +32,7 @@ const MapTypeFilter = (props: FilterItemProps) => {
                         primary: 'black',
                     },
                 })}
+                onChange={onChange}
             />
         </FilterBox>
     )

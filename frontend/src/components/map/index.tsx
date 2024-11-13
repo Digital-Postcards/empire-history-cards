@@ -1,13 +1,17 @@
 
-import React, { useState, useEffect } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, ImageOverlay } from "react-leaflet";
+import { useState, useEffect } from 'react';
+import { MapContainer, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L, { LeafletMouseEventHandlerFn } from "leaflet";
 import { useApi } from "hooks";
-import { Loader } from "components/common";
+import { FilterSection, Loader } from "components/common";
 import logo from "./location.png";
 import { MAX_ZOOM_FOR_MAP } from "utils";
 import 'leaflet/dist/leaflet.css';
+import ModernMap from './modernmap';
+import HistoricMap from './historicmap';
+import TagFilter from 'components/tagfilter';
+import MapTypeFilter from 'components/maptypefilter';
 
 const customIcon = new L.Icon({
     iconUrl: logo,
@@ -15,7 +19,9 @@ const customIcon = new L.Icon({
 })
 
 const LeafletMap = () => {
-    const [showHistoricMap, setShowHistoricMap] = useState(false);
+    const [mapType, setMapType] = useState<string | undefined>("historic");
+    const [filterTags, setFilterTags] = useState<string[]>([]);
+    const mapConfig = { historic: { defaultZoom: 3, minZoom: 3, maxZoom: 5 }, modern: { defaultZoom: 5, minZoom: 3, maxZoom: 8 } };
 
     const {
         data,
@@ -26,6 +32,7 @@ const LeafletMap = () => {
 
     const getData = async () => {
         await fetchData();
+        // data.filter where data.themes is in filterTags
     }
 
     useEffect(() => {
@@ -34,7 +41,7 @@ const LeafletMap = () => {
 
     if (isLoading)
         return <Loader isFullSize={true} />
-    
+
     if (!data)
         return <p>Failed to fetch map data</p>;
 
@@ -55,7 +62,7 @@ const LeafletMap = () => {
 
     const handleClusterClick: LeafletMouseEventHandlerFn = (event: any) => {
         let zoom = event.target._zoom;
-        if (zoom !== MAX_ZOOM_FOR_MAP) return;
+        if (zoom !== (mapType === "historic" ? mapConfig.historic.maxZoom : mapConfig.modern.maxZoom)) return;
         const childMarkers = event.layer.getAllChildMarkers();
         const childMarkerLatLongs: any = [];
         childMarkers.map((childMarker: any) => {
@@ -80,36 +87,27 @@ const LeafletMap = () => {
         cluster.bindPopup(buildClusterPopup(childrenData));
     }
 
-    const handleToggle = () => {
-        setShowHistoricMap(!showHistoricMap);
-    };
-
     return (
         <div>
-            <button onClick={handleToggle}>
-                {showHistoricMap ? 'Switch to Modern Map' : 'Switch to Historic Map'}
-            </button>
+            <div className="fixed right-0 w-1/5 z-10">
+                <FilterSection>
+                    <MapTypeFilter setMapType={setMapType} />
+                    <TagFilter filterOptions={{ withVerticalMargin: true }} setFilterTags={setFilterTags} />
+                </FilterSection>
+            </div>
             <MapContainer
-                className="overflow-hidden col-span-8"
-                center={[45.4, -75.7]}
-                zoom={3}
-                minZoom={1}
-                maxZoom={MAX_ZOOM_FOR_MAP}
+                className="overflow-hidden col-span-8 z-0"
+                center={[0, 0]}
+                zoom={mapType === "historic" ? mapConfig.historic.defaultZoom : mapConfig.modern.defaultZoom}
+                minZoom={mapType === "historic" ? mapConfig.historic.minZoom : mapConfig.modern.minZoom}
+                maxZoom={mapType === "historic" ? mapConfig.historic.maxZoom : mapConfig.modern.maxZoom}
                 scrollWheelZoom={true}
-                crs={showHistoricMap ? L.CRS.EPSG3857 : L.CRS.EPSG3857}
+                crs={mapType === "historic" ? L.CRS.EPSG3857 : L.CRS.EPSG3857}
             >
-                {showHistoricMap ? (
-                    <ImageOverlay
-                        url={process.env.PUBLIC_URL + '/images/historicMap/historic-map.jpg'}
-                        bounds={[[-70.912, -184.227], [82.774, 184.125]]} 
-
-
-                    />
+                {mapType === "historic" ? (
+                    <HistoricMap />
                 ) : (
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    />
+                    <ModernMap />
                 )}
                 <MarkerClusterGroup
                     chunkedLoading
@@ -123,7 +121,7 @@ const LeafletMap = () => {
                                 <Popup>
                                     {item.number}
                                 </Popup>
-                            </Marker> 
+                            </Marker>
                         })
                     }
                 </MarkerClusterGroup>
