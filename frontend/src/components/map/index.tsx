@@ -1,11 +1,13 @@
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+
+import React, { useState, useEffect } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, ImageOverlay } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L, { LeafletMouseEventHandlerFn } from "leaflet";
 import { useApi } from "hooks";
-import { useEffect } from "react";
 import { Loader } from "components/common";
 import logo from "./location.png";
 import { MAX_ZOOM_FOR_MAP } from "utils";
+import 'leaflet/dist/leaflet.css';
 
 const customIcon = new L.Icon({
     iconUrl: logo,
@@ -13,6 +15,8 @@ const customIcon = new L.Icon({
 })
 
 const LeafletMap = () => {
+    const [showHistoricMap, setShowHistoricMap] = useState(false);
+
     const {
         data,
         error,
@@ -76,36 +80,55 @@ const LeafletMap = () => {
         cluster.bindPopup(buildClusterPopup(childrenData));
     }
 
+    const handleToggle = () => {
+        setShowHistoricMap(!showHistoricMap);
+    };
+
     return (
-        <MapContainer
-            className="overflow-hidden col-span-8"
-            center={[45.4, -75.7]}
-            zoom={8}
-            minZoom={4}
-            maxZoom={MAX_ZOOM_FOR_MAP}
-            scrollWheelZoom={true}
-        >
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <MarkerClusterGroup
-                chunkedLoading
-                spiderfyOnMaxZoom={false}
-                showCoverageOnHover={true}
-                onClick={handleClusterClick}
+        <div>
+            <button onClick={handleToggle}>
+                {showHistoricMap ? 'Switch to Modern Map' : 'Switch to Historic Map'}
+            </button>
+            <MapContainer
+                className="overflow-hidden col-span-8"
+                center={[45.4, -75.7]}
+                zoom={3}
+                minZoom={1}
+                maxZoom={MAX_ZOOM_FOR_MAP}
+                scrollWheelZoom={true}
+                crs={showHistoricMap ? L.CRS.EPSG3857 : L.CRS.EPSG3857}
             >
-                {
-                    (data as any).map((item: any) => {
-                        return <Marker key={item._id} position={[item?.originalLocation.latitude, item?.originalLocation.longitude]} icon={customIcon}>
-                            <Popup>
-                                {item.number}
-                            </Popup>
-                        </Marker> 
-                    })
-                }
-            </MarkerClusterGroup>
-        </MapContainer>
+                {showHistoricMap ? (
+                    <ImageOverlay
+                        url={process.env.PUBLIC_URL + '/images/historicMap/historic-map.jpg'}
+                        bounds={[[-70.912, -184.227], [82.774, 184.125]]} 
+
+
+                    />
+                ) : (
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                )}
+                <MarkerClusterGroup
+                    chunkedLoading
+                    spiderfyOnMaxZoom={false}
+                    showCoverageOnHover={true}
+                    onClick={handleClusterClick}
+                >
+                    {
+                        (data as any).map((item: any) => {
+                            return <Marker key={item._id} position={[item?.originalLocation.latitude, item?.originalLocation.longitude]} icon={customIcon}>
+                                <Popup>
+                                    {item.number}
+                                </Popup>
+                            </Marker> 
+                        })
+                    }
+                </MarkerClusterGroup>
+            </MapContainer>
+        </div>
     )
 }
 
