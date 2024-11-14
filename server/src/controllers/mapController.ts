@@ -14,7 +14,7 @@ export class MapController {
                 {
                     ...req.query, 
                     originalLocation: { $type: 3 },
-                    isPopulate: false,
+                    isPopulate: true,
                     limit: null,
                     page: null
                 },
@@ -24,6 +24,7 @@ export class MapController {
                     originalLocation: 1,
                     postLocation: 1,
                     destinationLocation: 1,
+                    themes: 1
                 }
             );
             res.status(200).json(cards);

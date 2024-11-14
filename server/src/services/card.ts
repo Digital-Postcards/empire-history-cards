@@ -46,7 +46,9 @@ export default class CardService {
             return filteredCards;
         }
 
-        return cards;
+        return cards.map((card: any) => {
+            return {...card._doc, themes: card._doc.themes.map((item: any) => { return item.name })}
+        });
     }
 
     public async getCardById(id: string) {
