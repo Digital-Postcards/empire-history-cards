@@ -6,7 +6,6 @@ import L, { LeafletMouseEventHandlerFn } from "leaflet";
 import { useApi } from "hooks";
 import { FilterSection, Loader } from "components/common";
 import logo from "./location.png";
-import { MAX_ZOOM_FOR_MAP } from "utils";
 import 'leaflet/dist/leaflet.css';
 import ModernMap from './modernmap';
 import HistoricMap from './historicmap';
@@ -21,28 +20,42 @@ const customIcon = new L.Icon({
 const LeafletMap = () => {
     const [mapType, setMapType] = useState<string | undefined>("historic");
     const [filterTags, setFilterTags] = useState<string[]>([]);
-    const mapConfig = { historic: { defaultZoom: 3, minZoom: 3, maxZoom: 5 }, modern: { defaultZoom: 5, minZoom: 3, maxZoom: 8 } };
+    const mapConfig = { historic: { defaultZoom: 3, minZoom: 3, maxZoom: 5 }, modern: { defaultZoom: 4, minZoom: 3, maxZoom: 8 } };
+    const [mapData, setMapData] = useState([]);
 
     const {
-        data,
         error,
         isLoading,
         fetchData
     } = useApi("/map/allcardswithlocation", { method: "GET" });
 
+    const filterCards = async () => {
+        if (filterTags.length > 0) {
+            const filteredMapData = mapData.filter((data: any) => {
+                return (data.themes.filter((x: any) => {return filterTags.includes(x)})).length > 0
+            });
+            setMapData(filteredMapData)
+        } else {
+            await getData()
+        }
+    }
+
+    useEffect(() => {
+        filterCards();
+    }, [filterTags]);
+
     const getData = async () => {
-        await fetchData();
-        // data.filter where data.themes is in filterTags
+        setMapData(await fetchData());
     }
 
     useEffect(() => {
         getData()
-    }, []);
+    }, [mapType]);
 
     if (isLoading)
         return <Loader isFullSize={true} />
 
-    if (!data)
+    if (!mapData)
         return <p>Failed to fetch map data</p>;
 
     if (error)
@@ -73,7 +86,7 @@ const LeafletMap = () => {
         });
         let childrenData: any = [];
         childMarkerLatLongs.forEach((child: any) => {
-            (data as any).map((item: any) => {
+            (mapData as any).map((item: any) => {
                 if (
                     !childrenData.some((c: any) => c._id === item._id)
                     && child.latitude === item.originalLocation.latitude
@@ -116,7 +129,7 @@ const LeafletMap = () => {
                     onClick={handleClusterClick}
                 >
                     {
-                        (data as any).map((item: any) => {
+                        (mapData as any).map((item: any) => {
                             return <Marker key={item._id} position={[item?.originalLocation.latitude, item?.originalLocation.longitude]} icon={customIcon}>
                                 <Popup>
                                     {item.number}
