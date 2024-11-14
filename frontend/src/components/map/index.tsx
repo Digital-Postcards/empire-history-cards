@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import L, { LeafletMouseEventHandlerFn } from "leaflet";
+import L, { LeafletMouseEventHandlerFn, popup } from "leaflet";
 import { useApi } from "hooks";
 import { FilterSection, Loader } from "components/common";
 import logo from "./location.png";
@@ -11,6 +11,7 @@ import ModernMap from './modernmap';
 import HistoricMap from './historicmap';
 import TagFilter from 'components/tagfilter';
 import MapTypeFilter from 'components/maptypefilter';
+import { Button } from 'shadcn/components/ui/button';
 
 const customIcon = new L.Icon({
     iconUrl: logo,
@@ -32,7 +33,7 @@ const LeafletMap = () => {
     const filterCards = async () => {
         if (filterTags.length > 0) {
             const filteredMapData = mapData.filter((data: any) => {
-                return (data.themes.filter((x: any) => {return filterTags.includes(x)})).length > 0
+                return (data.themes.filter((x: any) => { return filterTags.includes(x) })).length > 0
             });
             setMapData(filteredMapData)
         } else {
@@ -61,14 +62,40 @@ const LeafletMap = () => {
     if (error)
         return <p>Server error</p>
 
+    const getNumberOfCols = (numberOfImages: number) => {
+        if (numberOfImages <= 5)    return 2;
+        else if (numberOfImages > 5 && numberOfImages <= 15)  return 4;
+        else return 5;
+    }
+
+    const getWidthOfPopup = (numberOfImages: number) => {
+        if (numberOfImages <= 5)    return 36;
+        else if (numberOfImages <= 15)  return 64;
+        else return 72;
+    }
+
     const buildClusterPopup = (data: any) => {
+        const numberOfImages: number = data.length;
         let popupDiv = document.createElement('div');
-        let ulDiv = document.createElement('ul');
-        popupDiv.appendChild(ulDiv);
+        popupDiv.classList.add("grid");
+        popupDiv.classList.add("grid-cols-" + getNumberOfCols(numberOfImages));
+        popupDiv.classList.add("gap-2");
+        popupDiv.classList.add("w-" + getWidthOfPopup(numberOfImages));
         data.forEach((element: any) => {
-            let liEl = document.createElement('li');
-            liEl.innerHTML = element.number;
-            ulDiv.appendChild(liEl);
+            let imageDiv = document.createElement('div');
+            let image = document.createElement('img') as HTMLImageElement;
+            image.width = 50;
+            image.height = 100;
+            image.src = process.env.REACT_APP_SERVER_URL + "/static" + element.imageLinks[0].link;
+            let imageLink = document.createElement('a');
+            imageLink.href = "/cards/" + element.item + "s/" + element._id;
+            imageLink.innerHTML = "View " + element.item + " #" + element.number;
+            imageLink.classList.add("!text-neutral-800");
+            imageLink.classList.add("hover:underline");
+            imageLink.classList.add("underline-offset-4");
+            imageDiv.appendChild(image);
+            imageDiv.appendChild(imageLink);
+            popupDiv.appendChild(imageDiv);
         });
         return popupDiv;
     }
@@ -131,8 +158,16 @@ const LeafletMap = () => {
                     {
                         (mapData as any).map((item: any) => {
                             return <Marker key={item._id} position={[item?.originalLocation.latitude, item?.originalLocation.longitude]} icon={customIcon}>
-                                <Popup>
-                                    {item.number}
+                                <Popup
+                                    keepInView
+                                    autoClose
+                                >
+                                    <img src={process.env.REACT_APP_SERVER_URL + "/static" + item.imageLinks[0].link} />
+                                    <a href={"/cards/postcards/" + item._id}>
+                                        <Button variant={"link"}>
+                                            View {item.item === "postcard" ? "postcard" : "tradecard"} #{item.number}
+                                        </Button>
+                                    </a>
                                 </Popup>
                             </Marker>
                         })
