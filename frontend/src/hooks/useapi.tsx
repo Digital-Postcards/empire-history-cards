@@ -13,6 +13,7 @@ const useApi = (url: string, options?: AxiosRequestConfig) => {
         try {
             const response: AxiosResponse = await instance(url, options);
             setData(response.data);
+            return response.data;
         } catch (error: any) {
             setError(error);
         } finally {
