@@ -1,21 +1,61 @@
 import { HeaderCollage } from "components/single"
 import { StickyNavTabs } from "components/common"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import { SingleLayoutProps } from "types"
 import { useEffect, useState } from "react"
-import DialogDemo from "components/common/triggerwarning"
+import { TriggerWarning } from "components/common";
 
 const BaseSingleLayout = (props: SingleLayoutProps) => {
 
-    const [isOpen, setIsOpen] = useState(true)
-    useEffect(() => {
+    const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+
+    const storeUserPrefInLocalStorage = (checkedState: boolean) => {
+        if (checkedState) {
+            const now = new Date();
+            const item = {
+              value: "true",
+              expiry: now.getTime() + 30 * 24 * 60 * 60 * 1000, // 30 days
+            }
+            localStorage.setItem("disablealertfor30days", JSON.stringify(item));
+        } else {
+            localStorage.removeItem("disablealertfor30days");
+        }
+    }
+
+    const checkNoTriggerWarningRoutes = () => {
+        if (
+            location.pathname.startsWith("/history")
+            || location.pathname.startsWith("/ethics-of-representation")
+            || location.pathname.startsWith("/scrapbook")
+            || location.pathname.startsWith("/about")
+        ) {
+            // double check that the alert is closed
+            if (isOpen) setIsOpen(false);
+            return true;
+        }
+        return false;
+    }
+
+    const retrieveUserPrefFromLocalStorage = () => {
         // check if the user has opted out of the alert
-        // check if the paths are /ethics-of-representation, /history, /scrapbook, /about and don't display the alert
-    }, []);
+        let item = localStorage.getItem("disablealertfor30days");
+        if (!item)  return false;
+        let itemObj = JSON.parse(item);
+        const now = new Date();
+        if (now.getTime() <= itemObj.expiry) return true;
+        else    return false;
+    }
+
+    useEffect(() => {
+        if (checkNoTriggerWarningRoutes()) return;
+        if (retrieveUserPrefFromLocalStorage()) return;
+        else    setIsOpen(true);
+    }, [location.pathname]);
 
     return (
         <div>
-            <DialogDemo isOpen={isOpen} setIsOpen={setIsOpen}/>
+            <TriggerWarning isOpen={isOpen} setIsOpen={setIsOpen} onCheckedChange={storeUserPrefInLocalStorage} />
             {
                 props?.withCardsHeader &&
                 <>
