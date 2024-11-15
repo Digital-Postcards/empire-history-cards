@@ -2,10 +2,20 @@ import { HeaderCollage } from "components/single"
 import { StickyNavTabs } from "components/common"
 import { Outlet } from "react-router-dom"
 import { SingleLayoutProps } from "types"
+import { useEffect, useState } from "react"
+import DialogDemo from "components/common/triggerwarning"
 
 const BaseSingleLayout = (props: SingleLayoutProps) => {
+
+    const [isOpen, setIsOpen] = useState(true)
+    useEffect(() => {
+        // check if the user has opted out of the alert
+        // check if the paths are /ethics-of-representation, /history, /scrapbook, /about and don't display the alert
+    }, []);
+
     return (
         <div>
+            <DialogDemo isOpen={isOpen} setIsOpen={setIsOpen}/>
             {
                 props?.withCardsHeader &&
                 <>
