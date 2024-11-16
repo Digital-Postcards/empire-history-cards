@@ -166,12 +166,7 @@ components:
         themes:
           type: array
           items:
-            type: object
-            properties:
-              name:
-                type: string
-              numberOfCards:
-                type: number
+            type: string
         imageLinks:
           type: array
           items:
@@ -226,6 +221,10 @@ components:
       type: object
       properties:
         _id: {}
+        item:
+          type: string
+        number:
+          type: number
         destinationLocation:
           type: object
           properties:
@@ -250,9 +249,16 @@ components:
           required:
             - latitude
             - longitude
+        themes:
+          type: array
+          items:
+            type: string
       required:
         - _id
         - originalLocation
+        - themes
+        - item
+        - number
     ScrapbookCard:
       type: object
       properties:
@@ -263,7 +269,7 @@ components:
           type: array
           items:
             type: string
-        images:
+        image:
           type: string
       required:
         - _id
