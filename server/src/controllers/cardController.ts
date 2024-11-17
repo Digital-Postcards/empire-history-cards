@@ -29,6 +29,17 @@ export class CardController {
         }
     }
 
+    async getCardsByTag(req: Request, res: Response) {
+        try {
+            const { tagId, tagName } = req.query; // Accept both tagId and tagName
+            const cards = await this.cardService.getCardsByFilter({ tagId, tagName });
+            res.status(200).json(cards);
+        } catch (error) {
+            res.status(400).json({ message: (error as Error).message });
+        }
+    }
+    
+
     async getCardsForScrapbook(req: Request, res: Response, next: NextFunction) {
         try {
             const cards = await this.cardService.getCardsByFilter({ isInScrapbook: true }, {
@@ -42,6 +53,8 @@ export class CardController {
             res.status(400).json({ message: (error as Error).message });
         }
     }
+
+    
 }
 
 export default CardController;
