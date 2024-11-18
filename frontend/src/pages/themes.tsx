@@ -1,3 +1,4 @@
+import { ContentContainer } from "components/common";
 import { useApi } from "hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
@@ -56,8 +57,7 @@ const Themes = () => {
   };
 
   return (
-    <div>
-      <div style={{ height: "500px" }}>
+    <div className="h-[100vh] w-[100vw]">
         {nodes.length > 0 ? (
           <Graph
             graph={graphData}
@@ -66,7 +66,8 @@ const Themes = () => {
               select: ({ nodes }) => {
                 if (nodes.length > 0) {
                   const tagId = nodes[0];
-                  navigate(`/cards?tagId=${tagId}`);
+                  // needs discussion/thought since we do not have a generic /cards route
+                  // navigate(`/cards?withTags=${tagId}`);
                 }
               },
             }}
@@ -74,7 +75,6 @@ const Themes = () => {
         ) : (
           <p>Loading tags...</p>
         )}
-      </div>
     </div>
   );
 };
