@@ -13,7 +13,7 @@ const TextSection = (props: { title: string, children: ReactNode | ReactNode[] }
 
 const TextSectionParagraph = (props: { children: string }) => {
     return (
-        <p className="mt-2 text-neutral-600">{props?.children}</p>
+        <p className="mt-2 text-neutral-600 text-lg">{props?.children}</p>
     )
 }
 

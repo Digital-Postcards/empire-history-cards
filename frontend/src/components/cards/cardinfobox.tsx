@@ -7,7 +7,7 @@ const TagsInInfoBox = (props: {tags: string[]}) => {
             {props?.tags.map((tag: any, index: number) => {
                 return (
                     <>
-                        <p>{tag.name}</p>
+                        <p>{tag}</p>
                         { index !== props?.tags.length - 1 && <span>{"🞄"}</span> }
                     </>
                 )
