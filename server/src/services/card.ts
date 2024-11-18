@@ -1,5 +1,4 @@
 import CardModel from '../models/card';
-import TagModel from '../models/tag';
 
 export default class CardService {
   public async getCardsByFilter(query: any, projection?: any) {
@@ -7,8 +6,6 @@ export default class CardService {
       type,
       year,
       withTags,
-      tagId,
-      tagName,
       isInScrapbook,
       originalLocation,
       page = 1,
@@ -21,12 +18,6 @@ export default class CardService {
     if (year) _query.date = { $regex: year };
     if (isInScrapbook) _query.isInScrapbook = isInScrapbook;
     if (originalLocation) _query.originalLocation = originalLocation;
-
-    if (tagId) _query.themes = tagId; // Filter directly by tag ID
-    if (tagName) {
-      const tag = await TagModel.findOne({ name: tagName });
-      if (tag) _query.themes = tag._id; // Find and use the tag ID
-    }
 
     let cards;
     if (!isPopulate) {

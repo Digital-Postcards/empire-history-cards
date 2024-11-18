@@ -6,7 +6,6 @@ const cardController = new CardController();
 
 cardRouter.get("/", cardController.getPaginatedCards);
 cardRouter.get("/scrapbook", cardController.getCardsForScrapbook);
-cardRouter.get("/tag", cardController.getCardsByTag);
 cardRouter.get("/:id", cardController.getCardByID);
 
 export default cardRouter;
