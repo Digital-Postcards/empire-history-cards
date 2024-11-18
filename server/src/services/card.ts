@@ -68,6 +68,14 @@ export default class CardService {
   }
 
   public async getCardById(id: string) {
-    return await CardModel.findById(id).populate('themes imageLinks');
+    const card: any = await CardModel.findById(id).populate('themes imageLinks');
+    if (card)
+      return {
+        ...card._doc,
+        themes: card._doc.themes.map((item: any) => {
+          return item.name;
+        }),
+      };
+    else return null;
   }
 }
