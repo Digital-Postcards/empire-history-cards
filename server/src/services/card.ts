@@ -40,7 +40,7 @@ export default class CardService {
           themes: card.themes.map((theme: any) => {
             return theme.name;
           }),
-          image: '/static' + card.imageLinks[0].link,
+          image: '/public' + card.imageLinks[0].link,
         });
       });
       return cardsForScrapBook;
