@@ -74,6 +74,7 @@ const Scrapbook = () => {
                                     return (
                                         <ScrapBookPage
                                             _id={flipbook_page._id}
+                                            item={flipbook_page.item}
                                             pageNumber={index + 1}
                                             image={flipbook_page.image}
                                             description={flipbook_page.description}

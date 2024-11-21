@@ -37,6 +37,7 @@ type ScrapBookImage = {
 
 interface FlipBookPageDataType {
     _id: string;
+    item: "postcard" | "tradecard";
     pageNumber?: number;
     image: ScrapBookImage;
     description: string;
