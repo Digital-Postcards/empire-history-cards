@@ -263,6 +263,8 @@ components:
       type: object
       properties:
         _id: {}
+        item:
+          type: string
         description:
           type: string
         themes:
@@ -273,6 +275,7 @@ components:
           type: string
       required:
         - _id
+        - item
         - description
         - themes
         - image

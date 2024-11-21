@@ -33,6 +33,7 @@ export class CardController {
         try {
             const cards = await this.cardService.getCardsByFilter({ isInScrapbook: true }, {
                 _id: true,
+                item: true,
                 description: true,
                 imageLinks: true,
                 themes: true

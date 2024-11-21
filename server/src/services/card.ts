@@ -36,7 +36,8 @@ export default class CardService {
       cards.forEach((card: any) => {
         cardsForScrapBook.push({
           _id: card._id,
-          description: card.description.slice(0, 300) + '...',
+          item: card.item,
+          description: card.description.slice(0, 300).trim() + '...',
           themes: card.themes.map((theme: any) => {
             return theme.name;
           }),
