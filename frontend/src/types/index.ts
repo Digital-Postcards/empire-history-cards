@@ -8,7 +8,8 @@ import {
     CardViewerToolbarProps,
     FilterItemProps,
     CardInfoBoxProps,
-    CardViewerProps
+    CardViewerProps,
+    ErrorProps
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 import SingleCard from "./singlecard.types";
@@ -25,5 +26,6 @@ export type {
     FilterItemProps,
     CardInfoBoxProps,
     SingleCard,
-    CardViewerProps
+    CardViewerProps,
+    ErrorProps
 }

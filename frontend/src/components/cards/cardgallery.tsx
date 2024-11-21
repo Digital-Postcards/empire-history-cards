@@ -1,4 +1,5 @@
 import { Loader } from "components/common";
+import { Error } from "components/error";
 import { useApi } from "hooks";
 import { useEffect, useState } from "react";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
@@ -20,15 +21,15 @@ const MasonryList = (props: { filterTags: string[], type: string } ) => {
         getData();
     }, [props?.filterTags])
 
-    if (cardData === null) {
-        return <p>Error displaying cards</p>
-    }
-
     if (isLoading)
         return <Loader isFullSize={true} />
     
+    if (cardData === null) {
+        return <Error errorType="data-not-found" />
+    }
+    
     if (error)
-        return <p>Error fetching card data</p>
+        return <Error errorType="server-error" />
 
     return (
         <ResponsiveMasonry

@@ -8,6 +8,7 @@ import { Button } from "shadcn/components/ui/button";
 import { ScrapbookEmpty, ScrapBookInfo, ScrapBookPage } from "components/scrapbook";
 
 import { useApi } from "hooks";
+import { Error } from "components/error";
 
 const Scrapbook = () => {
 
@@ -42,11 +43,23 @@ const Scrapbook = () => {
 
     if (isLoading)
         return <Loader isFullSize={true}/>
+
+    if (!data) {
+        return (
+            <ContentContainer>
+                <Error
+                    errorType="data-not-found"
+                />
+            </ContentContainer>
+        )
+    }
     
     if (error) {
         return (
             <ContentContainer>
-                Some error happenend
+                <Error
+                    errorType="server-error"
+                />
             </ContentContainer>
         )
     }

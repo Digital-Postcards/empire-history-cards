@@ -4,7 +4,7 @@ import { MapContainer, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L, { LeafletMouseEventHandlerFn, popup } from "leaflet";
 import { useApi } from "hooks";
-import { FilterSection, Loader } from "components/common";
+import { ContentContainer, FilterSection, Loader } from "components/common";
 import logo from "./location.png";
 import 'leaflet/dist/leaflet.css';
 import ModernMap from './modernmap';
@@ -12,6 +12,7 @@ import HistoricMap from './historicmap';
 import TagFilter from 'components/tagfilter';
 import MapTypeFilter from 'components/maptypefilter';
 import { Button } from 'shadcn/components/ui/button';
+import { Error } from 'components/error';
 
 const customIcon = new L.Icon({
     iconUrl: logo,
@@ -57,10 +58,18 @@ const LeafletMap = () => {
         return <Loader isFullSize={true} />
 
     if (!mapData)
-        return <p>Failed to fetch map data</p>;
+        return (
+            <ContentContainer>
+                <Error errorType="data-not-found" />
+            </ContentContainer>
+        )
 
     if (error)
-        return <p>Server error</p>
+        return (
+            <ContentContainer>
+                <Error errorType="server-error" />
+            </ContentContainer>
+        )
 
     const getNumberOfCols = (numberOfImages: number) => {
         if (numberOfImages <= 5)    return 2;

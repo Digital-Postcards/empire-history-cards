@@ -75,6 +75,11 @@ interface FilterItemProps {
     withVerticalMargin?: boolean;
 }
 
+interface ErrorProps {
+    errorType: "data-not-found" | "server-error";
+    errorText?: string
+}
+
 export type {
     SingleLayoutProps,
     MasonryListProps,
@@ -84,5 +89,6 @@ export type {
     CardViewerToolbarProps,
     FilterItemProps,
     CardInfoBoxProps,
-    CardViewerProps
+    CardViewerProps,
+    ErrorProps
 }
