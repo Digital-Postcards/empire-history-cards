@@ -25,7 +25,7 @@ const CardImageInViewer = (props: CardImageInViewerProps) => {
         <img
             height={550}
             width={imageWidth}
-            src={process.env.REACT_APP_SERVER_URL + "/static" + props?.imageURL}
+            src={process.env.REACT_APP_SERVER_URL + "/public" + props?.imageURL}
             className={computedClasses}
         />
     )

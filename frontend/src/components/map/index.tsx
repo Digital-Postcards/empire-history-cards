@@ -86,7 +86,7 @@ const LeafletMap = () => {
             let image = document.createElement('img') as HTMLImageElement;
             image.width = 50;
             image.height = 100;
-            image.src = process.env.REACT_APP_SERVER_URL + "/static" + element.imageLinks[0].link;
+            image.src = process.env.REACT_APP_SERVER_URL + "/public" + element.imageLinks[0].link;
             let imageLink = document.createElement('a');
             imageLink.href = "/cards/" + element.item + "s/" + element._id;
             imageLink.innerHTML = "View " + element.item + " #" + element.number;
@@ -162,7 +162,7 @@ const LeafletMap = () => {
                                     keepInView
                                     autoClose
                                 >
-                                    <img src={process.env.REACT_APP_SERVER_URL + "/static" + item.imageLinks[0].link} />
+                                    <img src={process.env.REACT_APP_SERVER_URL + "/public" + item.imageLinks[0].link} />
                                     <a href={"/cards/postcards/" + item._id}>
                                         <Button variant={"link"}>
                                             View {item.item === "postcard" ? "postcard" : "tradecard"} #{item.number}

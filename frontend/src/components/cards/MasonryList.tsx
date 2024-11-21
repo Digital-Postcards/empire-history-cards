@@ -16,7 +16,7 @@ const MasonryList = (props: { data: SingleCard[]} ) => {
                             <img
                                 onClick={() => window.location.href = "/cards/" + item.item + "/" + item._id}
                                 className="rounded-lg"
-                                src={process.env.REACT_APP_SERVER_URL + "/static" + item.imageLinks[0].link}
+                                src={process.env.REACT_APP_SERVER_URL + "/public" + item.imageLinks[0].link}
                             />
                             <div className="absolute bottom-0 md:h-48 h-60 w-[100%] p-3 flex-col justify-end text-background rounded-b-lg bg-gradient-to-t from-black to-transparent md:group-hover:flex flex md:hidden">
                                 <p className="md:text-lg text-md font-bold">Postcard #{item.number}</p>

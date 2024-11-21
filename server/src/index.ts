@@ -29,8 +29,8 @@ const staticOptions: any = {
   maxAge: '1d',
 }
 // configure static directories to serve images
-app.use("/static/images/postcards", express.static(staticImageDirectory + "/postcards", staticOptions));
-app.use("/static/images/tradecards", express.static(staticImageDirectory + "/tradecards", staticOptions));
+app.use("/public/images/postcards", express.static(staticImageDirectory + "/postcards", staticOptions));
+app.use("/public/images/tradecards", express.static(staticImageDirectory + "/tradecards", staticOptions));
 
 // use these routes
 app.use("/api/themes", themeRouter);
