@@ -22,12 +22,12 @@ export default class CardService {
     let cards;
     if (!isPopulate) {
       cards = await CardModel.find(_query, projection)
-        .skip((+page - 1) * +limit)
-        .limit(+limit);
+        // .skip((+page - 1) * +limit)
+        // .limit(+limit);
     } else {
       cards = await CardModel.find(_query, projection)
-        .skip((+page - 1) * +limit)
-        .limit(+limit)
+        // .skip((+page - 1) * +limit)
+        // .limit(+limit)
         .populate('themes imageLinks');
     }
 
@@ -55,7 +55,14 @@ export default class CardService {
         });
         return themes.some((theme: string) => tagsToFilter.includes(theme));
       });
-      return filteredCards;
+      return filteredCards.map((card: any) => {
+        return {
+          ...card._doc,
+          themes: card._doc.themes.map((item: any) => {
+            return item.name;
+          }),
+        };
+      });
     }
 
     return cards.map((card: any) => {

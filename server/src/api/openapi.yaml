@@ -149,6 +149,7 @@ components:
           type: string
         analysis:
           type: string
+          nullable: true
         message:
           type: string
           nullable: true
@@ -174,6 +175,7 @@ components:
             properties:
               size:
                 type: object
+                nullable: true
                 properties:
                   height:
                     type: number
