@@ -1,5 +1,5 @@
 import ChoiceCard from "./choicecard";
-import MasonryList from "./MasonryList";
+import MasonryList from "./cardgallery";
 import CardInfoBox from "./cardinfobox";
 
 export {

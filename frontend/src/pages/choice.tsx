@@ -1,26 +1,14 @@
-import { ChoiceOfCards, FilterSection, Loader } from "components/common";
-import MasonryList from "components/cards/MasonryList";
+import { ChoiceOfCards, FilterSection } from "components/common";
+import MasonryList from "components/cards/cardgallery";
 import SubLayoutWithGrid from "layouts/sublayoutwithgrid";
 import TagFilter from "components/tagfilter";
-import { useEffect } from "react";
-import { useApi } from "hooks";
+import { useState } from "react";
 
 const Cards = () => {
     const params = new URLSearchParams(window.location.search)
     const type = params.get("type");
 
-    const {
-        data, error,
-        isLoading, fetchData
-    } = useApi("/cards" + "?type=" + type, { method: "GET" });
-    
-    const getData = async () => {
-        await fetchData();
-    }
-
-    useEffect(() => {
-        getData();
-    }, [])
+    const [filterTags, setFilterTags] = useState<string[]>([]);  
     
     if (!type) {
         return (
@@ -30,21 +18,15 @@ const Cards = () => {
         )
     }
 
-    if (isLoading)
-        return <Loader isFullSize={true} />
-    
-    if (error)
-        return <p>Error fetching card data</p>
-
     return (
         <SubLayoutWithGrid>
             <div className="md:col-span-6 col-span-8 p-6">
                 <h2 className="text-2xl mb-6 font-bold">{type === "postcard" ? "Postcards" : "Tradecards"}</h2>
-                <MasonryList data={data as any} />
+                <MasonryList filterTags={filterTags} type={type} />
             </div>
             <div className="md:col-span-2 pr-6">
                 <FilterSection>
-                    <TagFilter />
+                    <TagFilter setFilterTags={setFilterTags} />
                 </FilterSection>
             </div>
         </SubLayoutWithGrid>
