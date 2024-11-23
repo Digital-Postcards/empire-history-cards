@@ -23,6 +23,11 @@ paths:
             type: string
             enum: [postcard, tradecard]
         - in: query
+          name: page
+          description: The page to be used for pagination
+          schema: 
+            type: number
+        - in: query
           name: year
           description: The year to filter the card list by
           schema: 

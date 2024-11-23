@@ -22,12 +22,12 @@ export default class CardService {
     let cards;
     if (!isPopulate) {
       cards = await CardModel.find(_query, projection)
-        // .skip((+page - 1) * +limit)
-        // .limit(+limit);
+        .skip((+page - 1) * +limit)
+        .limit(+limit);
     } else {
       cards = await CardModel.find(_query, projection)
-        // .skip((+page - 1) * +limit)
-        // .limit(+limit)
+        .skip((+page - 1) * +limit)
+        .limit(+limit)
         .populate('themes imageLinks');
     }
 
