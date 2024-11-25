@@ -80,6 +80,18 @@ interface ErrorProps {
     errorText?: string
 }
 
+interface CardLookalikeProps {
+    rotate?: string;
+    centered?: boolean;
+    children?: ReactNode | ReactNode[];
+    classes?: string
+}
+
+interface CardLookalikeWithImageProps extends CardLookalikeProps {
+    imageURL: string;
+    caption: string;
+}
+
 export type {
     SingleLayoutProps,
     MasonryListProps,
@@ -90,5 +102,7 @@ export type {
     FilterItemProps,
     CardInfoBoxProps,
     CardViewerProps,
-    ErrorProps
+    ErrorProps,
+    CardLookalikeProps,
+    CardLookalikeWithImageProps
 }

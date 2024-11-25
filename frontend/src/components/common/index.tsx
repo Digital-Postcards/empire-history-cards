@@ -4,6 +4,7 @@ import Loader from "./loader";
 import ChoiceOfCards from "./choiceofcards";
 import FilterSection from "./filtersection";
 import TriggerWarning from "./triggerwarning";
+import CardLookalike, { CardLookalikeWithImage } from "./cardlookalike";
 
 export {
     ContentContainer,
@@ -11,5 +12,7 @@ export {
     Loader,
     ChoiceOfCards,
     FilterSection,
-    TriggerWarning
+    TriggerWarning,
+    CardLookalike,
+    CardLookalikeWithImage
 }

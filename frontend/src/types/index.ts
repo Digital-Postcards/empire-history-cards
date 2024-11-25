@@ -9,7 +9,9 @@ import {
     FilterItemProps,
     CardInfoBoxProps,
     CardViewerProps,
-    ErrorProps
+    ErrorProps,
+    CardLookalikeProps,
+    CardLookalikeWithImageProps
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 import SingleCard from "./singlecard.types";
@@ -27,5 +29,7 @@ export type {
     CardInfoBoxProps,
     SingleCard,
     CardViewerProps,
-    ErrorProps
+    ErrorProps,
+    CardLookalikeProps,
+    CardLookalikeWithImageProps
 }
