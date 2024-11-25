@@ -37,7 +37,7 @@ const ChoiceCard = (props: ChoiceCardProps) => {
             <div
                 className="
                             absolute h-full w-full left-0 top-0 
-                            bg-black/40 hover:bg-neutral-900/65 peer-hover:bg-neutral-900/65
+                            bg-black/50 hover:bg-neutral-900/65 peer-hover:bg-neutral-900/65
                             backdrop-blur-sm peer-hover:backdrop-blur-md hover:backdrop-blur-md 
                             transition-all duration-200
                             z-0

@@ -18,8 +18,8 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -72,11 +72,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 300ms ease-in"
-      },
-      gridTemplateColumns: {
-        sidebar: "200px auto", // for sidebar
-        sidebarCollapsed: "60px auto", // for collapsed sidebar
-      },
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

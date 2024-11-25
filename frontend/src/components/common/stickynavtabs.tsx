@@ -9,12 +9,12 @@ const StickyNavTabs = () => {
     return (
         <div
             className="
-                sticky md:top-0 top-[8px] left-[8px]
+                fixed md:relative md:top-0 top-[8px] left-[8px] md:left-0
                 text-neutral-100
                 md:w-full w-fit
                 flex md:flex-row flex-col justify-center gap-5
                 md:px-8 px-6 pt-4 md:pb-0 pb-4
-                bg-black
+                md:bg-black bg-foreground
                 z-50
                 md:rounded-none rounded-md
             ">
@@ -23,7 +23,7 @@ const StickyNavTabs = () => {
             )}
             {isMenuOpen && <X className="md:hidden block cursor-pointer" onClick={() => setMenuOpen(!isMenuOpen)} />}
             <div
-                className={`md:flex gap-5 ${!isMenuOpen ? "hidden" : "absolute top-[4rem] left-0 left-0 bg-black block md:rounded-none rounded-md"} `}>
+                className={`md:flex gap-5 ${!isMenuOpen ? "hidden" : "absolute top-[4rem] left-0 left-0 bg-foreground block md:rounded-none rounded-md"} `}>
                 {MAIN_NAV_LINKS.map((navLink: { label: string; path: string }) => {
                     return (
                         <div

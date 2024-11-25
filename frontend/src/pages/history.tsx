@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 const TextSection = (props: { title: string; children: ReactNode | ReactNode[] }) => {
     return (
         <div className="mt-6">
-            <h2 className="sticky top-12 bg-neutral-200 py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500 lowercase">
+            <h2 className="md:sticky top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500 lowercase">
                 {props?.title}
             </h2>
             {props?.children}
@@ -23,7 +23,7 @@ const History = () => {
             <div>
                 <div className="flex gap-2">
                     <Tags />
-                    <h1 className="text-xl font-bold tracking-tighter text-neutral-800">ABOUT THE THEMES</h1>
+                    <h1 className="text-xl font-bold tracking-tighter text-neutral-foreground">ABOUT THE THEMES</h1>
                 </div>
                 <TextSection title="New Imperialism">
                     <TextSectionParagraph>
@@ -291,7 +291,7 @@ const History = () => {
             <div className="pb-36">
                 <div className="flex gap-2">
                     <ScrollText />
-                    <h1 className="text-xl font-bold tracking-tighter text-neutral-800">CONCLUSION</h1>
+                    <h1 className="text-xl font-bold tracking-tighter text-neutral-goreground">CONCLUSION</h1>
                 </div>
                 <TextSection title="Erasure of Domestic workers' Voices">
                     <TextSectionParagraph>

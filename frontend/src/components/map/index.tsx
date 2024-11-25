@@ -100,7 +100,7 @@ const LeafletMap = () => {
             const imageLink = document.createElement("a");
             imageLink.href = "/cards/" + element.item + "s/" + element._id;
             imageLink.innerHTML = "View " + element.item + " #" + element.number;
-            imageLink.classList.add("!text-neutral-800");
+            imageLink.classList.add("!text-neutral-foreground");
             imageLink.classList.add("hover:underline");
             imageLink.classList.add("underline-offset-4");
             imageDiv.appendChild(image);

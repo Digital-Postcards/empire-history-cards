@@ -12,7 +12,7 @@ const Cards = () => {
 
     if (!type) {
         return (
-            <div className="lg:w-2/3 md:w-4/5 w-[92%] mx-auto min-h-screen sm:py-12 py-0 flex justify-center items-center">
+            <div className="lg:w-2/3 md:w-4/5 w-[92%] mx-auto min-h-screen py-24 md:py-12 py-0 flex justify-center items-center">
                 <ChoiceOfCards />
             </div>
         );

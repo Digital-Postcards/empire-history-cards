@@ -81,7 +81,7 @@ const BaseSingleLayout = (props: SingleLayoutProps) => {
             )}
             <div className={`relative z-10 ${props?.withCardsHeader && "pt-[45vh]"}`}>
                 <StickyNavTabs />
-                <div className="bg-neutral-200 min-h-screen">
+                <div className="bg-background min-h-screen">
                     {/* each separate page goes here */}
                     <Outlet />
                 </div>
