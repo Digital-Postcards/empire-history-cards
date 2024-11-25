@@ -1,75 +1,54 @@
-import { Loader } from "components/common";
-import { Error } from "components/error";
 import { useApi } from "hooks";
 import { useEffect, useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { SingleCard } from "types";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { InfiniteScrollEnd, InfiniteScrollLoader } from "./infintescrollhelpers";
+import { InfiniteScrollEnd } from "./infintescrollhelpers";
 import { useSearchParams } from "react-router-dom";
+import { Error } from "components/error";
+import { Loader } from "components/common";
 
 const MasonryList = (props: { filterTags: string[]; type: string }) => {
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
     const [noCards, setNoCards] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
-    const { error, isLoading, fetchData } = useApi(
+    const api = useApi(
         "/cards" +
             "?type=" +
             props?.type +
-            (props?.filterTags.length > 0 ? "&withTags=" + encodeURIComponent(props?.filterTags.join(",")) : "") +
-            "&page=" +
-            page,
+            (props?.filterTags.length > 0 ? "&withTags=" + encodeURIComponent(props?.filterTags.join(",")) : ""),
         { method: "GET" },
     );
     const [cardData, setCardData] = useState<any>([]);
 
     const getData = async () => {
-        const data: any = await fetchData();
-        if (!data || data.length === 0) {
-            if (data.length === 0 && page === 1) {
+        const data: any = await api.fetchData();
+        if (!data || (data as SingleCard[]).length === 0) {
+            if ((data as any).length === 0) {
                 setNoCards(true);
             }
-            setHasMore(false);
-            return;
         }
-        setCardData((prev: any) => [...prev, ...data]);
+        setCardData(data);
     };
 
     useEffect(() => {
-        setPage(1);
         setCardData([]);
-        getData();
         setSearchParams({ type: props?.type, withTags: encodeURIComponent(props?.filterTags.join(",")) });
-    }, [props?.filterTags, props?.type]);
-
-    useEffect(() => {
         getData();
-    }, []);
+    }, [props?.filterTags.join(",")]);
 
-    if (isLoading) return <Loader isFullSize={true} />;
+    if (api.isLoading) return <Loader isFullSize={true} />;
 
     if (cardData === null) {
         return <Error errorType="data-not-found" />;
     }
 
-    if (error) return <Error errorType="server-error" />;
+    if (api.error) return <Error errorType="server-error" />;
 
     return noCards ? (
         <InfiniteScrollEnd type={props?.type} noCards={true} />
     ) : (
-        <InfiniteScroll
-            className="!overflow-hidden"
-            dataLength={cardData.length}
-            next={() => {
-                getData();
-                setPage(page + 1);
-            }}
-            hasMore={hasMore}
-            loader={<InfiniteScrollLoader />}
-            endMessage={<InfiniteScrollEnd type={props?.type} noCards={false} />}>
+        <>
             <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 4 }}>
                 <Masonry gutter={"1rem"}>
                     {(cardData as SingleCard[]).map((item: any) => {
@@ -88,15 +67,20 @@ const MasonryList = (props: { filterTags: string[]; type: string }) => {
                                         <p className="md:text-lg text-md font-bold">
                                             {item.item === "postcard" ? "Postcard" : "Tradecard"} #{item.number}
                                         </p>
-                                        <p className="text-sm md:block">{item.description.slice(0, 50)}</p>
+                                        {item.description && (
+                                            <p className="text-sm md:block">
+                                                {item.description.slice(0, 60).trim() + "..."}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </a>
                         );
                     })}
                 </Masonry>
+                <InfiniteScrollEnd type={props?.type} noCards={false} />
             </ResponsiveMasonry>
-        </InfiniteScroll>
+        </>
     );
 };
 
