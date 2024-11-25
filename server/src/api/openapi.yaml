@@ -152,6 +152,7 @@ components:
         _id: {}
         description:
           type: string
+          nullable: true
         analysis:
           type: string
           nullable: true
@@ -169,6 +170,7 @@ components:
           nullable: true
         date:
           type: string
+          nullable: true
         themes:
           type: array
           items:
