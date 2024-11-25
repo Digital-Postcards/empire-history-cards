@@ -258,18 +258,19 @@ const History = () => {
                         as lazy, ignorant, unaware of the parameters of their social status, and intoxicated.
                         Conversely, they are also depicted as promiscuous, defiant, demanding, and devout Roman
                         Catholics, all traits which threatened middle-class Protestant values. Belief in the promiscuity
-                        of “Bridgets” also positioned them in opposition with Victorian ideals of white womanhood that
-                        centralized sexual propriety and modesty, while helping distort the unfortuante reality of
-                        “Bridgets” suffering sexual predation from male employers. Other “Bridgets" were viewed as
-                        arrogant and too “difficult” to employ because they were known to negotiate work contracts or
-                        leave a job in search of better working conditions or higher wages. Some visual sources also
-                        degraded “Bridgets” further by giving them simian-like features similar to those used in
-                        depicting non-white colonial subjects, considered racial inferiors at the time. Although Irish
-                        immigrants were racialized as “not quite white,” their light complexion ultimately allowed
-                        subsequent generations of Irish workers to become integrated into the fold of whiteness. This
-                        privilege granted the Irish opportunities for class mobility, wealth-building, and gaining
-                        social respectability. For these reasons, issues of systemic oppression do not affect people of
-                        Irish descent today in the same way that they affect people of African descent, for example.
+                        of &quot;Bridgets&quot; also positioned them in opposition with Victorian ideals of white
+                        womanhood that centralized sexual propriety and modesty, while helping distort the unfortuante
+                        reality of &quot;Bridgets&quot; suffering sexual predation from male employers. Other
+                        &quot;Bridgets&quot; were viewed as arrogant and too &quot;difficult&quot; to employ because
+                        they were known to negotiate work contracts or leave a job in search of better working
+                        conditions or higher wages. Some visual sources also degraded “Bridgets” further by giving them
+                        simian-like features similar to those used in depicting non-white colonial subjects, considered
+                        racial inferiors at the time. Although Irish immigrants were racialized as “not quite white,”
+                        their light complexion ultimately allowed subsequent generations of Irish workers to become
+                        integrated into the fold of whiteness. This privilege granted the Irish opportunities for class
+                        mobility, wealth-building, and gaining social respectability. For these reasons, issues of
+                        systemic oppression do not affect people of Irish descent today in the same way that they affect
+                        people of African descent, for example.
                     </TextSectionParagraph>
                 </TextSection>
                 <TextSection title="French Eroticized Postcards">

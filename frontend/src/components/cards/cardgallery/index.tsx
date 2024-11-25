@@ -13,7 +13,7 @@ const MasonryList = (props: { filterTags: string[]; type: string }) => {
     const [hasMore, setHasMore] = useState(true);
     const [noCards, setNoCards] = useState(false);
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
     const { error, isLoading, fetchData } = useApi(
         "/cards" +
@@ -74,7 +74,7 @@ const MasonryList = (props: { filterTags: string[]; type: string }) => {
                 <Masonry gutter={"1rem"}>
                     {(cardData as SingleCard[]).map((item: any) => {
                         return (
-                            <a href={"cards/" + item.item + "/" + item._id}>
+                            <a key={item._id + "-" + item.name} href={"cards/" + item.item + "/" + item._id}>
                                 <div
                                     key={item._id}
                                     className="group h-fit relative cursor-pointer hover:-translate-y-1 hover:shadow-3xl transition-all duration-300">

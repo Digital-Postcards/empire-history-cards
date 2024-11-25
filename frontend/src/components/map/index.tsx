@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { MapContainer, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import L, { LeafletMouseEventHandlerFn, popup } from "leaflet";
+import L, { LeafletMouseEventHandlerFn } from "leaflet";
 import { useApi } from "hooks";
 import { ContentContainer, FilterSection, Loader } from "components/common";
 import logo from "./location.png";

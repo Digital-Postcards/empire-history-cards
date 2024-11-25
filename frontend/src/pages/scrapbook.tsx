@@ -24,20 +24,20 @@ const Scrapbook = () => {
     const ref = useRef();
 
     const handlePageFlip = () => {
-        /* @ts-expect-error */
+        /* @ts-expect-error type does not exist */
         setCurrentPageInfoIndex(ref?.current.pageFlip().getCurrentPageIndex());
     };
 
     const gotoNext = () => {
         if (ref.current) {
-            /* @ts-expect-error */
+            /* @ts-expect-error type does not exist */
             ref?.current.pageFlip().flipNext();
-        }        
+        }
     };
 
     const gotoPrevious = () => {
         if (ref.current) {
-            /* @ts-expect-error */
+            /* @ts-expect-error type does not exist */
             ref?.current.pageFlip().flipPrev();
         }
     };
@@ -65,7 +65,7 @@ const Scrapbook = () => {
             {data === null || ((data as FlipBookPageDataType[]).length === 0 && <ScrapbookEmpty />)}
             {data !== null && (data as FlipBookPageDataType[]).length != 0 && (
                 <>
-                    {/* @ts-ignore */}
+                    {/* @ts-expect-error type does not exist */}
                     <HTMLFlipBook
                         ref={ref}
                         className="mx-auto"
@@ -76,6 +76,7 @@ const Scrapbook = () => {
                         {(data as FlipBookPageDataType[]).map((flipbook_page: FlipBookPageDataType, index: number) => {
                             return (
                                 <ScrapBookPage
+                                    key={flipbook_page._id}
                                     _id={flipbook_page._id}
                                     item={flipbook_page.item}
                                     pageNumber={index + 1}

@@ -10,7 +10,7 @@ const Ethics = () => {
                 look at, we strongly believe that this archive of racism and sexism is important to study, in order to
                 understand how the visual culture of domestic labor was shaped in the period of New Imperialism, Jim
                 Crow racism, Asian Exclusion, especially given the marginalization of domestic workers from the
-                anti-colonial, women's suffrage, and trade union movements of the time. We have historically
+                anti-colonial, women&apos;s suffrage, and trade union movements of the time. We have historically
                 contextualized the images, and blurred some of the extremely degrading images, providing users the
                 choice to view them (or not) by clicking on them.
             </p>

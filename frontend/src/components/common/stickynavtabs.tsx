@@ -26,7 +26,9 @@ const StickyNavTabs = () => {
                 className={`md:flex gap-5 ${!isMenuOpen ? "hidden" : "absolute top-[4rem] left-0 left-0 bg-black block md:rounded-none rounded-md"} `}>
                 {MAIN_NAV_LINKS.map((navLink: { label: string; path: string }) => {
                     return (
-                        <div className="flex flex-col gap-2 min-w-fit md:m-0 md:py-0 py-3 md:border-none border-neutral-600 border-b md:px-0 px-8">
+                        <div
+                            key={navLink.label}
+                            className="flex flex-col gap-2 min-w-fit md:m-0 md:py-0 py-3 md:border-none border-neutral-600 border-b md:px-0 px-8">
                             <a href={navLink.path}>{navLink.label}</a>
                             {location.pathname.toLowerCase() === navLink.path && (
                                 <div className="h-[7px] w-100 bg-neutral-200 md:block hidden"></div>

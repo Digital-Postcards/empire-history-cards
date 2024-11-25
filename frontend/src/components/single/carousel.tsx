@@ -6,6 +6,7 @@ const HeaderCollage = () => {
             {CAROUSEL_IMAGE_URLS.map((url: string) => {
                 return (
                     <div
+                        key={url}
                         style={{ background: `url(${url})`, backgroundPosition: "center", backgroundSize: "cover" }}
                         className="h-100 w-100"></div>
                 );

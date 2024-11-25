@@ -1,4 +1,3 @@
-import { ActionMeta } from "react-select";
 import { FilterItemProps, OptionType } from "types";
 import FilterBox from "./filterbox";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -24,7 +23,7 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
         return formattedOptions;
     };
 
-    const onChange = (option: readonly Option[], actionMeta: ActionMeta<Option>) => {
+    const onChange = (option: readonly Option[]) => {
         if (props?.setFilterTags) {
             const valuesArray = option.map((option: Option) => option.value);
             props?.setFilterTags(valuesArray);

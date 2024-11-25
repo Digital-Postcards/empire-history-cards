@@ -2,14 +2,12 @@ import { ContentContainer, Loader } from "components/common";
 import { Error } from "components/error";
 import { useApi } from "hooks";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Graph from "react-vis-network-graph";
 import "vis-network/styles/vis-network.css";
 
 const Themes = () => {
     const api = useApi("/themes", { method: "GET" });
     const [nodes, setNodes] = useState<any[]>([]);
-    const navigate = useNavigate();
 
     const fetchData = async () => {
         try {
@@ -74,7 +72,7 @@ const Themes = () => {
                 events={{
                     select: ({ nodes }) => {
                         if (nodes.length > 0) {
-                            const tagId = nodes[0];
+                            // const tagId = nodes[0];
                             // needs discussion/thought since we do not have a generic /cards route
                             // navigate(`/cards?withTags=${tagId}`);
                         }

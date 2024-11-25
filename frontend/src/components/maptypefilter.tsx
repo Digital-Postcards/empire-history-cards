@@ -1,6 +1,6 @@
 import { FilterItemProps, OptionType } from "types";
 import FilterBox from "./filterbox";
-import Select, { ActionMeta } from "react-select";
+import Select from "react-select";
 import Option from "types/tagFilterOption.types";
 import { Dispatch, SetStateAction } from "react";
 
@@ -13,7 +13,7 @@ const MapTypeFilter = (props: {
         { label: "Modern", value: "Modern" },
     ];
 
-    const onChange = (option: Option | null, actionMeta: ActionMeta<Option>) => {
+    const onChange = (option: Option | null) => {
         if (props?.setMapType) props?.setMapType(option?.value.toLowerCase());
     };
 

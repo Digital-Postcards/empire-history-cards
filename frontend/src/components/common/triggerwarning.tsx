@@ -30,7 +30,7 @@ const TriggerWarning = (props: {
                             <label
                                 htmlFor="terms"
                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-neutral-700">
-                                Don't show again for the next 30 days
+                                Don&apos;t show again for the next 30 days
                             </label>
                         </div>
                     </AlertDialogDescription>

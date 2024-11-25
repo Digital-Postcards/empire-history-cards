@@ -27,7 +27,7 @@ const About = () => {
             <CardLookalike rotate="-rotate-2" centered classes="flex">
                 {ABOUT_PAGE_CONTENT.csTeam.map((person: any) => {
                     return (
-                        <div>
+                        <div key={person.imageURL}>
                             <img className="mx-auto border-[20px] border-white" src={person.imageURL} />
                             <p className="px-5 pb-4 text-sm md:text-md text-neutral-700">{person.caption}</p>
                         </div>
