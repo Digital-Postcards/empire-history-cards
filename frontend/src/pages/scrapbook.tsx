@@ -24,24 +24,22 @@ const Scrapbook = () => {
     const ref = useRef();
 
     const handlePageFlip = () => {
-        {
-            /* @ts-ignore */
-        }
+        /* @ts-expect-error */
         setCurrentPageInfoIndex(ref?.current.pageFlip().getCurrentPageIndex());
     };
 
     const gotoNext = () => {
         if (ref.current) {
-            /* @ts-ignore */
-        }
-        ref?.current.pageFlip().flipNext();
+            /* @ts-expect-error */
+            ref?.current.pageFlip().flipNext();
+        }        
     };
 
     const gotoPrevious = () => {
         if (ref.current) {
-            /* @ts-ignore */
+            /* @ts-expect-error */
+            ref?.current.pageFlip().flipPrev();
         }
-        ref?.current.pageFlip().flipPrev();
     };
 
     if (isLoading) return <Loader isFullSize={true} />;
