@@ -12,19 +12,25 @@ const ChoiceCard = (props: ChoiceCardProps) => {
                 backgroundAttachment: "fixed",
                 backgroundPosition: "center",
             }}
-            className={`relative lg:p-24 md:p-16 p-8 w-full ` + props?.classes}
-        >
+            className={`relative lg:p-24 md:p-16 p-8 w-full ` + props?.classes}>
             <div className="z-10 relative peer">
                 <div className="px-0 text-white">
                     <h2 className="text-2xl font-bold">{props?.title}</h2>
                 </div>
-                <div className="px-0 mt-3 text-white">
-                    {props?.children}
-                </div>
+                <div className="px-0 mt-3 text-white">{props?.children}</div>
                 <div className="flex lg:flex-row flex-col gap-2 px-0 mt-4">
-                    <Button size={"lg"} variant={"outline"} onClick={() => window.location.href = "/map?type=" + props?.type}>View on map</Button>
-                    <Button className="grow px-3" size={"lg"} onClick={() => window.location.href = "/cards?type=" + props?.type}>
-                        View all<span className="flex-grow"></span><ArrowRight />
+                    <Button
+                        size={"lg"}
+                        variant={"outline"}
+                        onClick={() => (window.location.href = "/map?type=" + props?.type)}>
+                        View on map
+                    </Button>
+                    <Button
+                        className="grow px-3"
+                        size={"lg"}
+                        onClick={() => (window.location.href = "/cards?type=" + props?.type)}>
+                        View all<span className="flex-grow"></span>
+                        <ArrowRight />
                     </Button>
                 </div>
             </div>
@@ -35,10 +41,9 @@ const ChoiceCard = (props: ChoiceCardProps) => {
                             backdrop-blur-sm peer-hover:backdrop-blur-md hover:backdrop-blur-md 
                             transition-all duration-200
                             z-0
-                        "
-            ></div>
+                        "></div>
         </div>
-    )
-}
+    );
+};
 
-export default ChoiceCard
+export default ChoiceCard;

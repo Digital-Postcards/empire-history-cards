@@ -11,7 +11,7 @@ import {
     CardViewerProps,
     ErrorProps,
     CardLookalikeProps,
-    CardLookalikeWithImageProps
+    CardLookalikeWithImageProps,
 } from "./components.types";
 import OptionType from "./tagFilterOption.types";
 import SingleCard from "./singlecard.types";
@@ -31,5 +31,5 @@ export type {
     CardViewerProps,
     ErrorProps,
     CardLookalikeProps,
-    CardLookalikeWithImageProps
-}
+    CardLookalikeWithImageProps,
+};

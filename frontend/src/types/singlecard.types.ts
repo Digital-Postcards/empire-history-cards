@@ -3,11 +3,11 @@ export type Image = {
     link: string;
     size: {
         height: number;
-        width: number
+        width: number;
     };
     orientation: number | null;
     cardNumber: number;
-}
+};
 
 interface SingleCard {
     number: number;

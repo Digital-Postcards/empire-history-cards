@@ -1,5 +1,5 @@
-declare module 'react-vis-network-graph' {
-    import { FC } from 'react';
+declare module "react-vis-network-graph" {
+    import { FC } from "react";
 
     type GraphData = {
         nodes: Array<{

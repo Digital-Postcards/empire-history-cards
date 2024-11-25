@@ -1,5 +1,3 @@
 import HeaderCollage from "./carousel";
 
-export {
-    HeaderCollage
-}
+export { HeaderCollage };

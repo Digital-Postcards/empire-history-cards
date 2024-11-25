@@ -11,12 +11,8 @@ const CardLookalike = (props: CardLookalikeProps) => {
     }
     computedClasses += props?.classes;
 
-    return (
-        <div className={computedClasses}>
-            {props?.children}
-        </div>
-    )
-}
+    return <div className={computedClasses}>{props?.children}</div>;
+};
 
 const CardLookalikeWithImage = (props: CardLookalikeWithImageProps) => {
     return (
@@ -24,8 +20,8 @@ const CardLookalikeWithImage = (props: CardLookalikeWithImageProps) => {
             <img className="mx-auto border-[20px] border-white" src={props?.imageURL} />
             <p className="px-5 pb-4 text-sm md:text-md text-neutral-700">{props?.caption}</p>
         </CardLookalike>
-    )
-}
+    );
+};
 
 export { CardLookalikeWithImage };
 export default CardLookalike;

@@ -19,9 +19,9 @@ const useApi = (url: string, options?: AxiosRequestConfig) => {
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
-    return { data, isLoading, error, fetchData }
-}
+    return { data, isLoading, error, fetchData };
+};
 
 export default useApi;

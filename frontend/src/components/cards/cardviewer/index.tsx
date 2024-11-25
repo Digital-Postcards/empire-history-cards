@@ -1,5 +1,3 @@
 import CardViewer from "./cardviewer";
 
-export {
-    CardViewer
-}
+export { CardViewer };

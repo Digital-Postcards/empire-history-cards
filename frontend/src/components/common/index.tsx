@@ -14,5 +14,5 @@ export {
     FilterSection,
     TriggerWarning,
     CardLookalike,
-    CardLookalikeWithImage
-}
+    CardLookalikeWithImage,
+};

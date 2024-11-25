@@ -5,7 +5,6 @@ import { FilterSection } from "components/common";
 import LeafletMap from "components/map";
 
 const Map = () => {
-
     return (
         <>
             <LeafletMap />
@@ -18,8 +17,7 @@ const Map = () => {
                 // </FilterSection>
             }
         </>
-
-    )
-}
+    );
+};
 
 export default Map;

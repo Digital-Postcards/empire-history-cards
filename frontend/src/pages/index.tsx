@@ -9,15 +9,4 @@ import Cards from "./choice";
 import Themes from "./themes";
 import Ethics from "./ethics";
 
-export {
-    HomePage,
-    About,
-    ScrapBook,
-    History,
-    Project,
-    MapViewer,
-    CardDetail,
-    Cards,
-    Themes,
-    Ethics
-}
+export { HomePage, About, ScrapBook, History, Project, MapViewer, CardDetail, Cards, Themes, Ethics };

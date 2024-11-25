@@ -1,4 +1,4 @@
-import { ContentContainer, Loader } from "components/common"
+import { ContentContainer, Loader } from "components/common";
 import HTMLFlipBook from "react-pageflip";
 import { FlipBookPageDataType } from "types";
 
@@ -11,11 +11,10 @@ import { useApi } from "hooks";
 import { Error } from "components/error";
 
 const Scrapbook = () => {
-
     const { data, error, isLoading, fetchData } = useApi("/cards/scrapbook", { method: "GET" });
     const getData = async () => {
         await fetchData();
-    }
+    };
 
     useEffect(() => {
         getData();
@@ -25,90 +24,102 @@ const Scrapbook = () => {
     const ref = useRef();
 
     const handlePageFlip = () => {
-        {/* @ts-ignore */}
+        {
+            /* @ts-ignore */
+        }
         setCurrentPageInfoIndex(ref?.current.pageFlip().getCurrentPageIndex());
-    }
+    };
 
     const gotoNext = () => {
-        if(ref.current)
-            {/* @ts-ignore */}
-            ref?.current.pageFlip().flipNext();
-    }
+        if (ref.current) {
+            /* @ts-ignore */
+        }
+        ref?.current.pageFlip().flipNext();
+    };
 
     const gotoPrevious = () => {
-        if(ref.current)
-            {/* @ts-ignore */}
-            ref?.current.pageFlip().flipPrev();
-    }
+        if (ref.current) {
+            /* @ts-ignore */
+        }
+        ref?.current.pageFlip().flipPrev();
+    };
 
-    if (isLoading)
-        return <Loader isFullSize={true}/>
+    if (isLoading) return <Loader isFullSize={true} />;
 
     if (!data) {
         return (
             <ContentContainer>
-                <Error
-                    errorType="data-not-found"
-                />
+                <Error errorType="data-not-found" />
             </ContentContainer>
-        )
+        );
     }
-    
+
     if (error) {
         return (
             <ContentContainer>
-                <Error
-                    errorType="server-error"
-                />
+                <Error errorType="server-error" />
             </ContentContainer>
-        )
+        );
     }
 
     return (
         <ContentContainer>
-            {
-                data === null || (data as FlipBookPageDataType[]).length === 0
-                && <ScrapbookEmpty />
-            }
-            {
-                    data !== null && (data as FlipBookPageDataType[]).length != 0 &&
-                    <>
-                        {/* @ts-ignore */}
-                        <HTMLFlipBook
-                            ref={ref}
-                            className="mx-auto"
-                            width={600}
-                            height={800}
-                            maxShadowOpacity={0.4}
-                            onFlip={handlePageFlip}
-                        >
-                            {
-                                (data as FlipBookPageDataType[]).map((flipbook_page: FlipBookPageDataType, index: number) => {
-                                    return (
-                                        <ScrapBookPage
-                                            _id={flipbook_page._id}
-                                            item={flipbook_page.item}
-                                            pageNumber={index + 1}
-                                            image={flipbook_page.image}
-                                            description={flipbook_page.description}
-                                            themes={flipbook_page.themes}
-                                        />
-                                    )
-                                })
-                            }
-                        </HTMLFlipBook>
-                        <div className="mt-3 flex justify-between items-center px-8 pb-24">
-                            <ScrapBookInfo currentPageInfoIndex={currentPageInfoIndex} data={data[currentPageInfoIndex]} isDisabled={currentPageInfoIndex === (data as FlipBookPageDataType[]).length} />
-                            <div className="flex items-center">
-                                <Button disabled={currentPageInfoIndex === 0} size={"icon"} className="mx-1" onClick={gotoPrevious}><ChevronLeft /></Button>
-                                <Button disabled={currentPageInfoIndex >= (data as FlipBookPageDataType[]).length - 2} size={"icon"} className="mx-1" onClick={gotoNext}><ChevronRight /></Button>
-                            </div>
-                            <ScrapBookInfo currentPageInfoIndex={currentPageInfoIndex + 1} data={data[currentPageInfoIndex + 1]} isDisabled={currentPageInfoIndex === (data as FlipBookPageDataType[]).length} />
+            {data === null || ((data as FlipBookPageDataType[]).length === 0 && <ScrapbookEmpty />)}
+            {data !== null && (data as FlipBookPageDataType[]).length != 0 && (
+                <>
+                    {/* @ts-ignore */}
+                    <HTMLFlipBook
+                        ref={ref}
+                        className="mx-auto"
+                        width={600}
+                        height={800}
+                        maxShadowOpacity={0.4}
+                        onFlip={handlePageFlip}>
+                        {(data as FlipBookPageDataType[]).map((flipbook_page: FlipBookPageDataType, index: number) => {
+                            return (
+                                <ScrapBookPage
+                                    _id={flipbook_page._id}
+                                    item={flipbook_page.item}
+                                    pageNumber={index + 1}
+                                    image={flipbook_page.image}
+                                    description={flipbook_page.description}
+                                    themes={flipbook_page.themes}
+                                />
+                            );
+                        })}
+                    </HTMLFlipBook>
+                    <div className="mt-3 flex justify-between items-center px-8 pb-24">
+                        <ScrapBookInfo
+                            currentPageInfoIndex={currentPageInfoIndex}
+                            data={data[currentPageInfoIndex]}
+                            isDisabled={currentPageInfoIndex === (data as FlipBookPageDataType[]).length}
+                        />
+                        <div className="flex items-center">
+                            <Button
+                                disabled={currentPageInfoIndex === 0}
+                                size={"icon"}
+                                className="mx-1"
+                                onClick={gotoPrevious}>
+                                <ChevronLeft />
+                            </Button>
+                            <Button
+                                disabled={currentPageInfoIndex >= (data as FlipBookPageDataType[]).length - 2}
+                                size={"icon"}
+                                className="mx-1"
+                                onClick={gotoNext}>
+                                <ChevronRight />
+                            </Button>
                         </div>
-                    </>
-            }
+                        <ScrapBookInfo
+                            currentPageInfoIndex={currentPageInfoIndex + 1}
+                            data={data[currentPageInfoIndex + 1]}
+                            isDisabled={currentPageInfoIndex === (data as FlipBookPageDataType[]).length}
+                        />
+                    </div>
+                </>
+            )}
         </ContentContainer>
-    )
-}
+    );
+};
 
 export default Scrapbook;

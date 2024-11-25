@@ -1,22 +1,21 @@
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react";
 import CardImageInViewer from "./image";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCw } from "lucide-react";
 import { Button } from "shadcn/components/ui/button";
 import { CardViewerProps, CardViewerToolbarProps } from "types";
 
-const CardViewerToolbarIcon = (props: {isIconOnly: boolean, onClick?: () => any, children: ReactNode}) => {
-    let size: any = props?.isIconOnly ? "icon" : "default";
+const CardViewerToolbarIcon = (props: { isIconOnly: boolean; onClick?: () => any; children: ReactNode }) => {
+    const size: any = props?.isIconOnly ? "icon" : "default";
     return (
         <Button
             variant={"ghost"}
             size={size}
             className={`bg-neutral-700 hover:bg-neutral-600 hover:text-white ${!props?.isIconOnly && "flex gap-2"}`}
-            onClick={props?.onClick}
-        >
+            onClick={props?.onClick}>
             {props?.children}
         </Button>
-    )
-}
+    );
+};
 
 const CardViewerToolbar = (props: CardViewerToolbarProps) => {
     return (
@@ -25,8 +24,17 @@ const CardViewerToolbar = (props: CardViewerToolbarProps) => {
                 <RotateCw size={18} />
             </CardViewerToolbarIcon>
             <CardViewerToolbarIcon isIconOnly={false} onClick={() => props?.setIsBlur(!props?.isBlur)}>
-                { props?.isBlur && <><Eye size={18}/> Focus</> }
-                { !props?.isBlur && <><EyeOff size={18} />Blur</> }
+                {props?.isBlur && (
+                    <>
+                        <Eye size={18} /> Focus
+                    </>
+                )}
+                {!props?.isBlur && (
+                    <>
+                        <EyeOff size={18} />
+                        Blur
+                    </>
+                )}
             </CardViewerToolbarIcon>
             <div className="grow"></div>
             <CardViewerToolbarIcon isIconOnly onClick={props?.previousImage}>
@@ -36,34 +44,34 @@ const CardViewerToolbar = (props: CardViewerToolbarProps) => {
                 <ChevronRight />
             </CardViewerToolbarIcon>
         </div>
-    )
-}
+    );
+};
 
 const CardViewer = (props: CardViewerProps) => {
     const [currentImageInViewer, setCurrentImageInViewer] = useState<number>(0);
     const [isBlur, setIsBlur] = useState<boolean>(props?.isBlur);
     const [rotate, setRotate] = useState<number>(0);
-    const [orientation, setOrientation] = useState<number|  null>(props?.images[currentImageInViewer].orientation);
+    const [orientation, setOrientation] = useState<number | null>(props?.images[currentImageInViewer].orientation);
 
     useEffect(() => {
         setOrientation(props?.images[currentImageInViewer].orientation);
-    }, [currentImageInViewer])
+    }, [currentImageInViewer]);
 
     const nextImage = () => {
         setCurrentImageInViewer((currentImageInViewer + 1) % props?.images.length);
         setIsBlur(props?.isBlur);
         setRotate(0);
-    }
+    };
 
     const previousImage = () => {
         setCurrentImageInViewer((currentImageInViewer - 1 + props?.images.length) % props?.images.length);
         setIsBlur(props?.isBlur);
         setRotate(0);
-    }
+    };
 
     const handleRotate = () => {
         setRotate((rotate + 90) % 360);
-    }
+    };
 
     return (
         <div className="relative flex flex-col w-full h-[66vh] border rounded-lg">
@@ -86,7 +94,7 @@ const CardViewer = (props: CardViewerProps) => {
                 previousImage={previousImage}
             />
         </div>
-    )
-}
+    );
+};
 
 export default CardViewer;

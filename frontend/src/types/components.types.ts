@@ -2,7 +2,7 @@ import { Dispatch, ReactNode, SetStateAction } from "react";
 import { Image } from "./singlecard.types";
 
 interface SingleLayoutProps {
-    withCardsHeader: boolean
+    withCardsHeader: boolean;
 }
 
 export type MasonryType = {
@@ -10,30 +10,30 @@ export type MasonryType = {
     number: number;
     imageLinks: string;
     _id: string;
-}
+};
 
 interface MasonryListProps {
-    data: MasonryType[]
+    data: MasonryType[];
 }
 
 interface ChoiceCardProps {
     title: string;
     image: string;
-    type: "postcard" | "tradecard",
-    children: ReactNode | ReactNode[]
-    classes?: string 
+    type: "postcard" | "tradecard";
+    children: ReactNode | ReactNode[];
+    classes?: string;
 }
 
 type ScrapBookImage = {
     link: string;
     size: {
         height: number;
-        width: number;   
-    }
+        width: number;
+    };
     name: string;
     cardNumber: number;
     orientation: number | null;
-}
+};
 
 interface FlipBookPageDataType {
     _id: string;
@@ -41,7 +41,7 @@ interface FlipBookPageDataType {
     pageNumber?: number;
     image: ScrapBookImage;
     description: string;
-    themes: string[]
+    themes: string[];
 }
 
 interface CardInfoBoxProps {
@@ -53,15 +53,15 @@ interface CardInfoBoxProps {
 }
 
 interface CardViewerProps {
-    images: Image[],
-    isBlur: boolean
+    images: Image[];
+    isBlur: boolean;
 }
 
 interface CardImageInViewerProps {
     orientation: number | null;
     rotate: number;
     isBlur: boolean;
-    imageURL: string
+    imageURL: string;
 }
 
 interface CardViewerToolbarProps extends CardImageInViewerProps {
@@ -77,14 +77,14 @@ interface FilterItemProps {
 
 interface ErrorProps {
     errorType: "data-not-found" | "server-error";
-    errorText?: string
+    errorText?: string;
 }
 
 interface CardLookalikeProps {
     rotate?: string;
     centered?: boolean;
     children?: ReactNode | ReactNode[];
-    classes?: string
+    classes?: string;
 }
 
 interface CardLookalikeWithImageProps extends CardLookalikeProps {
@@ -104,5 +104,5 @@ export type {
     CardViewerProps,
     ErrorProps,
     CardLookalikeProps,
-    CardLookalikeWithImageProps
-}
+    CardLookalikeWithImageProps,
+};

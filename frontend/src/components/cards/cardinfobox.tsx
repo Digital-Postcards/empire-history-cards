@@ -1,20 +1,20 @@
-import InfoSection from "./infosection"
-import { CardInfoBoxProps } from "types"
+import InfoSection from "./infosection";
+import { CardInfoBoxProps } from "types";
 
-const TagsInInfoBox = (props: {tags: string[]}) => {
+const TagsInInfoBox = (props: { tags: string[] }) => {
     return (
         <>
             {props?.tags.map((tag: any, index: number) => {
                 return (
                     <>
                         <p>{tag}</p>
-                        { index !== props?.tags.length - 1 && <span>{"🞄"}</span> }
+                        {index !== props?.tags.length - 1 && <span>{"🞄"}</span>}
                     </>
-                )
+                );
             })}
         </>
-    )
-}
+    );
+};
 
 const CardInfoBox = (props: CardInfoBoxProps) => {
     return (
@@ -26,24 +26,22 @@ const CardInfoBox = (props: CardInfoBoxProps) => {
                 <InfoSection label="Date">
                     <p>{props?.date}</p>
                 </InfoSection>
-                {
-                    props?.location &&
+                {props?.location && (
                     <InfoSection label="Location">
                         <p>{props?.location}</p>
                     </InfoSection>
-                }
+                )}
             </div>
-            {
-                props?.company &&
+            {props?.company && (
                 <>
                     <InfoSection label="Company">
                         <h4 className="text-md">{props?.company}</h4>
                         <p className="text-sm">{props?.companyInformation}</p>
                     </InfoSection>
                 </>
-            }
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default CardInfoBox;

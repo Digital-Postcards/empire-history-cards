@@ -5,17 +5,17 @@ import TagFilter from "components/tagfilter";
 import { useState } from "react";
 
 const Cards = () => {
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(window.location.search);
     const type = params.get("type");
 
-    const [filterTags, setFilterTags] = useState<string[]>([]);  
-    
+    const [filterTags, setFilterTags] = useState<string[]>([]);
+
     if (!type) {
         return (
             <div className="lg:w-2/3 md:w-4/5 w-[92%] mx-auto min-h-screen sm:py-12 py-0 flex justify-center items-center">
                 <ChoiceOfCards />
             </div>
-        )
+        );
     }
 
     return (
@@ -30,7 +30,7 @@ const Cards = () => {
                 </FilterSection>
             </div>
         </SubLayoutWithGrid>
-    )
-}
+    );
+};
 
 export default Cards;
