@@ -22,7 +22,7 @@ const LeafletMap = () => {
     const [mapType, setMapType] = useState<string | undefined>("historic");
     const [filterTags, setFilterTags] = useState<string[]>([]);
     const mapConfig = {
-        historic: { defaultZoom: 3, minZoom: 3, maxZoom: 5 },
+        historic: { defaultZoom: 1, minZoom: 2, maxZoom: 4 },
         modern: { defaultZoom: 4, minZoom: 3, maxZoom: 8 },
     };
     const [mapData, setMapData] = useState([]);
