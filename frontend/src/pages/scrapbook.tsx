@@ -69,10 +69,11 @@ const Scrapbook = () => {
                     <HTMLFlipBook
                         ref={ref}
                         className="mx-auto"
-                        width={600}
+                        width={500}
                         height={800}
                         maxShadowOpacity={0.4}
-                        onFlip={handlePageFlip}>
+                        onFlip={handlePageFlip}
+                        size="stretch">
                         {(data as FlipBookPageDataType[]).map((flipbook_page: FlipBookPageDataType, index: number) => {
                             return (
                                 <ScrapBookPage
@@ -87,7 +88,7 @@ const Scrapbook = () => {
                             );
                         })}
                     </HTMLFlipBook>
-                    <div className="mt-3 flex justify-between items-center px-8 pb-24">
+                    <div className="mt-6 flex justify-between items-center md:px-2 px-0 pb-24">
                         <ScrapBookInfo
                             currentPageInfoIndex={currentPageInfoIndex}
                             data={data[currentPageInfoIndex]}

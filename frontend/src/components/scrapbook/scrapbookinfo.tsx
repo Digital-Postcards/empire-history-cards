@@ -11,7 +11,7 @@ const ScrapBookInfo = (props: { currentPageInfoIndex: number; data: FlipBookPage
                     size={"icon"}
                     variant={"ghost"}
                     disabled={props?.isDisabled}
-                    className="w-fit mx-auto cursor-pointer bg-background shadow-lg p-1 rounded-lg">
+                    className="w-fit mx-auto cursor-pointer bg-white shadow-lg p-1 rounded-lg">
                     <CircleHelp size={22} />
                 </Button>
             </HoverCardTrigger>
