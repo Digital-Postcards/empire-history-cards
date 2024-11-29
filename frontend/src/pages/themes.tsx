@@ -7,16 +7,20 @@ import "vis-network/styles/vis-network.css";
 
 const Themes = () => {
     const api = useApi("/themes", { method: "GET" });
+
     const [nodes, setNodes] = useState<any[]>([]);
 
     const fetchData = async () => {
         try {
             const data = await api.fetchData();
+            const maxCards = Math.max(...data.map((theme: any) => theme.numberOfCards));
+            const minCards = Math.min(...data.map((theme: any) => theme.numberOfCards));
+            const range = maxCards - minCards || 1; // Avoid division by zero
             const formattedNodes = data.map((theme: any) => ({
                 id: theme._id,
                 label: theme.name,
                 title: `${theme.numberOfCards} cards`,
-                size: theme.numberOfCards,
+                size: ((theme.numberOfCards - minCards) / range) * 28 + 4,
                 color: "#D2B48C",
             }));
             setNodes(formattedNodes);
@@ -43,7 +47,7 @@ const Themes = () => {
         },
         interaction: {
             dragNodes: true,
-            zoomView: true,
+            zoomView: false,
             dragView: true,
         },
         nodes: {
