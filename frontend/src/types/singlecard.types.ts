@@ -10,6 +10,8 @@ export type Image = {
 };
 
 interface SingleCard {
+    _id: string;
+    name: string;
     number: number;
     item: "postcard" | "tradecard";
     place: string;

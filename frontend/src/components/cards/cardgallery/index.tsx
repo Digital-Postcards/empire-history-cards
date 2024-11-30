@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { Error } from "components/error";
 import { Loader } from "components/common";
 
-const MasonryList = (props: { filterTags: string[]; type: string }) => {
+const MasonryList = (props: { filterTags: string[]; type: string | "" }) => {
     const [noCards, setNoCards] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line @typescript-eslint/no-unused-vars
