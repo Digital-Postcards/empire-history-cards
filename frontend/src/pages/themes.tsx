@@ -2,12 +2,13 @@ import { ContentContainer, Loader } from "components/common";
 import { Error } from "components/error";
 import { useApi } from "hooks";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Graph from "react-vis-network-graph";
 import "vis-network/styles/vis-network.css";
 
 const Themes = () => {
+    const navigate = useNavigate();
     const api = useApi("/themes", { method: "GET" });
-
     const [nodes, setNodes] = useState<any[]>([]);
 
     const fetchData = async () => {
@@ -20,7 +21,7 @@ const Themes = () => {
                 id: theme._id,
                 label: theme.name,
                 title: `${theme.numberOfCards} cards`,
-                size: ((theme.numberOfCards - minCards) / range) * 28 + 4,
+                size: ((theme.numberOfCards - minCards) / range) * 50 + 8,
                 color: "#D2B48C",
             }));
             setNodes(formattedNodes);
@@ -74,11 +75,11 @@ const Themes = () => {
                 graph={graphData}
                 options={graphOptions}
                 events={{
-                    select: ({ nodes }) => {
-                        if (nodes.length > 0) {
-                            // const tagId = nodes[0];
-                            // needs discussion/thought since we do not have a generic /cards route
-                            // navigate(`/cards?withTags=${tagId}`);
+                    select: (event: any) => {
+                        if (event.nodes.length > 0) {
+                            const requiredNode: any = nodes.filter((node: any) => node.id === event.nodes[0]);
+                            console.log(requiredNode);
+                            navigate(`/cards?withTags=${requiredNode[0].label}`);
                         }
                     },
                 }}
