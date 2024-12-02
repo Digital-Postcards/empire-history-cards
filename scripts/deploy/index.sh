@@ -15,7 +15,6 @@ sudo cp -r build/* /var/www/digitalhum
 
 # update the backend
 
-cd "$(dirname "${BASH_SOURCE[0]}")"/
 # install dependencies in case any have changed
 cd ../../server && npm ci
 # build the backend
