@@ -16,7 +16,7 @@ sudo cp -r build/* /var/www/digitalhum
 # update the backend
 
 # install dependencies in case any have changed
-cd ../../server && npm ci
+cd ../server && npm ci
 # build the backend
 npm run build
 # restart the backend service using pm2
