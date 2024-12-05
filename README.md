@@ -27,7 +27,9 @@ The frontend and the backend require a set of environment variables.
   - `MONGODB_URI` The URI for the MongoDB server on your system, typically `mongod://localhost:2717` in development
   - `IMAGES_DIR` The path of the folder containing the individual postcard/tradecard folders which contain the images 
 
-### Installing dependencies
+### In development
+
+#### Installing dependencies
 Once the environment variables are set up, you can go ahead and install dependencies in both the `frontend` and `server` directories by running the following commands:
 
 For the frontend
@@ -40,7 +42,7 @@ cd server && npm ci
 ```
 > Read about [npm ci](https://docs.npmjs.com/cli/v6/commands/npm-ci)
 
-### Running the application
+#### Running the application
 At this point, you are all set to run the complete web app. You might have to set the database up with dummy data or real data from the Google Drive, instructions for which are mentioned [here].
 
 > [!NOTE]
@@ -59,6 +61,10 @@ npm run start
 ```
 
 This should get your web app running on `http://locahost:3000` and the API on `http://localhost:3002`
+
+### In production
+
+Once the initial setup is complete, follow the instructions as provided in the [deployment documentation](./scripts/deploy/README.md)
 
 ## Further documentation
 
