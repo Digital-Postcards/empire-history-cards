@@ -1,11 +1,16 @@
 #! /bin/bash
 
+cd "$(dirname "${BASH_SOURCE[0]}")"/
 # pull latest changes
-git pull
+if [[ -v GITHUB_PAT ]]; then
+    git pull https://$GITHUB_PAT@github.com/digital-postcards/empire-history-cards
+else
+    printf "Personal access token not set or is invalid; please enter your credentails:\n"
+    git pull
+fi
 
 # update the frontend
 
-cd "$(dirname "${BASH_SOURCE[0]}")"/
 # install dependencies in case any have changed
 cd ../../frontend && npm ci
 # build the frontend
