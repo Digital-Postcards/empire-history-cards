@@ -61,3 +61,6 @@ npm run start
 This should get your web app running on `http://locahost:3000` and the API on `http://localhost:3002`
 
 ## Further documentation
+
+We have more documentation! Immerse yourself.
+- [Deployment documentation](./scripts/deploy/README.md)
