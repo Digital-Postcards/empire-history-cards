@@ -58,7 +58,7 @@ const ABOUT_PAGE_CONTENT = {
             caption: "Prof. Joydeep Mitra",
         },
         {
-            imageURL: "/images/about/seminar.jpg",
+            imageURL: "/images/about/parthiv.png",
             caption: "Parthiv Menon, MS CS student",
         },
         {
