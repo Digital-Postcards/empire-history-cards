@@ -62,7 +62,7 @@ const ABOUT_PAGE_CONTENT = {
             caption: "Parthiv Menon, MS CS student",
         },
         {
-            imageURL: "/images/about/seminar.jpg",
+            imageURL: "/images/about/zitong.png",
             caption: "Zitong Bao, MS CS student",
         },
     ],
