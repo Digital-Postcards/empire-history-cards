@@ -25,7 +25,7 @@ const About = () => {
                 />
             </div>
             <p className="mt-12" dangerouslySetInnerHTML={{ __html: ABOUT_PAGE_CONTENT.paragraph4 }} />
-            <CardLookalike rotate="-rotate-1" centered classes="flex md:flex-row flex-col mb-24">
+            <CardLookalike rotate="-rotate-1" centered classes="flex md:flex-row flex-col mb-24 !w-3/4">
                 {ABOUT_PAGE_CONTENT.csTeam.map((person: any) => {
                     return (
                         <div key={person.imageURL}>
