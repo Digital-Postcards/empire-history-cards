@@ -18,7 +18,7 @@ const HomePage = () => {
                 mind: how can contextualizing racist and sexist historical images help us to identify and dismantle
                 contemporary systemic biases?
             </p>
-            <ChoiceOfCards classes="mt-12" />
+            <ChoiceOfCards classes="mt-12 mb-24" />
         </ContentContainer>
     );
 };

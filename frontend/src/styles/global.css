@@ -40,3 +40,11 @@
   width: 100wh; 
   height: 100vh;
 }
+
+.content {
+  font-size: large;
+}
+
+.content a {
+  text-decoration: underline;
+}
