@@ -145,3 +145,6 @@ service.json
 
 # local data directory
 scripts/*/data/
+
+/images
+changed.*
