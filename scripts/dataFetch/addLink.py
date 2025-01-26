@@ -8,8 +8,8 @@ df = pd.read_excel(excel_file)
 # Connect to MongoDB
 mongo_uri = 'mongodb+srv://NEU-historicPostcardProject:adminNEU@devconnector.wdklp6m.mongodb.net/?retryWrites=true&w=majority'
 client = MongoClient(mongo_uri)
-db = client['test']  # Replace with your actual database name
-collection = db['cards']         # Replace with your actual collection name
+db = client['test']  
+collection = db['cards']        
 
 # Function to group image links by card number
 def group_images_by_card(df):

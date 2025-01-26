@@ -109,7 +109,7 @@ def main():
     # MongoDB connection
     mongo_uri = 'mongodb+srv://NEU-historicPostcardProject:adminNEU@devconnector.wdklp6m.mongodb.net/?retryWrites=true&w=majority'
     client = MongoClient(mongo_uri)
-    db = client['test']  # Replace with your actual database name
+    db = client['test'] 
     card_collection = db['cards']  # Cards collection
     image_collection = db['images']  # Images collection 
 
