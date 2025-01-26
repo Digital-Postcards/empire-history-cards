@@ -1,5 +1,5 @@
 ## Prerequisite
-The server can only be accessed when you are on the Northeastern network or by creating a tunnelled connection using the Gloabl Protect VPN.
+The server can only be accessed when you are on the Northeastern network or by creating a tunnelled connection using the Global Protect VPN.
 
 ### Helpful links
 - [For Windows](https://docs.paloaltonetworks.com/globalprotect/5-1/globalprotect-app-user-guide/globalprotect-app-for-windows/download-and-install-the-globalprotect-app-for-windows)
