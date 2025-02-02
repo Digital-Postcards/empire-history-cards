@@ -99,12 +99,18 @@ def main():
     load_dotenv()
     postcards_folder_id = os.getenv("POSTCARDS_DRIVE_FOLDER_ID")
     tradecards_folder_id = os.getenv("TRADECARDS_DRIVE_FOLDER_ID")
+    postcard_carousel_folder_id = os.getenv("POSTCARDS_CAROUSEL_DRIVE_FOLDER_ID")
+    tradecard_carousel_folder_id = os.getenv("TRADECARDS_CAROUSEL_DRIVE_FOLDER_ID")
     local_postcards_folder = os.getenv("LOCAL_POSTCARDS_DIR")
     local_tradecards_folder = os.getenv("LOCAL_TRADECARDS_DIR")
+    local_postcards_carousel_folder = os.getenv("LOCAL_POSTCARDS_CAROUSEL_DIR")
+    local_tradecards_carousel_folder = os.getenv("LOCAL_TRADECARDS_CAROUSEL_DIR")
 
     # create directories if they don't exist
     os.makedirs(local_postcards_folder, exist_ok=True)
     os.makedirs(local_tradecards_folder, exist_ok=True)
+    os.makedirs(local_postcards_carousel_folder, exist_ok=True)
+    os.makedirs(local_tradecards_carousel_folder, exist_ok=True)
 
     # authenticate using service account credentials
     service = authenticate_google_drive_api()
@@ -113,6 +119,10 @@ def main():
     postcard_files = get_files_in_folder(service, postcards_folder_id)
     # get tradecards
     tradecard_files = get_files_in_folder(service, tradecards_folder_id)
+    # get postcard carousel
+    postcard_carousel_files = get_files_in_folder(service, postcard_carousel_folder_id)
+    # get tradecard carousel
+    tradecard_carousel_files = get_files_in_folder(service, tradecard_carousel_folder_id)
     
     # add a custom field to track card type
     postcard_files = [dict(item, type='postcard') for item in postcard_files]
@@ -124,6 +134,12 @@ def main():
     for file in combined_files:
         # download images and store locally
         pull_image(service, file, local_postcards_folder if file.get('type') == "postcard" else local_tradecards_folder)
+    
+    # download imaaes for carousel
+    for file in postcard_carousel_files:
+        pull_image(service, file, local_postcards_carousel_folder)
+    for file in tradecard_carousel_files:
+        pull_image(service, file, local_tradecards_carousel_folder)
 
 if __name__ == '__main__':
     main()
