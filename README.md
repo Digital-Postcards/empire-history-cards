@@ -69,4 +69,7 @@ Once the initial setup is complete, follow the instructions as provided in the [
 ## Further documentation
 
 We have more documentation! Immerse yourself.
+- [Infrastructure documentation](./scripts/deploy/INFRASTRUCTURE.md)
 - [Deployment documentation](./scripts/deploy/README.md)
+- [Getting postcards and tradecards locally](./scripts/pullimages/README.md)
+- [Database setup documentation]()

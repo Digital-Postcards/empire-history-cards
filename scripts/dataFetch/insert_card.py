@@ -5,9 +5,9 @@ from bson import ObjectId
 # MongoDB connection
 mongo_uri = 'mongodb+srv://NEU-historicPostcardProject:adminNEU@devconnector.wdklp6m.mongodb.net/?retryWrites=true&w=majority'
 client = MongoClient(mongo_uri)
-db = client['test']  # Replace with your actual database name
-cards_collection = db['cards']  # Cards collection
-images_collection = db['images']  # Images collection 
+db = client['test'] 
+cards_collection = db['cards']  
+images_collection = db['images'] 
 
 def update_card_with_images():
     # Get all the cards

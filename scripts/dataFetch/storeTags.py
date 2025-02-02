@@ -8,9 +8,9 @@ mongoURI = 'mongodb+srv://NEU-historicPostcardProject:adminNEU@devconnector.wdkl
 client = MongoClient(mongoURI)
 
 # Define the database and collections
-db = client['test']  # Replace with your actual database name
-image_collection = db['images']  # Images collection
-tag_collection = db['tags']  # Tags collection
+db = client['test']  
+image_collection = db['images']  
+tag_collection = db['tags']  
 
 # Step 1: Load the Excel data using pandas
 df_tags = pd.read_excel('./Cleaned_Tag_Data.xlsx')
