@@ -29,7 +29,11 @@ const About = () => {
                 {ABOUT_PAGE_CONTENT.csTeam.map((person: any) => {
                     return (
                         <div key={person.imageURL}>
-                            <img className="mx-auto border-[20px] border-white" src={person.imageURL} />
+                            <img
+                                className="mx-auto border-[20px] border-white"
+                                src={person.imageURL}
+                                style={{ aspectRatio: person.aspectRatio ? person.aspectRatio : "none" }}
+                            />
                             <p className="px-5 pb-4 text-sm md:text-md text-neutral-700">{person.caption}</p>
                         </div>
                     );

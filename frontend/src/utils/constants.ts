@@ -49,7 +49,7 @@ const ABOUT_PAGE_CONTENT = {
     paragraph3: `The History/Art History students worked on analyzing the trade cards and postcards, and writing transcripts for the digital exhibition, as part of a group research seminar <em>Race, Gender, and the Visual
                 Culture of Domestic Labor: Trade Cards and Postcards from the age of New Imperialism, Jim Crow Racism, and Asian Exclusion</em>, taught by Prof. Chakraborty in Spring 2022.`,
     paragraph4: `The DH project has been a collaborative effort driven by talented Computer Science students from two institutions. The <span><a href="https://empirehistorycards.cs.stonybrook.edu/" target="_blank">first version</a></span> of the project was designed and developed by students at Stony Brook University, showcasing their innovative spirit and technical expertise.
-                <br><br>Building on this foundation, Zitong Bao and Parthiv Menon, Computer Science students from the Khoury College of Computing at Northeastern University, enhanced the application with new visualization features to improve its functionality and user experience. This work was supported by the Khoury Apprenticeship program, which provided a stipend for Zitong Bao, enabling dedicated focus on the project. The digital resources provided by Khoury College have also been instrumental in hosting the application and ensuring its accessibility.
+                <br><br>Building on this foundation, Akshay Chavan, Zitong Bao and Parthiv Menon, Computer Science students from the Khoury College of Computing at Northeastern University, enhanced the application with new visualization features to improve its functionality and user experience. This work was supported by the Khoury Apprenticeship program, which provided a stipend for Zitong Bao, enabling dedicated focus on the project. The digital resources provided by Khoury College have also been instrumental in hosting the application and ensuring its accessibility.
                 <br><br>Both iterations of the project were guided by Prof. Joydeep Mitra, whose mentorship helped bring this project to life.
                 `,
     csTeam: [
@@ -59,11 +59,16 @@ const ABOUT_PAGE_CONTENT = {
         },
         {
             imageURL: "/images/about/parthiv.png",
-            caption: "Parthiv Menon, MS CS student",
+            caption: "Parthiv Menon, MS CS Student",
         },
         {
             imageURL: "/images/about/zitong.png",
-            caption: "Zitong Bao, MS CS student",
+            caption: "Zitong Bao, MS CS Student",
+        },
+        {
+            imageURL: "/images/about/akshay.png",
+            caption: "Akshay Chavan, MS CS Student",
+            aspectRatio: "900 / 746",
         },
     ],
 };

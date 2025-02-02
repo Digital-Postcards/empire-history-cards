@@ -1,4 +1,4 @@
-import CardModel from '../models/card';
+import CardModel from "../models/card";
 
 export default class CardService {
   public async getCardsByFilter(query: any, projection?: any) {
@@ -21,14 +21,14 @@ export default class CardService {
 
     let cards;
     if (!isPopulate) {
-      cards = await CardModel.find(_query, projection)
-        // .skip((+page - 1) * +limit)
-        // .limit(+limit);
+      cards = await CardModel.find(_query, projection);
+      // .skip((+page - 1) * +limit)
+      // .limit(+limit);
     } else {
       cards = await CardModel.find(_query, projection)
         // .skip((+page - 1) * +limit)
         // .limit(+limit)
-        .populate('themes imageLinks');
+        .populate("themes imageLinks");
     }
 
     if (isInScrapbook) {
@@ -37,18 +37,18 @@ export default class CardService {
         cardsForScrapBook.push({
           _id: card._id,
           item: card.item,
-          description: card.description.slice(0, 300).trim() + '...',
+          description: card.description.slice(0, 300).trim() + "...",
           themes: card.themes.map((theme: any) => {
             return theme.name;
           }),
-          image: '/public' + card.imageLinks[0].link,
+          image: "/public" + card.imageLinks[0].link,
         });
       });
       return cardsForScrapBook;
     }
 
     if (withTags) {
-      let tagsToFilter = withTags[0].split(',');
+      let tagsToFilter = withTags[0].split(",");
       let filteredCards = cards.filter((card: any) => {
         let themes = card.themes.map((theme: any) => {
           return theme.name;
@@ -76,7 +76,9 @@ export default class CardService {
   }
 
   public async getCardById(id: string) {
-    const card: any = await CardModel.findById(id).populate('themes imageLinks');
+    const card: any = await CardModel.findById(id).populate(
+      "themes imageLinks"
+    );
     if (card)
       return {
         ...card._doc,
