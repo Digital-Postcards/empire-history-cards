@@ -1,37 +1,37 @@
 import { useState, useEffect } from "react";
-import { CAROUSEL_IMAGE_URLS } from "utils";
+
+// Dynamically import images using Webpack's `require.context` method
+const images = require.context("/public/images/carousel/postcards", false, /\.(jpg|jpeg|png|gif)$/);
+
+const imagePaths = images.keys(); // Get all the file paths of the images
 
 const HeaderCollage = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    // Handle the transition to the next slide
     const nextSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % CAROUSEL_IMAGE_URLS.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % imagePaths.length);
     };
 
-    // Autoplay effect
+    // Set an interval to change the slide every 5 seconds
     useEffect(() => {
-        const interval = setInterval(() => {
-            nextSlide();
-        }, 5000); // Change slide every 5 seconds
-
-        return () => clearInterval(interval); // Cleanup interval on unmount
-    }, [currentIndex]); // Re-run effect when currentIndex changes
+        const interval = setInterval(nextSlide, 5000);
+        return () => clearInterval(interval); // Clean up interval on component unmount
+    }, []);
 
     return (
         <div className="w-screen fixed top-0 h-screen overflow-hidden">
-            {/* Carousel Container */}
             <div
                 className="flex transition-transform duration-700 ease-in-out"
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                {CAROUSEL_IMAGE_URLS.map((url: string) => (
+                {imagePaths.map((image, index) => (
                     <div
-                        key={url}
+                        key={index}
                         style={{
-                            background: `url(${url})`,
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
+                            background: `url(${images(image)}) center/cover no-repeat`,
                         }}
-                        className="w-screen h-screen flex-shrink-0"></div>
+                        className="w-screen h-screen flex-shrink-0"
+                    />
                 ))}
             </div>
         </div>
