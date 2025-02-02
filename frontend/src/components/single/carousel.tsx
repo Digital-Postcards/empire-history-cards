@@ -1,16 +1,39 @@
+import { useState, useEffect } from "react";
 import { CAROUSEL_IMAGE_URLS } from "utils";
 
 const HeaderCollage = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const nextSlide = () => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % CAROUSEL_IMAGE_URLS.length);
+    };
+
+    // Autoplay effect
+    useEffect(() => {
+        const interval = setInterval(() => {
+            nextSlide();
+        }, 5000); // Change slide every 5 seconds
+
+        return () => clearInterval(interval); // Cleanup interval on unmount
+    }, [currentIndex]); // Re-run effect when currentIndex changes
+
     return (
-        <div className="w-screen fixed top-0 h-[100%] grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-2 overflow-hidden">
-            {CAROUSEL_IMAGE_URLS.map((url: string) => {
-                return (
+        <div className="w-screen fixed top-0 h-screen overflow-hidden">
+            {/* Carousel Container */}
+            <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+                {CAROUSEL_IMAGE_URLS.map((url: string) => (
                     <div
                         key={url}
-                        style={{ background: `url(${url})`, backgroundPosition: "center", backgroundSize: "cover" }}
-                        className="h-100 w-100"></div>
-                );
-            })}
+                        style={{
+                            background: `url(${url})`,
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                        }}
+                        className="w-screen h-screen flex-shrink-0"></div>
+                ))}
+            </div>
         </div>
     );
 };
