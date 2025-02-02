@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 const TextSection = (props: { title: string; children: ReactNode | ReactNode[] }) => {
     return (
         <div className="mt-6">
-            <h2 className="md:sticky top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500 lowercase">
+            <h2 className="md:sticky top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500">
                 {props?.title}
             </h2>
             {props?.children}
