@@ -103,14 +103,14 @@ def main():
     tradecard_carousel_folder_id = os.getenv("TRADECARDS_CAROUSEL_DRIVE_FOLDER_ID")
     local_postcards_folder = os.getenv("LOCAL_POSTCARDS_DIR")
     local_tradecards_folder = os.getenv("LOCAL_TRADECARDS_DIR")
-    local_postcards_carousel_folder = os.getenv("LOCAL_POSTCARDS_CAROUSEL_DIR")
-    local_tradecards_carousel_folder = os.getenv("LOCAL_TRADECARDS_CAROUSEL_DIR")
+    postcards_carousel_images_folder = os.getenv("FRONTEND_POSTCARDS_CAROUSEL_IMAGES_DIR")
+    tradecards_carousel_images_folder = os.getenv("FRONTEND_TRADECARDS_CAROUSEL_IMAGES_DIR")
 
     # create directories if they don't exist
     os.makedirs(local_postcards_folder, exist_ok=True)
     os.makedirs(local_tradecards_folder, exist_ok=True)
-    os.makedirs(local_postcards_carousel_folder, exist_ok=True)
-    os.makedirs(local_tradecards_carousel_folder, exist_ok=True)
+    os.makedirs(postcards_carousel_images_folder, exist_ok=True)
+    os.makedirs(tradecards_carousel_images_folder, exist_ok=True)
 
     # authenticate using service account credentials
     service = authenticate_google_drive_api()
@@ -135,11 +135,13 @@ def main():
         # download images and store locally
         pull_image(service, file, local_postcards_folder if file.get('type') == "postcard" else local_tradecards_folder)
     
-    # download imaaes for carousel
+    # download postcard carousel images
     for file in postcard_carousel_files:
-        pull_image(service, file, local_postcards_carousel_folder)
+        pull_image(service, file, postcards_carousel_images_folder)
+    
+    # download tradecard carousel images
     for file in tradecard_carousel_files:
-        pull_image(service, file, local_tradecards_carousel_folder)
+        pull_image(service, file, tradecards_carousel_images_folder)
 
 if __name__ == '__main__':
     main()
