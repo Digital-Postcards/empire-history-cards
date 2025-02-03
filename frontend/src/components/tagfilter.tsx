@@ -47,7 +47,7 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
     };
 
     return (
-        <FilterBox label="Choose tags" classes={props?.filterOptions?.withVerticalMargin ? "my-2" : ""}>
+        <FilterBox label="Choose themes" classes={props?.filterOptions?.withVerticalMargin ? "my-2" : ""}>
             {error && <p>Some error happened</p>}
             {!error && (
                 <AsyncSelect

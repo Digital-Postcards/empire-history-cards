@@ -148,6 +148,7 @@ const LeafletMap = () => {
             <MapContainer
                 className="overflow-hidden col-span-8 z-0"
                 center={[0, 0]}
+                zoomControl={false}
                 zoom={mapType === "historic" ? mapConfig.historic.defaultZoom : mapConfig.modern.defaultZoom}
                 minZoom={mapType === "historic" ? mapConfig.historic.minZoom : mapConfig.modern.minZoom}
                 maxZoom={mapType === "historic" ? mapConfig.historic.maxZoom : mapConfig.modern.maxZoom}
