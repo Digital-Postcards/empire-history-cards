@@ -3,7 +3,7 @@ import { ContentContainer } from "components/common";
 const Ethics = () => {
     return (
         <ContentContainer>
-            <p className="text-lg">
+            <p className="text-lg text-justify">
                 Many of the historical images we are working with are terribly degrading and dehumanizing, especially
                 the images of people of color. Although some of the tradecards and postcards can be shocking from a
                 contemporary perspective, they were normalized in the late-1800s and early-1900s. While disturbing to

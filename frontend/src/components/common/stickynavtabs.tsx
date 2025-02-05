@@ -9,7 +9,7 @@ const StickyNavTabs = () => {
     return (
         <div
             className="
-                fixed md:relative md:top-0 top-[8px] left-[8px] md:left-0
+                navtabs fixed md:relative md:top-0 top-[8px] left-[8px] md:left-0
                 text-neutral-100
                 md:w-full w-fit
                 flex md:flex-row flex-col justify-center gap-5

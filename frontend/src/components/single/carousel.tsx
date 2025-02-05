@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // Dynamically import images using Webpack's `require.context` method
-const images = require.context("/public/images/carousel/postcards", false, /\.(jpg|jpeg|png|gif)$/);
+const images = require.context("/public/images/carousel", false, /\.(jpg|jpeg|png|gif)$/);
 
 const imagePaths = images.keys(); // Get all the file paths of the images
 

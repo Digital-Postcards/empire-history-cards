@@ -148,3 +148,6 @@ scripts/*/data/
 
 /images
 changed.*
+
+personal-notes.txt
+.DS_Store

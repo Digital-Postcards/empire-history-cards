@@ -16,7 +16,20 @@ body {
 }
 
 .themes-container {
-    width: calc(100vw - 2rem);
-    height: calc(100vh - 2rem);
+    width: calc(100vw - 4rem);
+    height: calc(100vh - 4rem);
     /* margin: 1% auto; */
+}
+
+.navtabs {
+    font-size: 21px;
+    /* color: #f3ff8d !important; */
+}
+
+.history-image {
+    display: block;
+    max-width: 280px;
+    max-height: 420px;
+    width: auto;
+    height: auto;
 }

@@ -1,6 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import * as OpenApiValidator from 'express-openapi-validator';
+import * as OpenApiValidator from "express-openapi-validator";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -14,23 +14,29 @@ const app: Application = express();
 app.use(cors());
 app.use(
   OpenApiValidator.middleware({
-    apiSpec: './src/api/openapi.yaml',
+    apiSpec: "./src/api/openapi.yaml",
     validateRequests: true,
     validateResponses: true,
-  }),
+  })
 );
 
 // resolve static directory path based on local filesystem
 const staticImageDirectory: string | undefined = process.env.IMAGES_DIR;
 const staticOptions: any = {
-  dotfiles: 'deny',
+  dotfiles: "deny",
   etag: true,
   immutable: true,
-  maxAge: '1d',
-}
+  maxAge: "1d",
+};
 // configure static directories to serve images
-app.use("/public/images/postcards", express.static(staticImageDirectory + "/postcards", staticOptions));
-app.use("/public/images/tradecards", express.static(staticImageDirectory + "/tradecards", staticOptions));
+app.use(
+  "/public/images/postcards",
+  express.static(staticImageDirectory + "/postcards", staticOptions)
+);
+app.use(
+  "/public/images/tradecards",
+  express.static(staticImageDirectory + "/tradecards", staticOptions)
+);
 
 // use these routes
 app.use("/api/themes", themeRouter);

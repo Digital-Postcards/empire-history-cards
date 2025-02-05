@@ -14,16 +14,18 @@ const TextSection = (props: {
     if (props.image) {
         return (
             <div className="mt-6">
-                <h2 className="md:sticky top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500 z-10">
+                <h2 className="top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500 z-10">
                     {props?.title}
                 </h2>
-                <div
-                    className={`flex flex-col md:flex-row gap-6 mt-4 ${
-                        props.imagePosition === "right" ? "md:flex-row-reverse" : ""
-                    }`}>
+                <div className={`flex flex-col md:flex-row gap-10 mt-4`}>
+                    {/* Text Section */}
+                    <div
+                        className={`w-full ${props.image ? "md:w-1/2 lg:w-2/3" : ""} animate-slide-in text-neutral-600 text-justify`}>
+                        {props?.content}
+                    </div>
                     {/* Image Section */}
                     {props.image && (
-                        <div className="w-full md:w-1/2 lg:w-1/3 relative group animate-fade-in">
+                        <div className="history-image w-full md:w-1/2 lg:w-1/3 relative group animate-fade-in">
                             {/* Image with Gradient Overlay */}
                             <div className="relative overflow-hidden rounded-lg shadow-lg">
                                 <img
@@ -45,21 +47,17 @@ const TextSection = (props: {
                             </div>
                         </div>
                     )}
-                    {/* Text Section */}
-                    <div
-                        className={`w-full ${props.image ? "md:w-1/2 lg:w-2/3" : ""} animate-slide-in text-neutral-600`}>
-                        {props?.content}
-                    </div>
                 </div>
             </div>
         );
     } else {
+        // If there is no image ==> Conclusion Section
         return (
             <div className="mt-6">
-                <h2 className="md:sticky top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500">
+                <h2 className="top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500">
                     {props?.title}
                 </h2>
-                <p className="mt-2 text-neutral-600 text-lg">{props?.content}</p>
+                <p className="mt-2 text-neutral-600 text-lg text-justify">{props?.content}</p>
             </div>
         );
     }

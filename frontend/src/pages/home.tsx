@@ -3,7 +3,7 @@ import { ChoiceOfCards, ContentContainer } from "components/common";
 const HomePage = () => {
     return (
         <ContentContainer>
-            <p className="text-lg">
+            <p className="text-lg text-justify">
                 Our exhibition explores the proliferation of racism and sexism in the age of New Imperialism, Jim Crow
                 segregation, and Asian Exclusion through a study of popular visual depictions of domestic workers in the
                 medium of trade cards (late 1800s) and postcards (early 1900s). In investigating derogatory depictions
