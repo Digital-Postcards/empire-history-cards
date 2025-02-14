@@ -22,26 +22,23 @@ jobs:
         run: |
           brew update
 
+      - name: Install sshpass (for password-based SCP)
+        run: |
+          brew install sshpass
+
       - name: Install & Build Frontend
         working-directory: ./frontend
         run: |
           npm ci
           npm run build
 
-      - name: Setup SSH Key for Deployment
+      - name: Deploy Frontend via SCP with Password
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Deploy Frontend via SCP
-        run: |
-          scp -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
 
       - name: Set Frontend Permissions
         run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
           sudo chown -R www-data:www-data /var/www/digitalhum
           sudo find /var/www/digitalhum -type d -exec chmod 755 {} \;
           sudo find /var/www/digitalhum -type f -exec chmod 644 {} \;
@@ -59,29 +56,26 @@ jobs:
         run: |
           brew update
 
-      - name: Setup SSH Key for Deployment
+      - name: Install sshpass (for password-based SCP)
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          brew install sshpass
 
       - name: Prepare Server Directory
         run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd /var/www/empire-history-card
           rm -rf server.old
           mv server server.old || true
           mkdir -p server
           EOF
 
-      - name: Copy Server Files via SCP
+      - name: Copy Server Files via SCP with Password
         run: |
-          scp -r server/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/empire-history-card/server
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/empire-history-card/server
 
       - name: Install & Build Backend
         run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd /var/www/empire-history-card/server
           npm ci
           npm run build
