@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies (VPN & Expect)
         run: |
           sudo apt-get update
-          sudo apt-get install -y expect globalprotect
+          sudo apt-get install -y expect GlobalProtect_deb-5.1.0.0-23.deb
 
       - name: Connect to VPN
         run: |
