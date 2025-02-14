@@ -21,12 +21,18 @@ jobs:
       - name: Install Dependencies (VPN & Expect)
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip expect
-          pip install gp-saml-gui
+          sudo apt-get install -y expect globalprotect
 
       - name: Connect to VPN
         run: |
-          gp-saml-gui --server=vpn.northeastern.edu --username=${{ secrets.VPN_USERNAME }} --password=${{ secrets.VPN_PASSWORD }} &
+          expect <<EOF
+          spawn globalprotect connect --portal vpn.northeastern.edu
+          expect "Username:"
+          send "${{ secrets.VPN_USERNAME }}\r"
+          expect "Password:"
+          send "${{ secrets.VPN_PASSWORD }}\r"
+          expect eof
+          EOF
 
       - name: Install & Build Frontend
         working-directory: ./frontend
@@ -62,12 +68,18 @@ jobs:
       - name: Install Dependencies (VPN & Expect)
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip expect
-          pip install gp-saml-gui
+          sudo apt-get install -y expect globalprotect
 
       - name: Connect to VPN
         run: |
-          gp-saml-gui --server=vpn.northeastern.edu --username=${{ secrets.VPN_USERNAME }} --password=${{ secrets.VPN_PASSWORD }} &
+          expect <<EOF
+          spawn globalprotect connect --portal vpn.northeastern.edu
+          expect "Username:"
+          send "${{ secrets.VPN_USERNAME }}\r"
+          expect "Password:"
+          send "${{ secrets.VPN_PASSWORD }}\r"
+          expect eof
+          EOF
 
       - name: Prepare Server Directory
         uses: appleboy/ssh-action@v1.0.2
