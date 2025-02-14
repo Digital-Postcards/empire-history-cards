@@ -51,14 +51,21 @@ jobs:
         run: |
           brew install sshpass
 
-      - name: Prepare Server Directory
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build TypeScript
+        run: npm run build  # Compiles TS to JS in 'dist' folder
+
+      - name: Remove Old dist Folder on Server
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd empire-history-cards/server/
             rm -rf dist
           EOF
 
-      - name: Copy New dist Folder via SCP
+      - name: Deploy New dist Folder
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:empire-history-cards/server/
 
