@@ -73,7 +73,6 @@ jobs:
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd empire-history-cards/server
-            pm2 restart dh-api || (pm2 start dist/index.js --name dh-api && pm2 save)
+            pm2 restart dh-api
             pm2 save
-            pm2 startup
           EOF
