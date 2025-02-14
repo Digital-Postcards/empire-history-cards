@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-frontend:
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,21 +17,16 @@ jobs:
           node-version: '20.18.0'
           cache: 'npm'
           cache-dependency-path: 'frontend/package-lock.json'
-      - name: Install Dependencies (VPN & Expect)
+
+      - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y expect openconnect
-      - name: Install Dependencies (VPN & Expect)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y expect GlobalProtect_deb-5.1.0.0-23.deb
+          brew update
+          brew install expect openconnect
 
       - name: Connect to VPN
         run: |
           expect <<EOF
-          spawn globalprotect connect --portal vpn.northeastern.edu
-          expect "Username:"
-          send "${{ secrets.VPN_USERNAME }}\r"
+          spawn sudo openconnect --user=${{ secrets.VPN_USERNAME }} --passwd-on-stdin vpn.northeastern.edu
           expect "Password:"
           send "${{ secrets.VPN_PASSWORD }}\r"
           expect eof
@@ -62,23 +57,21 @@ jobs:
             sudo systemctl reload apache2
 
   deploy-backend:
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted  # Changed to run on macOS
     needs: deploy-frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies (VPN & Expect)
+      - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y expect globalprotect
+          brew update
+          brew install expect openconnect
 
       - name: Connect to VPN
         run: |
           expect <<EOF
-          spawn globalprotect connect --portal vpn.northeastern.edu
-          expect "Username:"
-          send "${{ secrets.VPN_USERNAME }}\r"
+          spawn sudo openconnect --user=${{ secrets.VPN_USERNAME }} --passwd-on-stdin vpn.northeastern.edu
           expect "Password:"
           send "${{ secrets.VPN_PASSWORD }}\r"
           expect eof
