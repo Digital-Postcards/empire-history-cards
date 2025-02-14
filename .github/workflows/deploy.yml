@@ -34,7 +34,7 @@ jobs:
 
       - name: Deploy Frontend via SCP with Password
         run: |
-          sshpass -p "${{ env.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }}:/var/www/digitalhum
+          sshpass -p "dhroot" scp -o StrictHostKeyChecking=no -r frontend/build/* dhroot@129.10.111.197:/var/www/digitalhum
 
   deploy-backend:
     runs-on: self-hosted
