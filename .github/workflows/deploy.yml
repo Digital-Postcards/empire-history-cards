@@ -34,7 +34,7 @@ jobs:
 
       - name: Deploy Frontend via SCP with Password
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
+          sshpass -p "${{ env.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }}:/var/www/digitalhum
 
   deploy-backend:
     runs-on: self-hosted
@@ -53,7 +53,7 @@ jobs:
 
       - name: Prepare Server Directory
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+          sshpass -p "${{ env.SSH_PASSWORD }}" ssh ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }} << 'EOF'
             cd /var/www/empire-history-card
             rm -rf server.old
             mv server server.old || true
@@ -62,11 +62,11 @@ jobs:
 
       - name: Copy Server Files via SCP with Password
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/empire-history-card/server
+          sshpass -p "${{ env.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/* ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }}:/var/www/empire-history-card/server
 
       - name: Install & Build Backend
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+          sshpass -p "${{ env.SSH_PASSWORD }}" ssh ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }} << 'EOF'
             cd /var/www/empire-history-card/server
             npm ci
             npm run build
