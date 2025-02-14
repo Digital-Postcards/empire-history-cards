@@ -21,21 +21,6 @@ jobs:
       - name: Install Dependencies
         run: |
           brew update
-          brew install expect
-          if ! command -v globalprotect &> /dev/null; then
-            brew install --cask globalprotect
-          fi
-
-      - name: Connect to VPN (GlobalProtect)
-        run: |
-          expect <<EOF
-          spawn globalprotect connect --portal vpn.northeastern.edu
-          expect "Username:"
-          send "${{ secrets.VPN_USERNAME }}\r"
-          expect "Password:"
-          send "${{ secrets.VPN_PASSWORD }}\r"
-          expect eof
-          EOF
 
       - name: Install & Build Frontend
         working-directory: ./frontend
@@ -73,21 +58,6 @@ jobs:
       - name: Install Dependencies
         run: |
           brew update
-          brew install expect
-          if ! command -v globalprotect &> /dev/null; then
-            brew install --cask globalprotect
-          fi
-
-      - name: Connect to VPN (GlobalProtect)
-        run: |
-          expect <<EOF
-          spawn globalprotect connect --portal vpn.northeastern.edu
-          expect "Username:"
-          send "${{ secrets.VPN_USERNAME }}\r"
-          expect "Password:"
-          send "${{ secrets.VPN_PASSWORD }}\r"
-          expect eof
-          EOF
 
       - name: Setup SSH Key for Deployment
         run: |
