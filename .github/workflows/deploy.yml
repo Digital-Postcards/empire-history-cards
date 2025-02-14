@@ -52,11 +52,11 @@ jobs:
           brew install sshpass
 
 
-      - name: Install Node Dependencies
-        run: npm install
-
-      - name: Build TypeScript
-        run: npm run build  # Compiles TS to JS in 'dist' folder
+      - name: Install & Build Backend
+        working-directory: ./server
+        run: |
+          npm install
+          npm run build
 
       - name: Remove Old dist Folder on Server
         run: |
