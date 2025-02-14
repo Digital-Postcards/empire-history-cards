@@ -1,0 +1,100 @@
+name: Digital Humanities Production Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.18.0'
+          cache: 'npm'
+
+      - name: Install & Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy Frontend
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "frontend/build/*"
+          target: "/var/www/digitalhum"
+
+      - name: Set Frontend Permissions
+        uses: appleboy/ssh-action@v1.0.2
+        with:
+          script: |
+            sudo chown -R www-data:www-data /var/www/digitalhum
+            sudo find /var/www/digitalhum -type d -exec chmod 755 {} \;
+            sudo find /var/www/digitalhum -type f -exec chmod 644 {} \;
+            sudo systemctl reload apache2
+
+  deploy-backend:
+    runs-on: ubuntu-22.04
+    needs: deploy-frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare Server Directory
+        uses: appleboy/ssh-action@v1.0.2
+        with:
+          script: |
+            cd /var/www/empire-history-card
+            rm -rf server.old
+            mv server server.old || true
+            mkdir -p server
+
+      - name: Copy Server Files
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "server/*"
+          target: "/var/www/empire-history-card/server"
+
+      - name: Install & Build Backend
+        uses: appleboy/ssh-action@v1.0.2
+        with:
+          script: |
+            cd /var/www/empire-history-card/server
+            npm ci
+            npm run build
+            pm2 restart dh-api || (pm2 start index.js --name dh-api && pm2 save)
+            pm2 save
+            pm2 startup
+
+  # deploy-scripts:
+  #   runs-on: ubuntu-22.04
+  #   needs: deploy-backend
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Deploy Scripts
+  #       uses: appleboy/scp-action@v0.1.3
+  #       with:
+  #         host: ${{ secrets.SSH_HOST }}
+  #         username: ${{ secrets.SSH_USERNAME }}
+  #         password: ${{ secrets.SSH_PASSWORD }}
+  #         source: "scripts/*"
+  #         target: "/var/www/empire-history-card/scripts"
+
+  #     - name: Set Script Permissions
+  #       uses: appleboy/ssh-action@v1.0.2
+  #       with:
+  #         script: |
+  #           chmod +x /var/www/empire-history-card/scripts/*
