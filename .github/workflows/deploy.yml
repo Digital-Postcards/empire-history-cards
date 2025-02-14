@@ -17,7 +17,10 @@ jobs:
           node-version: '20.18.0'
           cache: 'npm'
           cache-dependency-path: 'frontend/package-lock.json'
-
+      - name: Install Dependencies (VPN & Expect)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y expect openconnect
       - name: Install Dependencies (VPN & Expect)
         run: |
           sudo apt-get update
