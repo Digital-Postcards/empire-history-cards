@@ -32,17 +32,27 @@ jobs:
           npm ci
           npm run build
 
+      - name: Fix Permissions on Target Directory (if needed)
+        run: |
+          # Make sure the target directory is writable
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            sudo chown -R ${SSH_USERNAME}:${SSH_USERNAME} /var/www/digitalhum
+            sudo chmod -R 755 /var/www/digitalhum
+          EOF
+
       - name: Deploy Frontend via SCP with Password
         run: |
+          # SCP the frontend build to the target directory
           sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
 
       - name: Set Frontend Permissions
         run: |
+          # Set proper file permissions for web access
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-          sudo chown -R www-data:www-data /var/www/digitalhum
-          sudo find /var/www/digitalhum -type d -exec chmod 755 {} \;
-          sudo find /var/www/digitalhum -type f -exec chmod 644 {} \;
-          sudo systemctl reload apache2
+            sudo chown -R www-data:www-data /var/www/digitalhum
+            sudo find /var/www/digitalhum -type d -exec chmod 755 {} \;
+            sudo find /var/www/digitalhum -type f -exec chmod 644 {} \;
+            sudo systemctl reload apache2
           EOF
 
   deploy-backend:
@@ -63,10 +73,10 @@ jobs:
       - name: Prepare Server Directory
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-          cd /var/www/empire-history-card
-          rm -rf server.old
-          mv server server.old || true
-          mkdir -p server
+            cd /var/www/empire-history-card
+            rm -rf server.old
+            mv server server.old || true
+            mkdir -p server
           EOF
 
       - name: Copy Server Files via SCP with Password
@@ -76,10 +86,10 @@ jobs:
       - name: Install & Build Backend
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-          cd /var/www/empire-history-card/server
-          npm ci
-          npm run build
-          pm2 restart dh-api || (pm2 start index.js --name dh-api && pm2 save)
-          pm2 save
-          pm2 startup
+            cd /var/www/empire-history-card/server
+            npm ci
+            npm run build
+            pm2 restart dh-api || (pm2 start index.js --name dh-api && pm2 save)
+            pm2 save
+            pm2 startup
           EOF
