@@ -54,23 +54,19 @@ jobs:
       - name: Prepare Server Directory
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /var/www/empire-history-card
-            rm -rf server.old
-            mv server server.old || true
-            mkdir -p server
+            cd empire-history-cards/server/
+            rm -rf dist
           EOF
 
-      - name: Copy Server Files via SCP with Password
+      - name: Copy New dist Folder via SCP
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/empire-history-card/server
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:empire-history-cards/server/
 
-      - name: Install & Build Backend
+      - name: Restart Backend Service
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /var/www/empire-history-card/server
-            npm ci
-            npm run build
-            pm2 restart dh-api || (pm2 start index.js --name dh-api && pm2 save)
+            cd empire-history-cards/server
+            pm2 restart dh-api || (pm2 start dist/index.js --name dh-api && pm2 save)
             pm2 save
             pm2 startup
           EOF
