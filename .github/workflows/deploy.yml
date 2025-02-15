@@ -51,7 +51,7 @@ jobs:
           sshpass -p "dhroot" ssh -o StrictHostKeyChecking=no dhroot@129.10.111.197 \
             "cd empire-history-cards/server && \
             git pull origin main && \
-            nvm use v20.18.0 && \
+            source ~/.nvm/nvm.sh
             npm install && \
             npm run build && \
             pm2 restart dh-api && \
