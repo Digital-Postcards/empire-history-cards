@@ -48,7 +48,7 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          sshpass -p "dhroot" ssh -o StrictHostKeyChecking=no dhroot@129.10.111.197 \
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
             "cd empire-history-cards/server && \
             git pull origin main && \
             source ~/.nvm/nvm.sh
@@ -56,7 +56,3 @@ jobs:
             npm run build && \
             pm2 restart dh-api && \
             pm2 save"
-        env:
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
