@@ -50,6 +50,7 @@ jobs:
       - name: Install sshpass (for password-based SCP)
         run: |
           brew install sshpass
+          brew install pm2
 
 
       - name: Install & Build Backend
