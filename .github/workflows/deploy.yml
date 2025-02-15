@@ -43,25 +43,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.18.0'
-          cache: 'npm'
-          cache-dependency-path: 'server/package-lock.json'
+      - name: Install sshpass
+        run: brew install sshpass
 
-      - name: SSH Deployment
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
-            cd empire-history-cards/server
-            git pull origin main
-            npm ci
-            npm run build
-            pm2 restart dh-api
+      - name: Deploy via SSH
+        run: |
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST \
+            "cd empire-history-cards/server && \
+            git pull origin main && \
+            npm install && \
+            npm run build && \
+            pm2 restart dh-api && \
             pm2 save
-            echo "Deployed from macOS runner!"
+        env:
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
