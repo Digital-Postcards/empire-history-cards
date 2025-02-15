@@ -72,9 +72,10 @@ jobs:
       - name: Restart Backend Service
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /var/www/empire-history-cards/server
-            rm -rf dist
-            npm ci
-            npm run build
-            pm2 restart dh-api || (pm2 start dist/index.js --name dh-api && pm2 save)
+            cd empire-history-cards/server
+            pwd
+            npm install -g pm2
+            pm2 -v
+            pm2 restart dh-api
+            pm2 save
           EOF
