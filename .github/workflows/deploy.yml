@@ -43,39 +43,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          brew update
-
       - name: Install sshpass (for password-based SCP)
         run: |
-          brew install sshpass
-
+          sudo apt-get update && sudo apt-get install -y sshpass
 
       - name: Install & Build Backend
         working-directory: ./server
         run: |
-          npm install
+          npm ci
           npm run build
 
       - name: Remove Old dist Folder on Server
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd empire-history-cards/server/
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            cd ~/empire-history-cards/server
             rm -rf dist
           EOF
 
       - name: Deploy New dist Folder
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:empire-history-cards/server/
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/empire-history-cards/server/
 
-      - name: Restart Backend Service
+      - name: Ensure Node.js & PM2 Installed, Restart Backend
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd empire-history-cards/server
-            pwd
-            npm install -g pm2
-            pm2 -v
-            pm2 restart dh-api
+            set -e
+            cd ~/empire-history-cards/server
+            
+            # Ensure Node.js is installed
+            if ! command -v node &> /dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+
+            # Ensure pm2 is installed globally
+            if ! command -v pm2 &> /dev/null; then
+              npm install -g pm2
+            fi
+
+            # Restart the backend service
+            pm2 restart dh-api || pm2 start dist/index.js --name dh-api
             pm2 save
           EOF
