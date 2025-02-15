@@ -50,39 +50,18 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'server/package-lock.json'
 
-      - name: Install Dependencies
-        run: |
-          brew update
-
-      - name: Install sshpass (for password-based SCP)
-        run: |
-          brew install sshpass
-
-
-      - name: Install & Build Backend
-        working-directory: ./server
-        run: |
-          npm install
-          npm run build
-
-      - name: Remove Old dist Folder on Server
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd empire-history-cards/server/
-            rm -rf dist
-          EOF
-
-      - name: Deploy New dist Folder
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r server/dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:empire-history-cards/server/
-
-      - name: Restart Backend Service
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+      - name: SSH Deployment
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
             cd empire-history-cards/server
-            pwd
-            npm install -g pm2
-            pm2 -v
+            git pull origin main
+            npm ci
+            npm run build
             pm2 restart dh-api
             pm2 save
-          EOF
+            echo "Deployed from macOS runner!"
