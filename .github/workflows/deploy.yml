@@ -50,7 +50,6 @@ jobs:
       - name: Install sshpass (for password-based SCP)
         run: |
           brew install sshpass
-          brew install pm2
 
 
       - name: Install & Build Backend
@@ -75,6 +74,7 @@ jobs:
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd empire-history-cards/server
             pwd
+            npm install -g pm2
             pm2 -v
             pm2 restart dh-api
             pm2 save
