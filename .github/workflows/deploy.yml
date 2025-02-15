@@ -47,12 +47,11 @@ jobs:
         run: brew install sshpass
 
       - name: Deploy via SSH
-        with:
-          node-version: '20.18.0'
         run: |
           sshpass -p "dhroot" ssh -o StrictHostKeyChecking=no dhroot@129.10.111.197 \
             "cd empire-history-cards/server && \
             git pull origin main && \
+            nvm use v20.18.0 && \
             npm install && \
             npm run build && \
             pm2 restart dh-api && \
