@@ -48,7 +48,7 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          sshpass -p "dhroot" ssh -o StrictHostKeyChecking=no dhroot@$129.10.111.197 \
+          sshpass -p "dhroot" ssh -o StrictHostKeyChecking=no dhroot@129.10.111.197 \
             "cd empire-history-cards/server && \
             git pull origin main && \
             npm install && \
