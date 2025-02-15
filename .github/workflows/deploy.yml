@@ -54,7 +54,7 @@ jobs:
             npm install && \
             npm run build && \
             pm2 restart dh-api && \
-            pm2 save
+            pm2 save"
         env:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
