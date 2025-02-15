@@ -72,8 +72,9 @@ jobs:
       - name: Restart Backend Service
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            pm2 -v
             cd empire-history-cards/server
+            pwd
+            pm2 -v
             pm2 restart dh-api
             pm2 save
           EOF
