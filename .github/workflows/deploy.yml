@@ -2,7 +2,7 @@ name: Digital Humanities Production Deployment
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   deploy-frontend:
@@ -14,9 +14,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.18.0'
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
+          node-version: "20.18.0"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
 
       - name: Install Dependencies
         run: |
@@ -42,6 +42,15 @@ jobs:
           echo "Deploying frontend files via SCP..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
           echo "Frontend deployment completed."
+
+      - name: Set Environment Variables
+        run: |
+          echo "Setting environment variables..."
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
+            "
+            echo 'Loading environment variables...' && \
+            cd empire-history-cards/frontend && \
+            export $(grep -v '^#' .env | xargs)"
 
   deploy-backend:
     runs-on: self-hosted

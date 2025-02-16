@@ -151,3 +151,4 @@ changed.*
 
 personal-notes.txt
 .DS_Store
+/actions-runner
