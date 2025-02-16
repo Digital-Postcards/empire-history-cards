@@ -20,21 +20,28 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          echo "Updating brew packages..."
           brew update
 
       - name: Install sshpass (for password-based SCP)
         run: |
+          echo "Installing sshpass..."
           brew install sshpass
 
       - name: Install & Build Frontend
         working-directory: ./frontend
         run: |
+          echo "Installing frontend dependencies..."
           npm ci
+          echo "Building frontend..."
           npm run build
+          echo "Frontend build completed."
 
       - name: Deploy Frontend via SCP with Password
         run: |
+          echo "Deploying frontend files via SCP..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
+          echo "Frontend deployment completed."
 
   deploy-backend:
     runs-on: self-hosted
@@ -44,15 +51,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install sshpass
-        run: brew install sshpass
+        run: |
+          echo "Installing sshpass..."
+          brew install sshpass
 
       - name: Deploy via SSH
         run: |
+          echo "Connecting to backend server and starting deployment..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
             "cd empire-history-cards/server && \
+            echo 'Pulling latest code...' && \
             git pull origin main && \
-            source ~/.nvm/nvm.sh
+             echo 'Current commit ID:' && \
+            git rev-parse HEAD && \
+            echo 'Sourcing NVM...' && \
+            source ~/.nvm/nvm.sh && \
+            echo 'Installing backend dependencies...' && \
             npm install && \
+            echo 'Building backend...' && \
             npm run build && \
+            echo 'Restarting backend with PM2...' && \
             pm2 restart dh-api && \
-            pm2 save"
+            pm2 save && \
+            echo 'Backend deployment completed.'"
