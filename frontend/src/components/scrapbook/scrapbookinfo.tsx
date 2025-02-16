@@ -18,7 +18,7 @@ const ScrapBookInfo = (props: { currentPageInfoIndex: number; data: FlipBookPage
             {!props?.isDisabled && (
                 <HoverCardContent>
                     <div className="flex flex-wrap gap-x-2">
-                        {props?.data.themes.map((tag: any, index: number) => {
+                        {props?.data?.themes.map((tag: any, index: number) => {
                             return (
                                 <>
                                     <p className="text-sm text-neutral-500">{tag}</p>
