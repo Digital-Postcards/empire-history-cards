@@ -44,6 +44,7 @@ jobs:
           echo "Frontend deployment completed."
 
       - name: Set Environment Variables
+        working-directory: ./frontend
         run: |
           echo "Loading environment variables from GitHub Actions..."
           echo "REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}" >> .env
