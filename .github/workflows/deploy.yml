@@ -28,19 +28,20 @@ jobs:
           echo "Installing sshpass..."
           brew install sshpass
 
-      - name: Set Environment Variables
-        working-directory: ./frontend
-        run: |
-          echo "Loading environment variables from GitHub Actions..."
-          echo "REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}" >> .env
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
-          echo "GENERATE_SOURCEMAP=${{ secrets.GENERATE_SOURCEMAP }}" >> .env
+      # - name: Set Environment Variables
+      #   working-directory: ./frontend
+      #   run: |
+      #     echo "Loading environment variables from GitHub Actions..."
+      #     echo "REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}" >> .env
+      #     echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+      #     echo "GENERATE_SOURCEMAP=${{ secrets.GENERATE_SOURCEMAP }}" >> .env
 
       - name: Install & Build Frontend
         working-directory: ./frontend
         run: |
           echo "Installing frontend dependencies..."
           npm ci
+          export REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}
           echo "Building frontend..."
           npm run build
           echo "Frontend build completed."
