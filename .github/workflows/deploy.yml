@@ -28,6 +28,14 @@ jobs:
           echo "Installing sshpass..."
           brew install sshpass
 
+      - name: Set Environment Variables
+        working-directory: ./frontend
+        run: |
+          echo "Loading environment variables from GitHub Actions..."
+          echo "REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}" >> .env
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+          echo "GENERATE_SOURCEMAP=${{ secrets.GENERATE_SOURCEMAP }}" >> .env
+
       - name: Install & Build Frontend
         working-directory: ./frontend
         run: |
@@ -42,14 +50,6 @@ jobs:
           echo "Deploying frontend files via SCP..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
           echo "Frontend deployment completed."
-
-      - name: Set Environment Variables
-        working-directory: ./frontend
-        run: |
-          echo "Loading environment variables from GitHub Actions..."
-          echo "REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}" >> .env
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
-          echo "GENERATE_SOURCEMAP=${{ secrets.GENERATE_SOURCEMAP }}" >> .env
 
   deploy-backend:
     runs-on: self-hosted
