@@ -45,12 +45,9 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "Setting environment variables..."
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
-            "export REACT_APP_SERVER_URL=${{secrets.REACT_APP_SERVER_URL}} && \
-            export MONGODB_URI=${{secrets.MONGODB_URI}} && \
-            export GENERATE_SOURCEMAP=${{secrets.GENERATE_SOURCEMAP}} && \
-            printenv"
+          echo "Loading environment variables from GitHub Actions..."
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+          echo "REACT_APP_OTHER_SECRET=${{ secrets.REACT_APP_OTHER_SECRET }}" >> .env
 
   deploy-backend:
     runs-on: self-hosted
