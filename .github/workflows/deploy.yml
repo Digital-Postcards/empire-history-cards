@@ -46,8 +46,9 @@ jobs:
       - name: Set Environment Variables
         run: |
           echo "Loading environment variables from GitHub Actions..."
-          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
-          echo "REACT_APP_OTHER_SECRET=${{ secrets.REACT_APP_OTHER_SECRET }}" >> .env
+          echo "REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}" >> .env
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+          echo "GENERATE_SOURCEMAP=${{ secrets.GENERATE_SOURCEMAP }}" >> .env
 
   deploy-backend:
     runs-on: self-hosted
