@@ -30,7 +30,7 @@ const HeaderCollage = () => {
                         style={{
                             background: `url(${images(image)}) center/cover no-repeat`,
                         }}
-                        className="w-screen h-screen flex-shrink-0"
+                        className="w-screen h-[45vh] flex-shrink-0"
                     />
                 ))}
             </div>
