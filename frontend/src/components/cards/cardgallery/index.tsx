@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { Error } from "components/error";
 import { Loader } from "components/common";
 
-const MasonryList = (props: { filterTags: string[]; type: string | "" }) => {
+const MasonryList = (props: { filterTags: string[]; type: string | ""; side: string }) => {
     const [noCards, setNoCards] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -37,6 +37,12 @@ const MasonryList = (props: { filterTags: string[]; type: string | "" }) => {
         getData();
     }, [props?.filterTags.join(",")]);
 
+    // if side is front, then return the front image, else return the back image
+    const getImageLink = (imageLinks: Array<any>) => {
+        const link = process.env.REACT_APP_SERVER_URL + "/public" + imageLinks[0].link;
+        return link.replace(/(A|B)\.jpg$/, props.side === "front" ? "A.jpg" : "B.jpg");
+    };
+
     if (api.isLoading) return <Loader isFullSize={true} />;
 
     if (cardData === null) {
@@ -58,10 +64,7 @@ const MasonryList = (props: { filterTags: string[]; type: string | "" }) => {
                                     key={item._id}
                                     className="group h-fit relative cursor-pointer hover:-translate-y-1 hover:shadow-3xl transition-all duration-300">
                                     {item.imageLinks.length > 0 && (
-                                        <img
-                                            className="rounded-lg"
-                                            src={process.env.REACT_APP_SERVER_URL + "/public" + item.imageLinks[0].link}
-                                        />
+                                        <img className="rounded-lg" src={getImageLink(item.imageLinks)} />
                                     )}
                                     <div className="absolute bottom-0 md:h-48 h-60 w-[100%] p-3 flex-col justify-end text-background rounded-b-lg bg-gradient-to-t from-black to-transparent md:group-hover:flex flex md:hidden">
                                         <p className="md:text-lg text-md font-bold">
