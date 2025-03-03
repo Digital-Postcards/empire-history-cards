@@ -36,7 +36,7 @@ const CardInfoBox = (props: CardInfoBoxProps) => {
                 <>
                     <InfoSection label="Company">
                         <h4 className="text-md">{props?.company}</h4>
-                        <p className="text-sm">{props?.companyInformation}</p>
+                        <p className="text-sm text-justify">{props?.companyInformation}</p>
                     </InfoSection>
                 </>
             )}
