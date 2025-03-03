@@ -22,10 +22,9 @@ const CardImageInViewer = (props: CardImageInViewerProps) => {
 
     return (
         <img
-            height={550}
             width={imageWidth}
             src={process.env.REACT_APP_SERVER_URL + "/public" + props?.imageURL}
-            className={computedClasses}
+            className={`h-full w-auto object-cover ${computedClasses}`}
         />
     );
 };
