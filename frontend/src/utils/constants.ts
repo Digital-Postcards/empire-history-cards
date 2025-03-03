@@ -55,20 +55,48 @@ const ABOUT_PAGE_CONTENT = {
     csTeam: [
         {
             imageURL: "/images/about/profmitra.png",
-            caption: "Prof. Joydeep Mitra",
+            name: "Prof. Joydeep Mitra",
+            role: "Assistant Professor",
+            links: {
+                website: "https://joymitra.github.io/",
+                linkedin: "https://www.linkedin.com/in/joydeepmitraksu/",
+                google_scholar: "https://scholar.google.com/citations?user=9YST-BcAAAAJ&hl=en",
+                email: "j.mitra@northeastern.edu",
+            },
+        },
+        {
+            imageURL: "/images/about/akshay.jpg",
+            name: "Akshay Chavan",
+            role: "MSCS Student",
+            // aspectRatio: "900 / 746",
+            links: {
+                website: "https://akshaychavan7.github.io/",
+                linkedin: "https://www.linkedin.com/in/akshaychavan7/",
+                google_scholar: "https://scholar.google.com/citations?hl=en&user=HI8ImL0AAAAJ",
+                email: "akshaychavan.kkwedu@gmail.com",
+            },
         },
         {
             imageURL: "/images/about/parthiv.png",
-            caption: "Parthiv Menon, MS CS Student",
+            name: "Parthiv Menon",
+            role: "MSCS Student",
+            links: {
+                website: "https://parthivmenon.com/",
+                linkedin: "https://linkedin.com/in/parthivmenon",
+                google_scholar: "https://scholar.google.com/citations?user=04re_2oAAAAJ&hl=en&oi=ao",
+                email: "parthivmenon01@gmail.com",
+            },
         },
         {
             imageURL: "/images/about/zitong.png",
-            caption: "Zitong Bao, MS CS Student",
-        },
-        {
-            imageURL: "/images/about/akshay.png",
-            caption: "Akshay Chavan, MS CS Student",
-            aspectRatio: "900 / 746",
+            name: "Zitong Bao",
+            role: "MSCS Student",
+            links: {
+                // website: "",
+                linkedin: "linkedin.com/in/zitong-bao-23115b274",
+                email: "bao.zit@northeastern.edu",
+                // google_scholar: "https://scholar.google.com/citations?user=9YST-BcAAAAJ&hl=en",
+            },
         },
     ],
 };

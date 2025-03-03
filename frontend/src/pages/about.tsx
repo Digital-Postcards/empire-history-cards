@@ -1,4 +1,5 @@
-import { CardLookalike, CardLookalikeWithImage, ContentContainer } from "components/common";
+import { CardLookalikeWithImage, ContentContainer } from "components/common";
+import TeamSection from "components/common/teammembers";
 import { ABOUT_PAGE_CONTENT } from "utils";
 
 const About = () => {
@@ -25,7 +26,7 @@ const About = () => {
                 />
             </div>
             <p className="mt-12 text-justify" dangerouslySetInnerHTML={{ __html: ABOUT_PAGE_CONTENT.paragraph4 }} />
-            <CardLookalike rotate="-rotate-1" centered classes="flex md:flex-row flex-col mb-24 !w-3/4">
+            {/* <CardLookalike rotate="-rotate-1" centered classes="flex md:flex-row flex-col mb-24 !w-3/4">
                 {ABOUT_PAGE_CONTENT.csTeam.map((person: any) => {
                     return (
                         <div key={person.imageURL}>
@@ -38,7 +39,8 @@ const About = () => {
                         </div>
                     );
                 })}
-            </CardLookalike>
+            </CardLookalike> */}
+            <TeamSection teamMembers={ABOUT_PAGE_CONTENT.csTeam} />
         </ContentContainer>
     );
 };
