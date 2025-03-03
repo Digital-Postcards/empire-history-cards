@@ -35,13 +35,9 @@ export default function TeamSection({ teamMembers }: { teamMembers: TeamMember[]
 
                             <div className="flex items-center justify-center gap-3 mt-auto">
                                 {teamMember.links.email && (
-                                    <Link
-                                        to="#"
-                                        onClick={() => (window.location.href = `mailto:${teamMember.links.email}`)}
-                                        target="_blank"
-                                        rel="noopener noreferrer">
+                                    <a href={`mailto:${teamMember.links.email}`}>
                                         <Mail className="h-5 w-5" />
-                                    </Link>
+                                    </a>
                                 )}
 
                                 {teamMember.links.website && (
