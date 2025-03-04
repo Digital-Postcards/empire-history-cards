@@ -93,9 +93,9 @@ const ABOUT_PAGE_CONTENT = {
             role: "MSCS Student",
             links: {
                 // website: "",
-                linkedin: "linkedin.com/in/zitong-bao-23115b274",
+                linkedin: "https://linkedin.com/in/zitong-bao-23115b274",
                 email: "bao.zit@northeastern.edu",
-                // google_scholar: "https://scholar.google.com/citations?user=9YST-BcAAAAJ&hl=en",
+                // google_scholar: "",
             },
         },
     ],

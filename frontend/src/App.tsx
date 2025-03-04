@@ -6,6 +6,7 @@ import "styles/loader.css";
 import BaseSingleLayout from "layouts/single";
 
 import { About, HomePage, Project, ScrapBook, History, MapViewer, CardDetail, Cards, Themes, Ethics } from "pages";
+import AdminLoginPortal from "pages/admin";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                         <Route path="cards/:cardType/:cardId" element={<CardDetail />}></Route>
                     </Route>
                     <Route path="*" element={<p>What&apos;s up?</p>}></Route>
+                    <Route path="admin" element={<AdminLoginPortal />}></Route>
                 </Routes>
             </div>
         </BrowserRouter>
