@@ -88,3 +88,4 @@ We have more documentation! Immerse yourself.
 - [Getting postcards and tradecards locally](./scripts/pullimages/README.md)
 - [Database setup documentation]()
 - [Setting up self-hosted runners](./.github/workflows/readme.md)
+- [Performance Testing](./scripts/performance-testing/readme.md)
