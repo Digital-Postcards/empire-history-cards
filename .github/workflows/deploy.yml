@@ -31,8 +31,9 @@ jobs:
       - name: Install & Build Frontend
         working-directory: ./frontend
         run: |
+          pwd
           echo "Installing frontend dependencies..."
-          npm ci
+          npm install
           export REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}
           echo "Building frontend..."
           npm run build
