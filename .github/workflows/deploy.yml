@@ -32,7 +32,7 @@ jobs:
         working-directory: ./frontend
         run: |
           echo "Installing frontend dependencies..."
-          npm ci
+          npm install
           export REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}
           echo "Building frontend..."
           npm run build
