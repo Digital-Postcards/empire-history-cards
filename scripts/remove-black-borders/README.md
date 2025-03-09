@@ -6,18 +6,23 @@ This Python script is designed to detect and replace the black borders of images
 
 Before using this script, you need to have the following dependencies installed:
 
-- OpenCV (cv2):
+- OpenCV (cv2)
+- numpy
+
+Use following command to install these dependencies:
+
 ```bash
-pip install opencv-python
+pip install -r requirements.txt
 ```
 
 ## Usage
 
 1. Place the images you want to process in a folder of your choice. You can set the input folder by modifying the `input_folder` variable in the script.
 
-2. Optionally, specify the output folder where the processed images will be saved by modifying the `output_folder` variable in the script. If not provided, it defaults to a folder named "processed_" followed by the input folder name.
+2. Optionally, specify the output folder where the processed images will be saved by modifying the `output_folder` variable in the script. If not provided, it defaults to a folder named "processed\_" followed by the input folder name.
 
 3. Run the script:
+
 ```bash
 python replace_black_borders.py
 ```
@@ -40,4 +45,3 @@ output_folder = "your_output_folder"
 ```
 
 Please replace `"your_input_folder"` and `"your_output_folder"` with the actual folder paths you want to use.
-

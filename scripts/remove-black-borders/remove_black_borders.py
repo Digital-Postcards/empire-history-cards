@@ -107,8 +107,8 @@ def process_image(filename, input_folder, output_folder):
 
 
 if __name__ == "__main__":
-    input_folder = "images"
-    output_folder = "processed_images"
+    input_folder = input("Enter input images folder path:") #"images"
+    output_folder = input("Enter output images folder path:") # "processed_images"
 
     # Using ThreadPoolExecutor to process images in parallel
     with ThreadPoolExecutor() as executor:
