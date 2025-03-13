@@ -25,7 +25,7 @@ app.use(
     secret: process.env.SECRET_KEY || "secret", // TODO: change this later
     cookie: {
       httpOnly: true,
-      sameSite: true,
+      sameSite: "None",
     },
     resave: false,
     saveUninitialized: false,
@@ -33,7 +33,10 @@ app.use(
 );
 app.use(
   cors({
-    origin: "http://visualdomesticlaborhistory.khoury.northeastern.edu",
+    origin: [
+      "http://visualdomesticlaborhistory.khoury.northeastern.edu",
+      process.env.REACT_APP_SERVER_URL || "",
+    ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
