@@ -15,8 +15,12 @@ import {
     IconButton,
 } from "@mui/material";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { AxiosResponse } from "axios";
+import instance from "utils/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminLoginPortal() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
@@ -28,7 +32,18 @@ export default function AdminLoginPortal() {
         return re.test(email);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const authenticateCredentials = async (email: string, password: string) => {
+        const response: AxiosResponse = await instance("/authentication/authenticateCredentials", {
+            method: "POST",
+            data: { email: email, password: password },
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response;
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const newErrors = { email: "", password: "" };
@@ -48,7 +63,12 @@ export default function AdminLoginPortal() {
         setErrors(newErrors);
 
         if (!newErrors.email && !newErrors.password) {
-            console.log("Login submitted:", { email, password, rememberMe });
+            const response = await authenticateCredentials(email, password);
+            if (response.status === 200) {
+                navigate("/admin/dashboard");
+            } else {
+                alert(response.data.message);
+            }
         }
     };
 

@@ -78,7 +78,6 @@ const Themes = () => {
                     select: (event: any) => {
                         if (event.nodes.length > 0) {
                             const requiredNode: any = nodes.filter((node: any) => node.id === event.nodes[0]);
-                            console.log(requiredNode);
                             navigate(`/cards?withTags=${requiredNode[0].label}`);
                         }
                     },

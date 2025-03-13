@@ -2,16 +2,41 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import * as OpenApiValidator from "express-openapi-validator";
 import * as dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+const session = require("express-session");
 
 dotenv.config();
 
 // import routes
-import { cardRouter, mapRouter, themeRouter } from "./routes";
+import {
+  cardRouter,
+  mapRouter,
+  themeRouter,
+  authenticationRouter,
+} from "./routes";
 
 const app: Application = express();
 
 // Use middlewares
-app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  session({
+    secret: `${process.env.SECRET_KEY}`,
+    cookie: {
+      httpOnly: true,
+      sameSite: true,
+    },
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.CLIENT_URL || ""],
+  })
+);
 app.use(
   OpenApiValidator.middleware({
     apiSpec: "./src/api/openapi.yaml",
@@ -39,6 +64,7 @@ app.use(
 );
 
 // use these routes
+app.use("/api/authentication", authenticationRouter);
 app.use("/api/themes", themeRouter);
 app.use("/api/map", mapRouter);
 app.use("/api/cards", cardRouter);

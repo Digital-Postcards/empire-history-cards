@@ -25,12 +25,12 @@ paths:
         - in: query
           name: page
           description: The page to be used for pagination
-          schema: 
+          schema:
             type: number
         - in: query
           name: year
           description: The year to filter the card list by
-          schema: 
+          schema:
             type: number
         - in: query
           name: withTags
@@ -52,7 +52,7 @@ paths:
         "400":
           $ref: "#/components/responses/Error"
         "404":
-          $ref: "#/components/responses/NotFound"              
+          $ref: "#/components/responses/NotFound"
   /cards/scrapbook:
     get:
       summary: Returns a list of cards for the scrapbook
@@ -87,9 +87,9 @@ paths:
         "200":
           description: A JSON object representing the card
           content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/Card"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
         "400":
           $ref: "#/components/responses/Error"
         "404":
@@ -122,7 +122,7 @@ paths:
         - in: query
           name: year
           description: The year to filter the card list by
-          schema: 
+          schema:
             type: number
         - in: query
           name: withTags
@@ -144,7 +144,151 @@ paths:
           $ref: "#/components/responses/Error"
         "404":
           $ref: "#/components/responses/NotFound"
-
+  /authentication/is_authenticated:
+    get:
+      summary: Check if user is authenticated
+      description: Verifies if the current user session is authenticated
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Authentication status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isAuthenticated:
+                    type: boolean
+                    description: True if user is authenticated
+                required:
+                  - isAuthenticated
+        "403":
+          description: Forbidden - User is not authenticated
+  /authentication/authenticateCredentials:
+    post:
+      summary: Authenticate user credentials
+      description: Validates user credentials and returns authentication details if successful.
+      operationId: authenticateCredentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "akshaychavan@gmail.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password"
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Logged In Successfully"
+                  user:
+                    type: object
+                    properties:
+                      firstname:
+                        type: string
+                        example: "Akshay"
+                      lastname:
+                        type: string
+                        example: "Chavan"
+                      email:
+                        type: string
+                        format: email
+                        example: "akshaychavan@gmail.com"
+        "401":
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: "Invalid username or password"
+        "400":
+          description: Bad Request - Missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Email and password are required"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+  /authentication/logout:
+    get:
+      summary: Logout user
+      description: Logs out the current user session
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Logged Out Successfully"
+        "403":
+          description: Forbidden - User is not authenticated
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal Server Error"
 components:
   schemas:
     Card:
@@ -289,6 +433,28 @@ components:
         - description
         - themes
         - image
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The unique email address of the user.
+        password:
+          type: string
+          format: password
+          description: The user's password.
+        firstname:
+          type: string
+          description: The user's first name.
+          nullable: true
+        lastname:
+          type: string
+          description: The user's last name.
+          nullable: true
+      required:
+        - email
+        - password
   responses:
     Error:
       description: A JSON object with error information

@@ -2,7 +2,6 @@ import React from "react";
 import { FlipBookPageDataType } from "types";
 
 const ScrapBookPage = React.forwardRef((props: FlipBookPageDataType, ref: any) => {
-    console.log("process.env.REACT_APP_SERVER_URL", process.env.REACT_APP_SERVER_URL);
     let isEvenPage: boolean = false;
     if (props?.pageNumber) isEvenPage = props?.pageNumber % 2 === 0;
 
