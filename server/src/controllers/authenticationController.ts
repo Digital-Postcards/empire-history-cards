@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { IUser } from "../models/user";
 import jwt from "jsonwebtoken";
 
-const secretKey = process.env.SECRET_KEY;
+const secretKey = process.env.SECRET_KEY || "secret";
 
 if (!secretKey) {
   throw new Error("SECRET_KEY is not set in environment variables");
