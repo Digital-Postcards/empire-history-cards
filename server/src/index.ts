@@ -18,6 +18,7 @@ import {
 const app: Application = express();
 
 // Use middlewares
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -25,7 +26,8 @@ app.use(
     secret: process.env.SECRET_KEY || "secret", // TODO: change this later
     cookie: {
       httpOnly: true,
-      sameSite: "None",
+      sameSite: "Lax",
+      secure: false,
     },
     resave: false,
     saveUninitialized: false,
