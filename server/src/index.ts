@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   session({
-    secret: process.env.SECRET_KEY || "secret",
+    secret: process.env.SECRET_KEY || "secret", // TODO: change this later
     cookie: {
       httpOnly: true,
       sameSite: true,
@@ -33,7 +33,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: process.env.REACT_APP_SERVER_URL,
+    origin: "http://visualdomesticlaborhistory.khoury.northeastern.edu",
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
