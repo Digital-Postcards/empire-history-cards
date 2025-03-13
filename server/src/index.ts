@@ -34,7 +34,7 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.CLIENT_URL || ""],
+    origin: [process.env.REACT_APP_SERVER_URL || ""],
   })
 );
 app.use(
