@@ -72,6 +72,7 @@ jobs:
             npm install && \
             echo 'Building backend...' && \
             npm run build && \
+            export SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} && \
             echo 'Restarting backend with PM2...' && \
             pm2 restart dh-api && \
             pm2 save && \
