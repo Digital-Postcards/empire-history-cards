@@ -74,6 +74,6 @@ jobs:
             npm run build && \
 
             echo 'Restarting backend with PM2...' && \
-            pm2 restart dh-api && \
+            SECRET_KEY=${{secrets.JWT_SECRET_KEY}} pm2 restart dh-api && \
             pm2 save && \
             echo 'Backend deployment completed.'"
