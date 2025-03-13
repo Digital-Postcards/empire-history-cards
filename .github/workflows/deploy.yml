@@ -56,7 +56,12 @@ jobs:
         run: |
           echo "Installing sshpass..."
           brew install sshpass
-
+    
+      - name: Export Environmental Variables
+        run: |
+          pwd
+          export SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          echo ${{ secrets.JWT_SECRET_KEY }}
       - name: Deploy via SSH
         run: |
           echo "Connecting to backend server and starting deployment..."
