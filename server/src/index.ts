@@ -31,12 +31,7 @@ app.use(
     saveUninitialized: false,
   })
 );
-app.use(
-  cors({
-    credentials: true,
-    origin: [process.env.REACT_APP_SERVER_URL || ""],
-  })
-);
+app.use(cors());
 app.use(
   OpenApiValidator.middleware({
     apiSpec: "./src/api/openapi.yaml",
