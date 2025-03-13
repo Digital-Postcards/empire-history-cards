@@ -79,7 +79,7 @@ jobs:
             npm run build
 
             echo 'Setting SECRET_KEY environment variable...'
-            echo "export SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ~/.bashrc
+            echo "export SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}'" >> ~/.bashrc
             echo "SECRET_KEY has been set."
 
             echo 'Restarting backend with PM2...'
