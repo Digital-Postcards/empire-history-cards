@@ -34,12 +34,7 @@ jobs:
           echo "Building frontend..."
           npm run build
           echo "Frontend build completed."
-          ls
-
-      - name: Deploy Frontend
-        run: |
           echo "Copying frontend files to production directory..."
-          ls
           echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S cp -r build/* /var/www/digitalhum
           echo "Frontend deployment completed."
 
