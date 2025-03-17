@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          path: /home/dhroot/empire-history-cards
 
       - name: Install Dependencies
         run: |
@@ -49,8 +47,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          path: /home/dhroot/empire-history-cards
 
       - name: Install Dependencies
         run: |
