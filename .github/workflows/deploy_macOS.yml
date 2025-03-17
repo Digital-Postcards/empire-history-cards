@@ -1,0 +1,79 @@
+name: Digital Humanities Production Deployment
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy-frontend:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.18.0"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
+
+      - name: Install Dependencies
+        run: |
+          echo "Updating brew packages..."
+          brew update
+
+      - name: Install sshpass (for password-based SCP)
+        run: |
+          echo "Installing sshpass..."
+          brew install sshpass
+
+      - name: Install & Build Frontend
+        working-directory: ./frontend
+        run: |
+          pwd
+          echo "Installing frontend dependencies..."
+          npm install
+          export REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}
+          echo "Building frontend..."
+          npm run build
+          echo "Frontend build completed."
+
+      - name: Deploy Frontend via SCP with Password
+        run: |
+          echo "Deploying frontend files via SCP..."
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -r frontend/build/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/digitalhum
+          echo "Frontend deployment completed."
+
+  deploy-backend:
+    runs-on: self-hosted
+    needs: deploy-frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install sshpass
+        run: |
+          echo "Installing sshpass..."
+          brew install sshpass
+
+      - name: Deploy via SSH
+        run: |
+          echo "Connecting to backend server and starting deployment..."
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
+            "cd empire-history-cards/server && \
+            echo 'Pulling latest code...' && \
+            git pull origin main && \
+             echo 'Current commit ID:' && \
+            git rev-parse HEAD && \
+            echo 'Sourcing NVM...' && \
+            source ~/.nvm/nvm.sh && \
+            echo 'Installing backend dependencies...' && \
+            npm install && \
+            echo 'Building backend...' && \
+            npm run build && \
+
+            echo 'Restarting backend with PM2...' && \
+            SECRET_KEY=${{secrets.JWT_SECRET_KEY}} pm2 restart dh-api && \
+            pm2 save && \
+            echo 'Backend deployment completed.'"
