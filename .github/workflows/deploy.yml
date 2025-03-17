@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-frontend:
-    runs-on: [self-hosted, ubuntu]
+    runs-on: [ubuntu]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
           echo "Frontend deployment completed."
 
   deploy-backend:
-    runs-on: [self-hosted, ubuntu]
+    runs-on: [ubuntu]
     needs: deploy-frontend
     steps:
       - name: Checkout code
