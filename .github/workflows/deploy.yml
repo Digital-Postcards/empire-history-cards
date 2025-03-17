@@ -39,7 +39,7 @@ jobs:
       - name: Deploy Frontend
         run: |
           echo "Copying frontend files to production directory..."
-          pwd
+          ls
           echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S cp -r build/* /var/www/digitalhum
           echo "Frontend deployment completed."
 
