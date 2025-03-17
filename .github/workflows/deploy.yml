@@ -14,9 +14,9 @@ jobs:
       - name: Install Dependencies
         run: |
           echo "Updating package lists..."
-          apt update -y
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt update -y
           echo "Installing necessary packages..."
-          apt install -y nodejs npm
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt install -y nodejs npm
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -38,7 +38,7 @@ jobs:
       - name: Deploy Frontend
         run: |
           echo "Copying frontend files to production directory..."
-          cp -r frontend/build/* /var/www/digitalhum
+          sudo cp -r frontend/build/* /var/www/digitalhum
           echo "Frontend deployment completed."
 
   deploy-backend:
@@ -51,7 +51,7 @@ jobs:
       - name: Install Dependencies
         run: |
           echo "Ensuring necessary packages are installed..."
-          apt install -y nodejs npm
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt install -y nodejs npm
 
       - name: Deploy Backend
         run: |
