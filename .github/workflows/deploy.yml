@@ -10,33 +10,63 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        id: checkout
+
+      - name: Log deployment start
+        run: echo "Starting frontend deployment process at $(date)"
 
       - name: Install Dependencies
+        id: install-deps
         run: |
+          echo "::group::Updating package lists"
           echo "Updating package lists..."
-          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt update -y
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt update -y || { echo "Failed to update package lists"; exit 1; }
+          echo "::endgroup::"
+
+          echo "::group::Installing necessary packages"
           echo "Installing necessary packages..."
-          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt install -y nodejs npm
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt install -y nodejs npm || { echo "Failed to install packages"; exit 1; }
+          echo "Successfully installed required packages"
+          echo "::endgroup::"
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
+        id: setup-node
         with:
           node-version: "20.18.0"
           cache: "npm"
           cache-dependency-path: "frontend/package-lock.json"
 
       - name: Install & Build Frontend
+        id: build-frontend
         working-directory: /home/dhroot/empire-history-cards/frontend
         run: |
+          echo "::group::Installing frontend dependencies"
           echo "Installing frontend dependencies..."
-          npm install
+          npm install || { echo "Failed to install frontend dependencies"; exit 1; }
+          echo "Successfully installed frontend dependencies"
+          echo "::endgroup::"
+
+          echo "::group::Setting environment variables"
+          echo "Setting REACT_APP_SERVER_URL environment variable"
           export REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}
+          echo "Environment variables set successfully"
+          echo "::endgroup::"
+
+          echo "::group::Building frontend"
           echo "Building frontend..."
-          npm run build
-          echo "Frontend build completed."
+          npm run build || { echo "Frontend build failed"; exit 1; }
+          echo "Frontend build completed successfully"
+          echo "::endgroup::"
+
+          echo "::group::Deploying to production"
           echo "Copying frontend files to production directory..."
-          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S cp -r build/* /var/www/digitalhum
-          echo "Frontend deployment completed."
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S cp -r build/* /var/www/digitalhum || { echo "Failed to copy files to production directory"; exit 1; }
+          echo "Frontend deployment completed successfully"
+          echo "::endgroup::"
+
+      - name: Log frontend deployment completion
+        run: echo "Frontend deployment completed at $(date)"
 
   deploy-backend:
     runs-on: [ubuntu]
@@ -44,35 +74,71 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        id: checkout
+
+      - name: Log backend deployment start
+        run: echo "Starting backend deployment process at $(date)"
 
       - name: Install Dependencies
+        id: install-deps
         run: |
+          echo "::group::Installing necessary packages"
           echo "Ensuring necessary packages are installed..."
-          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt install -y nodejs npm
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt install -y nodejs npm || { echo "Failed to install packages"; exit 1; }
+          echo "Successfully installed required packages"
+          echo "::endgroup::"
 
       - name: Deploy Backend
+        id: deploy-backend
         run: |
+          echo "::group::Navigating to backend directory"
           echo "Navigating to backend directory..."
-          cd /home/dhroot/empire-history-cards/server
+          cd /home/dhroot/empire-history-cards/server || { echo "Failed to navigate to backend directory"; exit 1; }
+          echo "Successfully navigated to backend directory"
+          echo "::endgroup::"
 
+          echo "::group::Pulling latest code"
           echo "Pulling latest code..."
-          git pull origin main
+          git pull origin main || { echo "Failed to pull latest code"; exit 1; }
+          echo "Successfully pulled latest code"
+          echo "::endgroup::"
 
+          echo "::group::Current commit info"
           echo "Current commit ID:"
           git rev-parse HEAD
+          echo "Current commit details:"
+          git log -1 --pretty=format:"%h - %an, %ar : %s"
+          echo "::endgroup::"
 
+          echo "::group::Loading NVM"
           echo "Loading NVM..."
           export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || { echo "Failed to load NVM"; exit 1; }
+          echo "NVM loaded successfully"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "::endgroup::"
 
+          echo "::group::Installing backend dependencies"
           echo "Installing backend dependencies..."
-          npm install
+          npm install || { echo "Failed to install backend dependencies"; exit 1; }
+          echo "Backend dependencies installed successfully"
+          echo "::endgroup::"
 
+          echo "::group::Building backend"
           echo "Building backend..."
-          npm run build
+          npm run build || { echo "Backend build failed"; exit 1; }
+          echo "Backend build completed successfully"
+          echo "::endgroup::"
 
+          echo "::group::Restarting service with PM2"
           echo "Restarting backend with PM2..."
-          SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} pm2 restart dh-api
-          pm2 save
+          SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} pm2 restart dh-api || { echo "Failed to restart backend service"; exit 1; }
+          pm2 save || { echo "Failed to save PM2 configuration"; exit 1; }
+          echo "Backend service restarted successfully"
+          echo "::endgroup::"
 
-          echo "Backend deployment completed."
+          echo "Backend deployment completed successfully"
+
+      - name: Log backend deployment completion
+        run: echo "Backend deployment completed at $(date)"
