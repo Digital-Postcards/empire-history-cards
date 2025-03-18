@@ -26,7 +26,7 @@ app.use(
     secret: process.env.SECRET_KEY || "secret", // TODO: change this later
     cookie: {
       httpOnly: true,
-      sameSite: "Lax",
+      sameSite: "None",
       secure: false,
     },
     resave: false,
