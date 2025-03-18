@@ -23,11 +23,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   session({
-    secret: process.env.SECRET_KEY || "secret",
+    secret: process.env.SECRET_KEY || "secret", // TODO: change this later
     cookie: {
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "lax",
+      // secure: false,
     },
     resave: false,
     saveUninitialized: false,
