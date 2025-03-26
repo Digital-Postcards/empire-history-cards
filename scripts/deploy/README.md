@@ -53,3 +53,9 @@ For production, put `mongodb://localhost:27017/database` as the value for `MONGO
 Lines 16-26 of the script deal with installing dependencies, creating the production build of the backend, and restarting the NodeJS server.
 
 Creating a production build of a TypeScript NodeJS server produces all the required files in the `dist/` directory. `pm2` uses files from that directory to maintain the NodeJS process in production.
+
+After completing the build process and restarting the pm2 process, check the status of the server using this command
+
+```bash
+curl http://localhost:3002/healthcheck
+```
