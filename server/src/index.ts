@@ -1,11 +1,18 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import * as OpenApiValidator from "express-openapi-validator";
-import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 const session = require("express-session");
+const rateLimit = require("express-rate-limit");
 
-dotenv.config();
+// Import configuration
+import {
+  SESSION_CONFIG,
+  CORS_CONFIG,
+  OPENAPI_VALIDATOR_CONFIG,
+  STATIC_FILES_CONFIG,
+  API_ROUTES,
+} from "./config";
 
 // import routes
 import {
@@ -16,74 +23,51 @@ import {
 } from "./routes";
 
 const app: Application = express();
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500, // limit each IP to 500 requests per windowMs
+  message: "Too many requests from this IP, please try again later",
+});
 
 // Use middlewares
 app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
+app.use(session(SESSION_CONFIG));
+app.use(cors(CORS_CONFIG));
+app.use(OpenApiValidator.middleware(OPENAPI_VALIDATOR_CONFIG));
+app.use(limiter);
+
+// Configure static directories to serve images
 app.use(
-  session({
-    secret: process.env.SECRET_KEY || "secret", // TODO: change this later
-    cookie: {
-      httpOnly: true,
-      sameSite: "lax",
-      // secure: false,
-    },
-    resave: false,
-    saveUninitialized: false,
-  })
+  STATIC_FILES_CONFIG.paths.postcards,
+  express.static(
+    STATIC_FILES_CONFIG.imageDirectory + "/postcards",
+    STATIC_FILES_CONFIG.options
+  )
 );
 app.use(
-  cors({
-    origin: [
-      "http://visualdomesticlaborhistory.khoury.northeastern.edu",
-      process.env.REACT_APP_SERVER_URL || "",
-    ],
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
-    allowedHeaders: "Content-Type,Authorization",
-    credentials: true,
-  })
-);
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: "./src/api/openapi.yaml",
-    validateRequests: true,
-    validateResponses: true,
-  })
+  STATIC_FILES_CONFIG.paths.tradecards,
+  express.static(
+    STATIC_FILES_CONFIG.imageDirectory + "/tradecards",
+    STATIC_FILES_CONFIG.options
+  )
 );
 
-// resolve static directory path based on local filesystem
-const staticImageDirectory: string | undefined = process.env.IMAGES_DIR;
-const staticOptions: any = {
-  dotfiles: "deny",
-  etag: true,
-  immutable: true,
-  maxAge: "1d",
-};
-// configure static directories to serve images
-app.use(
-  "/public/images/postcards",
-  express.static(staticImageDirectory + "/postcards", staticOptions)
-);
-app.use(
-  "/public/images/tradecards",
-  express.static(staticImageDirectory + "/tradecards", staticOptions)
-);
+// Use routes
+app.use(API_ROUTES.authentication, authenticationRouter);
+app.use(API_ROUTES.themes, themeRouter);
+app.use(API_ROUTES.map, mapRouter);
+app.use(API_ROUTES.cards, cardRouter);
 
-// use these routes
-app.use("/api/authentication", authenticationRouter);
-app.use("/api/themes", themeRouter);
-app.use("/api/map", mapRouter);
-app.use("/api/cards", cardRouter);
-
-// healthcheck route
-app.get("/healthcheck", (req: Request, res: Response) => {
+// Healthcheck route
+app.get(API_ROUTES.healthcheck, (req: Request, res: Response) => {
   res.json({ message: "API is operational" });
 });
 
-// route to handle errors
+// Error handling middleware
 app.use((err: any, req: Request, res: Response, next: any) => {
-  // format error
+  // Format error
   res.status(err.status || 500).json({
     message: err.message,
     errors: err.errors,

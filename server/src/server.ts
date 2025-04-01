@@ -1,12 +1,11 @@
 import app from "./index";
 import dbconnect from "./utils/dbconnect";
+import { SERVER_CONFIG } from "./config";
 
-const PORT = process.env.PORT || 3002;
-
-// connect to database
+// Connect to database
 dbconnect();
 
-// start the server
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+// Start the server
+app.listen(SERVER_CONFIG.PORT, () => {
+  console.log(`Server is running at http://localhost:${SERVER_CONFIG.PORT}`);
 });
