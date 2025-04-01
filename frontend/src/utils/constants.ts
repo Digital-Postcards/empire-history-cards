@@ -1,5 +1,6 @@
 import { NavLinkType } from "types";
-const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://129.10.111.197";
+const REACT_APP_SERVER_URL =
+    process.env.REACT_APP_SERVER_URL || "https://visualdomesticlaborhistory.khoury.northeastern.edu";
 const API_URL = REACT_APP_SERVER_URL + "/api";
 
 const MAIN_NAV_LINKS: NavLinkType[] = [
