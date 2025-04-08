@@ -88,12 +88,11 @@ export class CardController {
         });
       }
 
-      // Return success response with file information
-      res.status(200).json({
-        message: "Files uploaded successfully",
-        files: req.files,
-        cardData: cardData,
-      });
+      // Save to database
+      const result = await this.cardService.uploadCard(req.body, req.files);
+
+      // Return success response
+      res.status(201).json(result);
     } catch (error) {
       console.error("Error processing upload:", error);
       res.status(400).json({ message: (error as Error).message });
