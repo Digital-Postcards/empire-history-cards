@@ -39,8 +39,25 @@ const MasonryList = (props: { filterTags: string[]; type: string | ""; side: str
 
     // if side is front, then return the front image, else return the back image
     const getImageLink = (imageLinks: Array<any>) => {
-        const link = process.env.REACT_APP_SERVER_URL + "/public" + imageLinks[0].link;
-        return link.replace(/(A|B)\.jpg$/, props.side === "front" ? "A.jpg" : "B.jpg");
+        if (!imageLinks || imageLinks.length === 0) return "";
+
+        // Sort the images based on their filenames (A, B, C, etc.)
+        const sortedImages = [...imageLinks].sort((a, b) => {
+            const fileA = a.link.split("/").pop() || "";
+            const fileB = b.link.split("/").pop() || "";
+            return fileA.localeCompare(fileB);
+        });
+
+        // Get the appropriate image based on the side
+        let imageIndex = 0;
+        if (props.side === "back" && sortedImages.length > 1) {
+            imageIndex = 1;
+        } else if (props.side === "additional" && sortedImages.length > 2) {
+            // For additional images, use the third image onwards
+            imageIndex = 2;
+        }
+
+        return process.env.REACT_APP_SERVER_URL + "/public" + sortedImages[imageIndex].link;
     };
 
     if (api.isLoading) return <Loader isFullSize={true} />;
