@@ -88,4 +88,13 @@ export default class CardService {
       };
     else return null;
   }
+
+  public async uploadCard(body: any) {
+    // Just parse and return the data without any database operations
+    const cardData = JSON.parse(body.cardData);
+    return {
+      ...cardData,
+      message: "Files saved locally, no database operations performed",
+    };
+  }
 }

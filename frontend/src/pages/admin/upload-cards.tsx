@@ -207,6 +207,7 @@ export function UploadCards() {
                     ...newThemes.map((theme) => ({ id: theme.id, name: theme.name })),
                 ]);
             }
+            console.log("Form data:", formData);
 
             // Prepare data for sending
             const formDataToSend = {
@@ -215,16 +216,14 @@ export function UploadCards() {
             };
 
             formData.append("cardData", JSON.stringify(formDataToSend));
-
             // In a real application, submit to your server
-            // await fetch('/api/upload-card', { method: 'POST', body: formData });
+            await fetch("http://localhost:3002/api/cards/upload-card", { method: "POST", body: formData });
 
-            // Simulate successful upload
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            // console.log("Form data to send:", formDataToSend);
 
             // Reset form state
             setSubmitSuccess(true);
-            resetForm();
+            // resetForm();
 
             // Reset success message after 3 seconds
             setTimeout(() => setSubmitSuccess(false), 3000);
@@ -320,9 +319,6 @@ export function UploadCards() {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="postcard">Postcard</option>
                                 <option value="tradecard">Trade Card</option>
-                                <option value="photograph">Photograph</option>
-                                <option value="advertisement">Advertisement</option>
-                                <option value="other">Other</option>
                             </select>
                         </div>
 

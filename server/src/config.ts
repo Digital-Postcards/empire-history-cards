@@ -26,9 +26,10 @@ export const CORS_CONFIG = {
   origin: [
     "http://visualdomesticlaborhistory.khoury.northeastern.edu",
     process.env.REACT_APP_SERVER_URL || "",
+    "http://localhost:3002",
   ],
-  methods: "GET,POST,PUT,DELETE,OPTIONS",
-  allowedHeaders: "Content-Type,Authorization",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
