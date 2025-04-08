@@ -22,15 +22,36 @@ export default class CardService {
     if (originalLocation) _query.originalLocation = originalLocation;
 
     let cards;
-    if (!isPopulate) {
-      cards = await CardModel.find(_query, projection);
-      // .skip((+page - 1) * +limit)
-      // .limit(+limit);
+    if (withTags) {
+      // Handle theme filtering using aggregation pipeline
+      const themeNames = Array.isArray(withTags) ? withTags : [withTags];
+      const themeNamesDecoded = themeNames.map((name) =>
+        decodeURIComponent(name)
+      );
+
+      // First, find the theme IDs for the given names
+      const themes = await TagModel.find({ name: { $in: themeNamesDecoded } });
+      const themeIds = themes.map((theme) => theme._id);
+
+      // Then find cards that have all the specified themes
+      _query.themes = { $all: themeIds };
+
+      if (!isPopulate) {
+        cards = await CardModel.find(_query, projection);
+      } else {
+        cards = await CardModel.find(_query, projection).populate(
+          "themes imageLinks"
+        );
+      }
     } else {
-      cards = await CardModel.find(_query, projection)
-        // .skip((+page - 1) * +limit)
-        // .limit(+limit)
-        .populate("themes imageLinks");
+      // Regular query without theme filtering
+      if (!isPopulate) {
+        cards = await CardModel.find(_query, projection);
+      } else {
+        cards = await CardModel.find(_query, projection).populate(
+          "themes imageLinks"
+        );
+      }
     }
 
     if (isInScrapbook) {
@@ -40,41 +61,17 @@ export default class CardService {
           _id: card._id,
           item: card.item,
           description: card.description.slice(0, 300).trim() + "...",
-          themes: card.themes.map((theme: any) => {
-            return theme.name;
-          }),
+          themes: card.themes.map((theme: any) => theme.name),
           image: "/public" + card.imageLinks[0].link,
         });
       });
       return cardsForScrapBook;
     }
 
-    if (withTags) {
-      let tagsToFilter = withTags[0].split(",");
-      let filteredCards = cards.filter((card: any) => {
-        let themes = card.themes.map((theme: any) => {
-          return theme.name;
-        });
-        return themes.some((theme: string) => tagsToFilter.includes(theme));
-      });
-      return filteredCards.map((card: any) => {
-        return {
-          ...card._doc,
-          themes: card._doc.themes.map((item: any) => {
-            return item.name;
-          }),
-        };
-      });
-    }
-
-    return cards.map((card: any) => {
-      return {
-        ...card._doc,
-        themes: card._doc.themes.map((item: any) => {
-          return item.name;
-        }),
-      };
-    });
+    return cards.map((card: any) => ({
+      ...card._doc,
+      themes: card._doc.themes.map((item: any) => item.name),
+    }));
   }
 
   public async getCardById(id: string) {
