@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Chip, TextField, Autocomplete } from "@mui/material";
 import { X, Plus } from "lucide-react";
+import { useApi } from "hooks";
 
 // Interface definitions
 interface CardFormData {
@@ -34,20 +35,6 @@ interface ImageFile {
     id: string;
 }
 
-// Predefined theme options
-const DEFAULT_THEMES = [
-    { id: "theme1", name: "Domestic Service" },
-    { id: "theme2", name: "Immigration" },
-    { id: "theme3", name: "Stereotypes" },
-    { id: "theme4", name: "Labor" },
-    { id: "theme5", name: "Class" },
-    { id: "theme6", name: "Gender" },
-    { id: "theme7", name: "Race" },
-    { id: "theme8", name: "Religion" },
-    { id: "theme9", name: "Politics" },
-    { id: "theme10", name: "Education" },
-];
-
 // Default form values
 const DEFAULT_FORM_VALUES = {
     number: undefined,
@@ -73,7 +60,28 @@ export function UploadCards() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const [availableThemes, setAvailableThemes] = useState<ThemeOption[]>(DEFAULT_THEMES);
+    const [availableThemes, setAvailableThemes] = useState<ThemeOption[]>([]);
+
+    // API hook for fetching themes
+    const themesApi = useApi("/themes", { method: "GET" });
+
+    // Fetch themes on component mount
+    useEffect(() => {
+        const fetchThemes = async () => {
+            try {
+                const themes = await themesApi.fetchData();
+                setAvailableThemes(
+                    themes.map((theme: any) => ({
+                        id: theme._id,
+                        name: theme.name,
+                    })),
+                );
+            } catch (error) {
+                console.error("Error fetching themes:", error);
+            }
+        };
+        fetchThemes();
+    }, []);
 
     // Refs for file inputs
     const frontImageRef = useRef<HTMLInputElement>(null);
@@ -207,23 +215,28 @@ export function UploadCards() {
                     ...newThemes.map((theme) => ({ id: theme.id, name: theme.name })),
                 ]);
             }
-            console.log("Form data:", formData);
 
             // Prepare data for sending
             const formDataToSend = {
                 ...data,
-                themes: processedThemes.map((theme) => theme.id),
+                themes: processedThemes.map((theme) => theme.name),
             };
 
             formData.append("cardData", JSON.stringify(formDataToSend));
-            // In a real application, submit to your server
-            await fetch("http://localhost:3002/api/cards/upload-card", { method: "POST", body: formData });
 
-            // console.log("Form data to send:", formDataToSend);
+            // Submit to server
+            const response = await fetch("http://localhost:3002/api/cards/upload-card", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to upload card");
+            }
 
             // Reset form state
             setSubmitSuccess(true);
-            // resetForm();
+            resetForm();
 
             // Reset success message after 3 seconds
             setTimeout(() => setSubmitSuccess(false), 3000);
@@ -381,7 +394,7 @@ export function UploadCards() {
                                         options={availableThemes}
                                         value={field.value}
                                         getOptionLabel={(option: any) => option.name}
-                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        isOptionEqualToValue={(option, value) => option.name === value.name}
                                         filterSelectedOptions
                                         freeSolo
                                         renderTags={(value, getTagProps) =>
@@ -408,11 +421,22 @@ export function UploadCards() {
                                         onChange={(_, newValue) => {
                                             const processedValues = newValue.map((item) => {
                                                 if (typeof item === "string") {
-                                                    return { id: `temp-${Date.now()}`, name: item, isNew: true };
+                                                    // For new themes entered as strings
+                                                    return {
+                                                        id: `new-theme-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+                                                        name: item,
+                                                        isNew: true,
+                                                    };
                                                 } else if (item.isNew) {
+                                                    // For existing new themes
                                                     return item;
+                                                } else {
+                                                    // For existing themes from the database
+                                                    return {
+                                                        id: item.id,
+                                                        name: item.name,
+                                                    };
                                                 }
-                                                return item;
                                             });
                                             field.onChange(processedValues);
                                         }}
