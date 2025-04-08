@@ -5,7 +5,7 @@ import { Button } from "shadcn/components/ui/button";
 const FilterSection = (props: { isFiltersVisibleInit?: boolean; children: ReactNode }) => {
     const [isFiltersVisible, setFiltersVisible] = useState(props?.isFiltersVisibleInit);
     return (
-        <div className="md:p-4 py-[8px] px-2 md:relative fixed top-0 right-0 md:w-full w-2/3">
+        <div className="md:p-4 py-[8px] px-2 md:sticky fixed top-0 right-0 md:w-full w-2/3 z-50">
             <Button
                 size={"icon"}
                 className="md:hidden hidden w-16 h-14 float-right flex md:w-0 md:h-0"
