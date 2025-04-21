@@ -62,12 +62,13 @@ export class CardController {
         date: cardData.date,
         postmarked: cardData.postmarked,
         place: cardData.place,
+        country: cardData.country,
+        empire: cardData.empire,
         company: cardData.company,
         companyInformation: cardData.companyInformation,
         analysis: cardData.analysis,
         message: cardData.message,
         isBlurByDefault: cardData.isBlurByDefault,
-        isInScrapbook: cardData.isInScrapbook,
         themes: cardData.themes,
       });
 

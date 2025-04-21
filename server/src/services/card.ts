@@ -138,6 +138,8 @@ export default class CardService {
         date: cardData.date,
         postmarked: cardData.postmarked,
         place: cardData.place,
+        country: cardData.country,
+        empire: cardData.empire,
         company: cardData.company,
         companyInformation: cardData.companyInformation,
         description: cardData.description,

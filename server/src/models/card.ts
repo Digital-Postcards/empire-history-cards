@@ -27,6 +27,12 @@ class ICard {
   public place?: string;
 
   @prop()
+  public country?: string;
+
+  @prop()
+  public empire?: string;
+
+  @prop()
   public company?: string;
 
   @prop()

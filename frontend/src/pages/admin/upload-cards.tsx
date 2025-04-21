@@ -13,13 +13,14 @@ interface CardFormData {
     date: string;
     postmarked: string;
     place: string | null;
+    country: string | null;
+    empire: string | null;
     company: string;
     companyInformation: string;
     description: string;
     analysis: string;
     message: string | null;
     isBlurByDefault: boolean;
-    isInScrapbook: boolean;
     themes: ThemeOption[];
 }
 
@@ -42,15 +43,26 @@ const DEFAULT_FORM_VALUES = {
     date: "",
     postmarked: "",
     place: null,
+    country: null,
+    empire: null,
     company: "",
     companyInformation: "",
     description: "",
     analysis: "",
     message: null,
     isBlurByDefault: false,
-    isInScrapbook: false,
     themes: [],
 };
+
+// Empire options
+const EMPIRE_OPTIONS = [
+    { id: "british", name: "British" },
+    { id: "french", name: "French" },
+    { id: "ottoman", name: "Ottoman" },
+    { id: "american", name: "American" },
+    { id: "dutch", name: "Dutch" },
+    { id: "other", name: "Other" },
+];
 
 export function UploadCards() {
     // State management
@@ -365,6 +377,50 @@ export function UploadCards() {
                         </div>
 
                         <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                            <input
+                                type="text"
+                                {...register("country")}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Empire*</label>
+                            <Controller
+                                name="empire"
+                                control={control}
+                                rules={{ required: "Empire is required" }}
+                                render={({ field, fieldState: { error } }) => (
+                                    <Autocomplete
+                                        id="empire-select"
+                                        options={EMPIRE_OPTIONS}
+                                        value={
+                                            field.value
+                                                ? EMPIRE_OPTIONS.find((option) => option.name === field.value) || null
+                                                : null
+                                        }
+                                        getOptionLabel={(option) => option.name}
+                                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                variant="outlined"
+                                                placeholder="Select an empire..."
+                                                size="small"
+                                                error={!!error}
+                                                helperText={error?.message}
+                                            />
+                                        )}
+                                        onChange={(_, newValue) => {
+                                            field.onChange(newValue ? newValue.name : null);
+                                        }}
+                                    />
+                                )}
+                            />
+                        </div>
+
+                        <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
                             <input
                                 type="text"
@@ -540,18 +596,6 @@ export function UploadCards() {
                                 />
                                 <label htmlFor="isBlurByDefault" className="ml-2 block text-sm text-gray-900">
                                     Blur by Default
-                                </label>
-                            </div>
-
-                            <div className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    id="isInScrapbook"
-                                    {...register("isInScrapbook")}
-                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                />
-                                <label htmlFor="isInScrapbook" className="ml-2 block text-sm text-gray-900">
-                                    Include in Scrapbook
                                 </label>
                             </div>
                         </div>
