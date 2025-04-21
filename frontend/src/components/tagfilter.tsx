@@ -1,16 +1,13 @@
 import { FilterItemProps, OptionType } from "types";
 import FilterBox from "./filterbox";
-import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Option from "types/tagFilterOption.types";
 import { useApi } from "hooks";
 import AsyncSelect from "react-select/async";
-import { useSearchParams } from "react-router-dom";
 
 const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dispatch<SetStateAction<string[]>> }) => {
     const { isLoading, error, fetchData } = useApi("/themes", { method: "GET" });
     const [themes, setThemes] = useState<OptionType[]>([]);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [selectedThemes, setSelectedThemes] = useState<Option[]>([]);
 
     const formatOptions = (themes: any) => {
         const options: OptionType[] = themes?.map((item: any) => {
@@ -26,40 +23,10 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
         return formattedOptions;
     };
 
-    // Initialize values from URL parameters
-    useEffect(() => {
-        const withTags = searchParams.get("withTags");
-        if (withTags) {
-            const themes = decodeURIComponent(withTags).split(",");
-            const formattedThemes = themes.map((theme) => ({ label: theme, value: theme }));
-            setSelectedThemes(formattedThemes);
-            if (props?.setFilterTags) {
-                props.setFilterTags(themes);
-            }
-        } else {
-            setSelectedThemes([]);
-            if (props?.setFilterTags) {
-                props.setFilterTags([]);
-            }
-        }
-    }, [searchParams]);
-
     const onChange = (option: readonly Option[]) => {
-        const valuesArray = option.map((option: Option) => option.value);
-        setSelectedThemes(option as Option[]);
-
-        // Update URL parameters
-        const newParams = new URLSearchParams(searchParams);
-        if (valuesArray.length > 0) {
-            newParams.set("withTags", encodeURIComponent(valuesArray.join(",")));
-        } else {
-            newParams.delete("withTags");
-        }
-        setSearchParams(newParams);
-
-        // Update parent component state
         if (props?.setFilterTags) {
-            props.setFilterTags(valuesArray);
+            const valuesArray = option.map((option: Option) => option.value);
+            props?.setFilterTags(valuesArray);
         }
     };
 
@@ -87,7 +54,6 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
                     isMulti
                     cacheOptions={true}
                     defaultOptions
-                    value={selectedThemes}
                     name="colors"
                     isLoading={isLoading}
                     className="basic-multi-select mt-2"
@@ -103,7 +69,6 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
                         },
                     })}
                     onChange={onChange}
-                    isClearable
                 />
             )}
         </FilterBox>
