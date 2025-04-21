@@ -86,6 +86,6 @@ We have more documentation! Immerse yourself.
 - [Infrastructure documentation](./scripts/deploy/INFRASTRUCTURE.md)
 - [Deployment documentation](./scripts/deploy/README.md)
 - [Getting postcards and tradecards locally](./scripts/pullimages/README.md)
-- [Database setup documentation]()
+- [Database setup documentation](./DB_SETUP_LOCAL.md)
 - [Setting up self-hosted runners](./.github/workflows/readme.md)
 - [Performance Testing](./scripts/performance-testing/readme.md)
