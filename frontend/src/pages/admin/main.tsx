@@ -10,14 +10,14 @@ import {
     CircularProgress,
     Avatar,
 } from "@mui/material";
-import { Menu } from "lucide-react";
+import { Menu, Bell, Search, Settings } from "lucide-react";
 import NavigationDrawer from "./navigation-drawer";
 import { Outlet, useNavigate } from "react-router-dom";
 import useIsAuthenticated from "hooks/useIsAuthenticated";
 import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
 import { API_URL } from "utils/constants";
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 export default function AdminMain() {
     const { isLoading } = useIsAuthenticated();
@@ -61,9 +61,6 @@ export default function AdminMain() {
         email: "",
     };
 
-    // Debug: Log user data to see if profilePictureUrl is present
-    console.log("User data in Admin Main:", applicationCtx.userData);
-
     // Format profile picture URL
     const getProfilePictureUrl = (url: string | null | undefined): string | undefined => {
         if (!url) return undefined;
@@ -96,6 +93,7 @@ export default function AdminMain() {
             <CssBaseline />
             <AppBar
                 position="fixed"
+                elevation={0}
                 sx={{
                     width: { sm: `calc(100% - ${open ? drawerWidth : 0}px)` },
                     ml: { sm: `${open ? drawerWidth : 0}px` },
@@ -105,7 +103,7 @@ export default function AdminMain() {
                             duration: theme.transitions.duration.leavingScreen,
                         }),
                 }}>
-                <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Toolbar sx={{ display: "flex", justifyContent: "space-between", height: "70px" }}>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         <IconButton
                             color="inherit"
@@ -123,27 +121,76 @@ export default function AdminMain() {
                             sx={{ mr: 2, ...(open && { display: "none" }) }}>
                             <Menu />
                         </IconButton>
+
+                        {/* Page Title can go here */}
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                display: { xs: "none", sm: "block" },
+                                fontWeight: 600,
+                            }}>
+                            Admin Dashboard
+                        </Typography>
                     </Box>
 
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        {/* Search Button */}
+                        <IconButton
+                            color="inherit"
+                            sx={{
+                                ml: 1,
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                borderRadius: "8px",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                                },
+                            }}>
+                            <Search size={20} />
+                        </IconButton>
+
+                        {/* Settings Button */}
+                        <IconButton
+                            color="inherit"
+                            onClick={() => navigate("/admin/settings")}
+                            sx={{
+                                ml: 1,
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                borderRadius: "8px",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                                },
+                            }}>
+                            <Settings size={20} />
+                        </IconButton>
+
+                        {/* Notifications Button */}
+                        <IconButton
+                            color="inherit"
+                            sx={{
+                                ml: 1,
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                borderRadius: "8px",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                                },
+                            }}>
+                            <Bell size={20} />
+                        </IconButton>
+
                         {/* Role badge */}
                         <Chip
                             label={getRoleDisplayName(applicationCtx.userRole)}
                             color={getRoleColor(applicationCtx.userRole) as "error" | "primary" | "default"}
                             size="small"
                             sx={{
-                                mr: 2,
+                                ml: 2,
+                                px: 1,
                                 fontWeight: 500,
                                 display: { xs: "none", sm: "flex" },
                             }}
                         />
 
-                        {/* User name */}
-                        <Typography variant="body1" sx={{ mr: 2, display: { xs: "none", sm: "block" } }}>
-                            {userData.firstName} {userData.lastName}
-                        </Typography>
-
-                        {/* User avatar */}
+                        {/* User Avatar */}
                         <Avatar
                             src={
                                 applicationCtx.userData?.profilePictureUrl
@@ -154,14 +201,14 @@ export default function AdminMain() {
                             sx={{
                                 width: 40,
                                 height: 40,
-                                bgcolor: "primary.light",
+                                ml: 2,
+                                border: "2px solid rgba(30, 64, 175, 0.2)",
                             }}>
                             {!applicationCtx.userData?.profilePictureUrl && userData.firstName && (
                                 <Typography
                                     sx={{
-                                        color: "#fff",
-                                        fontSize: "1.2rem",
-                                        fontWeight: 500,
+                                        fontSize: "1rem",
+                                        fontWeight: 600,
                                     }}>
                                     {userData.firstName.charAt(0)}
                                     {userData.lastName?.charAt(0)}
@@ -193,6 +240,8 @@ export default function AdminMain() {
                             easing: theme.transitions.easing.sharp,
                             duration: theme.transitions.duration.leavingScreen,
                         }),
+                    backgroundColor: (theme) => theme.palette.background.default,
+                    minHeight: "100vh",
                 }}>
                 <Toolbar />
                 {/* All children component will be displayed here */}

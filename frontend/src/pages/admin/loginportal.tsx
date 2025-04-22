@@ -115,36 +115,52 @@ export default function AdminLoginPortal() {
         <div
             className="min-h-screen flex bg-cover bg-center"
             style={{
-                backgroundImage: 'url("/placeholder.svg?height=1080&width=1920")',
+                backgroundImage:
+                    'linear-gradient(to right, rgba(30, 64, 175, 0.85), rgba(126, 34, 206, 0.85)), url("/images/about/history-team.jpeg")',
                 backgroundSize: "cover",
                 backgroundPosition: "center",
             }}>
-            {/* Left side: Background image with gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-purple-900/80"></div>
-
-            {/* Left side content overlay */}
+            {/* Content overlay */}
             <div className="relative z-10 hidden md:flex md:w-1/2 items-center justify-center p-12">
                 <div className="text-white max-w-md">
                     <h1 className="text-4xl font-bold mb-4">Race, Gender, and the Visual Culture of Domestic Labor</h1>
-                    <p className="text-xl opacity-90">Trade-cards and postcards from the 1870s to 1940s</p>
+                    <p className="text-xl opacity-90 mb-6">Administration Portal</p>
+                    <div className="h-1 w-16 bg-white"></div>
                 </div>
             </div>
 
-            {/* Right side with login form */}
+            {/* Login form */}
             <div className="relative z-10 w-full md:w-1/2 flex items-center justify-center md:justify-start p-8">
-                <Paper elevation={4} className="w-full max-w-md p-8 pt-10 pb-10 bg-white/95 backdrop-blur-sm">
-                    <Typography variant="h4" component="h1" className="text-center !mb-6 font-bold text-gray-800">
+                <Paper
+                    elevation={4}
+                    className="w-full max-w-md p-8 pt-10 pb-10"
+                    sx={{
+                        borderRadius: "16px",
+                        backgroundColor: "rgba(255, 255, 255, 0.98)",
+                        backdropFilter: "blur(10px)",
+                        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+                    }}>
+                    <Typography
+                        variant="h4"
+                        component="h1"
+                        sx={{
+                            textAlign: "center",
+                            mb: 4,
+                            fontWeight: 700,
+                            color: (theme) => theme.palette.primary.main,
+                            letterSpacing: "-0.01em",
+                        }}>
                         Admin Login
                     </Typography>
 
                     {loginError && (
-                        <Alert severity="error" className="mb-4">
+                        <Alert severity="error" sx={{ mb: 4, borderRadius: 2 }}>
                             {loginError}
                         </Alert>
                     )}
 
                     <form onSubmit={handleSubmit}>
-                        <Box className="mb-4">
+                        <Box sx={{ mb: 3 }}>
                             <TextField
                                 label="Email"
                                 variant="outlined"
@@ -156,14 +172,14 @@ export default function AdminLoginPortal() {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <Mail size={20} className="text-gray-500" />
+                                            <Mail size={20} />
                                         </InputAdornment>
                                     ),
                                 }}
                             />
                         </Box>
 
-                        <Box className="mb-6">
+                        <Box sx={{ mb: 3 }}>
                             <TextField
                                 label="Password"
                                 variant="outlined"
@@ -176,7 +192,7 @@ export default function AdminLoginPortal() {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <Lock size={20} className="text-gray-500" />
+                                            <Lock size={20} />
                                         </InputAdornment>
                                     ),
                                     endAdornment: (
@@ -193,7 +209,7 @@ export default function AdminLoginPortal() {
                             />
                         </Box>
 
-                        <Box className="mb-6">
+                        <Box sx={{ mb: 3 }}>
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -212,7 +228,12 @@ export default function AdminLoginPortal() {
                             color="primary"
                             fullWidth
                             size="large"
-                            className="py-3">
+                            sx={{
+                                py: 1.5,
+                                fontWeight: 600,
+                                borderRadius: "8px",
+                                boxShadow: "0 4px 12px rgba(30, 64, 175, 0.15)",
+                            }}>
                             Sign In
                         </Button>
                     </form>

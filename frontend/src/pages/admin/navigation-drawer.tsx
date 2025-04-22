@@ -12,12 +12,14 @@ import {
     ListItemText,
     Box,
     Typography,
+    Avatar,
 } from "@mui/material";
 import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home, Settings } from "lucide-react";
 import { useApi } from "hooks";
 import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
+import { API_URL } from "utils/constants";
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 interface NavigationDrawerProps {
     open: boolean;
@@ -79,6 +81,7 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
     const api = useApi("/authentication/logout");
     const applicationCtx = useContext(ApplicationContext);
     const userRole = applicationCtx?.userRole;
+    const userData = applicationCtx?.userData;
 
     const handleLogout = async () => {
         await api.fetchData();
@@ -98,86 +101,171 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
         navigate("/admin/login"); // Redirect to login page
     };
 
+    // Format profile picture URL
+    const getProfilePictureUrl = (url: string | null | undefined): string | undefined => {
+        if (!url) return undefined;
+
+        // If it's already a data URL or an absolute URL, return as is
+        if (url.startsWith("data:") || url.startsWith("http")) {
+            return url;
+        }
+
+        // Otherwise, prepend the API URL
+        return `${API_URL}${url}`;
+    };
+
+    // Determine display name for role
+    const getRoleDisplayName = (role: UserRole | null | undefined) => {
+        if (role === UserRole.SUPER_ADMIN) return "Super Admin";
+        if (role === UserRole.MANAGER) return "Manager";
+        return "User";
+    };
+
     const drawerContent = (
         <>
-            <Toolbar sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", px: [1] }}>
+            <Toolbar
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    px: 2,
+                    py: 2,
+                    borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                }}>
                 <Box
                     sx={{
-                        py: 2,
-                        px: 2,
                         display: "flex",
-                        flexDirection: "column",
+                        flexDirection: "row",
                         alignItems: "center",
+                        gap: 2,
                     }}>
-                    <Typography
-                        variant="h6"
-                        component="div"
+                    {/* User Avatar */}
+                    <Avatar
+                        src={userData?.profilePictureUrl ? getProfilePictureUrl(userData.profilePictureUrl) : undefined}
+                        alt={userData ? `${userData.firstName} ${userData.lastName}` : "User"}
                         sx={{
-                            fontWeight: 800,
-                            letterSpacing: "0.05em",
-                            color: "primary.main",
-                            textAlign: "center",
-                            textTransform: "uppercase",
-                            fontSize: "1.1rem",
-                            lineHeight: 1.2,
+                            width: 42,
+                            height: 42,
+                            bgcolor: "rgba(255, 255, 255, 0.2)",
+                            border: "2px solid rgba(255, 255, 255, 0.3)",
                         }}>
-                        Visual
-                    </Typography>
-                    <Typography
-                        variant="subtitle1"
-                        component="div"
-                        sx={{
-                            fontWeight: 600,
-                            letterSpacing: "0.02em",
-                            color: "text.primary",
-                            textAlign: "center",
-                            fontSize: "0.9rem",
-                            lineHeight: 1.2,
-                        }}>
-                        Domestic History
-                    </Typography>
+                        {userData && !userData.profilePictureUrl && (
+                            <Typography sx={{ color: "#fff", fontSize: "1rem", fontWeight: 500 }}>
+                                {userData.firstName?.[0]}
+                                {userData.lastName?.[0]}
+                            </Typography>
+                        )}
+                    </Avatar>
+
+                    {/* User Info */}
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <Typography
+                            variant="subtitle1"
+                            sx={{
+                                color: "#ffffff",
+                                fontWeight: 600,
+                                fontSize: "0.95rem",
+                                lineHeight: 1.2,
+                            }}>
+                            {userData?.firstName} {userData?.lastName}
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "rgba(255, 255, 255, 0.7)",
+                                lineHeight: 1.2,
+                            }}>
+                            {getRoleDisplayName(userRole)}
+                        </Typography>
+                    </Box>
                 </Box>
-                <IconButton onClick={handleDrawerClose}>
+                <IconButton onClick={handleDrawerClose} sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                     <ChevronLeft />
                 </IconButton>
             </Toolbar>
-            <Divider />
-            <List>
+
+            {/* Navigation Title */}
+            <Box sx={{ px: 3, py: 2 }}>
+                <Typography
+                    variant="overline"
+                    sx={{
+                        color: "rgba(255, 255, 255, 0.5)",
+                        fontWeight: 600,
+                        letterSpacing: "0.1em",
+                    }}>
+                    NAVIGATION
+                </Typography>
+            </Box>
+
+            {/* Navigation Items */}
+            <List sx={{ px: 1 }}>
                 {navItems.map((item) => {
                     // Only render menu items that the user's role can access
                     if (!userRole || !item.roles.includes(userRole)) {
                         return null;
                     }
 
+                    const isActive = location.pathname === item.path;
+
                     return (
-                        <ListItem key={item.title} disablePadding>
+                        <ListItem key={item.title} disablePadding sx={{ mb: 0.5 }}>
                             <ListItemButton
-                                selected={location.pathname === item.path}
+                                selected={isActive}
                                 onClick={() => navigate(item.path)}
                                 sx={{
                                     minHeight: 48,
-                                    px: 2.5,
+                                    px: 2,
+                                    py: 1.5,
+                                    borderRadius: "8px",
                                     "&.Mui-selected": {
-                                        backgroundColor: "rgba(0, 0, 0, 0.08)",
-                                    },
-                                    "&.Mui-selected:hover": {
-                                        backgroundColor: "rgba(0, 0, 0, 0.12)",
+                                        backgroundColor: "rgba(255, 255, 255, 0.15)",
+                                        "&:hover": {
+                                            backgroundColor: "rgba(255, 255, 255, 0.20)",
+                                        },
                                     },
                                 }}>
-                                <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: 3,
+                                        justifyContent: "center",
+                                        color: isActive ? "#ffffff" : "rgba(255, 255, 255, 0.7)",
+                                    }}>
                                     {item.icon}
                                 </ListItemIcon>
-                                <ListItemText primary={item.title} />
+                                <ListItemText
+                                    primary={item.title}
+                                    primaryTypographyProps={{
+                                        fontWeight: isActive ? 600 : 400,
+                                        fontSize: "0.95rem",
+                                    }}
+                                />
                             </ListItemButton>
                         </ListItem>
                     );
                 })}
             </List>
-            <Divider />
-            <List>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.1)", mx: 2, my: 2 }} />
+
+            {/* Logout Button */}
+            <List sx={{ px: 1, mb: 2 }}>
                 <ListItem disablePadding>
-                    <ListItemButton onClick={handleLogout} sx={{ minHeight: 48, px: 2.5 }}>
-                        <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>
+                    <ListItemButton
+                        onClick={handleLogout}
+                        sx={{
+                            minHeight: 48,
+                            px: 2,
+                            py: 1.5,
+                            borderRadius: "8px",
+                            "&:hover": {
+                                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                            },
+                        }}>
+                        <ListItemIcon
+                            sx={{ minWidth: 0, mr: 3, justifyContent: "center", color: "rgba(255, 255, 255, 0.7)" }}>
                             <LogOut size={20} />
                         </ListItemIcon>
                         <ListItemText primary="Logout" />
