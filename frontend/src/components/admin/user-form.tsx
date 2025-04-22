@@ -123,7 +123,7 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
         } = {};
 
         if (!firstName?.trim()) {
-            newErrors.firstName = "First name is required";
+            newErrors.firstName = "First name is required.";
         }
 
         if (!lastName?.trim()) {
