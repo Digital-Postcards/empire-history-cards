@@ -32,12 +32,18 @@ const limiter = rateLimit({
 
 // Use middlewares
 app.set("trust proxy", 1);
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));  // Increased payload limit to handle larger requests
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));  // Added for form data with larger limit
 app.use(cookieParser());
 app.use(session(SESSION_CONFIG));
-app.use(cors(CORS_CONFIG));
-// app.use(OpenApiValidator.middleware(OPENAPI_VALIDATOR_CONFIG));
-// app.use(limiter);
+
+// Override imported CORS config to make sure it allows requests from frontend
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://visualdomesticlaborhistory.khoury.northeastern.edu'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Configure static directories to serve images
 app.use(

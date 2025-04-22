@@ -26,47 +26,20 @@ import {
     DialogTitle,
     Snackbar,
     Alert,
+    CircularProgress,
 } from "@mui/material";
 import { Edit, Trash2, Search, UserPlus } from "lucide-react";
 import UserForm from "../../components/admin/user-form";
 import { ApplicationContext } from "../../contexts/ApplicationContext";
-import instance from "../../utils/axiosConfig";
 import { User, Permission, Role, availablePermissions } from "./users-management";
-
-// Sample data - this would be replaced with API calls in production
-const mockUsers: User[] = [
-    {
-        id: "1",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john@example.com",
-        role: "super_admin" as Role,
-        profilePictureUrl: null,
-        permissions: [
-            { id: "super_admin", name: "Super Admin", description: "Has all permissions" },
-            { id: "manage_users", name: "Manage Users", description: "Can add, edit, and delete users" },
-        ],
-        createdAt: new Date(),
-        lastLogin: new Date(),
-    },
-    {
-        id: "2",
-        firstName: "Jane",
-        lastName: "Smith",
-        email: "jane@example.com",
-        role: "manager" as Role,
-        profilePictureUrl: null,
-        permissions: [{ id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" }],
-        createdAt: new Date(),
-        lastLogin: new Date(),
-    },
-];
+import { userService } from "../../services/userService";
 
 export default function UsersPage() {
-    const [users, setUsers] = useState<User[]>(mockUsers);
+    const [users, setUsers] = useState<User[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const applicationCtx = useContext(ApplicationContext);
 
     // State for user form
@@ -89,22 +62,34 @@ export default function UsersPage() {
         severity: "info",
     });
 
-    // In a real application, we would fetch users from API here
-    // useEffect(() => {
-    //     const fetchUsers = async () => {
-    //         try {
-    //             const response = await instance.get('/api/users');
-    //             setUsers(response.data);
-    //         } catch (error) {
-    //             setNotification({
-    //                 open: true,
-    //                 message: "Failed to load users",
-    //                 severity: "error",
-    //             });
-    //         }
-    //     };
-    //     fetchUsers();
-    // }, []);
+    // Fetch users from API
+    const fetchUsers = async () => {
+        setIsLoading(true);
+        try {
+            const response = await userService.getAllUsers();
+            if (response.success && response.data) {
+                setUsers(Array.isArray(response.data) ? response.data : []);
+            } else {
+                setNotification({
+                    open: true,
+                    message: response.message || "Failed to load users",
+                    severity: "error",
+                });
+            }
+        } catch (error: any) {
+            setNotification({
+                open: true,
+                message: error.message || "Failed to load users",
+                severity: "error",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -124,7 +109,17 @@ export default function UsersPage() {
 
     // Handle opening the edit user form
     const handleEditUser = (user: User) => {
-        setCurrentUser(user);
+        console.log("Edit user called with:", user);
+        console.log("User ID:", user._id, "Type:", typeof user._id);
+
+        // Create a complete copy to ensure all properties are preserved
+        const userCopy = {
+            ...user,
+            _id: user._id || "", // Ensure ID is always a string, even if undefined
+        };
+
+        console.log("Setting currentUser to:", userCopy);
+        setCurrentUser(userCopy);
         setFormMode("edit");
         setIsFormOpen(true);
     };
@@ -140,21 +135,26 @@ export default function UsersPage() {
         if (!userToDelete) return;
 
         try {
-            // In a real application, this would be an API call
-            // await instance.delete(`/api/users/${userToDelete.id}`);
+            const response = await userService.deleteUser(userToDelete._id);
+            if (response.success) {
+                setUsers((prevUsers) => prevUsers.filter((u) => u._id !== userToDelete._id));
 
-            // For now, just update the local state
-            setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userToDelete.id));
-
+                setNotification({
+                    open: true,
+                    message: `User ${userToDelete.firstName} ${userToDelete.lastName} has been deleted`,
+                    severity: "success",
+                });
+            } else {
+                setNotification({
+                    open: true,
+                    message: response.message || "Failed to delete user",
+                    severity: "error",
+                });
+            }
+        } catch (error: any) {
             setNotification({
                 open: true,
-                message: `User ${userToDelete.firstName} ${userToDelete.lastName} has been deleted`,
-                severity: "success",
-            });
-        } catch (error) {
-            setNotification({
-                open: true,
-                message: "Failed to delete user",
+                message: error.message || "Failed to delete user",
                 severity: "error",
             });
         }
@@ -164,48 +164,74 @@ export default function UsersPage() {
     };
 
     // Handle saving user (add or edit)
-    const handleSaveUser = async (userData: Omit<User, "id" | "createdAt">) => {
+    const handleSaveUser = async (userData: Omit<User, "_id" | "createdAt">) => {
         try {
             if (formMode === "add") {
-                // In a real application, this would be an API call
-                // const response = await instance.post('/api/users', userData);
-                // const newUser = response.data;
+                const response = await userService.createUser(userData);
+                if (response.success && response.data) {
+                    const newUser = response.data as User;
+                    setUsers((prevUsers) => [...prevUsers, newUser]);
 
-                // For now, just simulate creating a new user
-                const newUser: User = {
-                    ...userData,
-                    id: `user-${Date.now()}`,
-                    createdAt: new Date(),
-                };
-
-                setUsers((prevUsers) => [...prevUsers, newUser]);
-                setNotification({
-                    open: true,
-                    message: `User ${newUser.firstName} ${newUser.lastName} has been added`,
-                    severity: "success",
-                });
+                    setNotification({
+                        open: true,
+                        message: `User ${newUser.firstName} ${newUser.lastName} has been added`,
+                        severity: "success",
+                    });
+                } else {
+                    setNotification({
+                        open: true,
+                        message: response.message || "Failed to create user",
+                        severity: "error",
+                    });
+                }
             } else if (currentUser) {
-                // In a real application, this would be an API call
-                // await instance.put(`/api/users/${currentUser.id}`, userData);
+                // Get the ID from the current user state
+                const userId = currentUser._id;
+                console.log("Before update - Current user ID:", userId);
 
-                // For now, just update the local state
-                const updatedUser: User = {
-                    ...currentUser,
-                    ...userData,
-                };
+                if (!userId) {
+                    console.error("Missing user ID for update operation");
+                    setNotification({
+                        open: true,
+                        message: "Unable to update user: Missing user ID",
+                        severity: "error",
+                    });
+                    return;
+                }
 
-                setUsers((prevUsers) => prevUsers.map((user) => (user.id === currentUser.id ? updatedUser : user)));
+                console.log("Updating user with ID:", userId);
+                const response = await userService.updateUser(userId, userData);
+                if (response.success) {
+                    const updatedData = response.data as User;
+                    setUsers((prevUsers) =>
+                        prevUsers.map((user) => (user._id === userId ? { ...updatedData, _id: userId } : user)),
+                    );
 
+                    setNotification({
+                        open: true,
+                        message: `User ${userData.firstName} ${userData.lastName} has been updated`,
+                        severity: "success",
+                    });
+                } else {
+                    setNotification({
+                        open: true,
+                        message: response.message || "Failed to update user",
+                        severity: "error",
+                    });
+                }
+            } else {
+                // This should rarely happen since we check for currentUser above
                 setNotification({
                     open: true,
-                    message: `User ${userData.firstName} ${userData.lastName} has been updated`,
-                    severity: "success",
+                    message: "Unable to update user: No user selected",
+                    severity: "error",
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
+            console.error("Error saving user:", error);
             setNotification({
                 open: true,
-                message: "Failed to save user",
+                message: error.message || "Failed to save user",
                 severity: "error",
             });
         }
@@ -222,9 +248,9 @@ export default function UsersPage() {
     // Filter users based on search term
     const filteredUsers = users.filter(
         (user) =>
-            user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+            (user.firstName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+            (user.lastName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+            (user.email?.toLowerCase() || "").includes(searchTerm.toLowerCase()),
     );
 
     // Function to get role display name
@@ -272,49 +298,62 @@ export default function UsersPage() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {filteredUsers
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((user) => (
-                                        <TableRow key={user.id}>
-                                            <TableCell>
-                                                {user.firstName} {user.lastName}
-                                            </TableCell>
-                                            <TableCell>{user.email}</TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    label={getRoleDisplayName(user.role)}
-                                                    color={user.role === "super_admin" ? "error" : "primary"}
-                                                    size="small"
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                {user.lastLogin
-                                                    ? new Date(user.lastLogin).toLocaleDateString()
-                                                    : "Never"}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => handleEditUser(user)}
-                                                    aria-label="edit user">
-                                                    <Edit size={18} />
-                                                </IconButton>
-                                                <IconButton
-                                                    size="small"
-                                                    color="error"
-                                                    onClick={() => handleDeleteClick(user)}
-                                                    aria-label="delete user">
-                                                    <Trash2 size={18} />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {filteredUsers.length === 0 && (
+                                {isLoading ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} align="center">
-                                            No users found
+                                        <TableCell colSpan={5} align="center" sx={{ p: 3 }}>
+                                            <Box
+                                                sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                                <CircularProgress size={40} />
+                                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                                    Loading users...
+                                                </Typography>
+                                            </Box>
                                         </TableCell>
                                     </TableRow>
+                                ) : filteredUsers.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center">
+                                            {searchTerm ? "No matching users found" : "No users found"}
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    filteredUsers
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((user) => (
+                                            <TableRow key={user._id}>
+                                                <TableCell>
+                                                    {user.firstname} {user.lastname}
+                                                </TableCell>
+                                                <TableCell>{user.email}</TableCell>
+                                                <TableCell>
+                                                    <Chip
+                                                        label={getRoleDisplayName(user.role)}
+                                                        color={user.role === "super_admin" ? "error" : "primary"}
+                                                        size="small"
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    {user.lastLogin
+                                                        ? new Date(user.lastLogin).toLocaleDateString()
+                                                        : "Never"}
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => handleEditUser(user)}
+                                                        aria-label="edit user">
+                                                        <Edit size={18} />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        color="error"
+                                                        onClick={() => handleDeleteClick(user)}
+                                                        aria-label="delete user">
+                                                        <Trash2 size={18} />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
                                 )}
                             </TableBody>
                         </Table>

@@ -81,7 +81,8 @@ export class AuthenticationController {
             lastname: userDetails.lastname,
             email: userDetails.email,
             role: userDetails.role,
-            id: userDetails._id
+            id: userDetails._id,
+            profilePictureUrl: userDetails.profilePictureUrl
           },
         });
     } catch (error: unknown) {

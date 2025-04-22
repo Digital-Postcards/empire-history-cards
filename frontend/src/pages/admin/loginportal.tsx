@@ -94,6 +94,7 @@ export default function AdminLoginPortal() {
                             lastName: response.data.user.lastname,
                             email: response.data.user.email,
                             role: userRole,
+                            profilePictureUrl: response.data.user.profilePictureUrl || null,
                         },
                     });
 

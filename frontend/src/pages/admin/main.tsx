@@ -1,10 +1,21 @@
 import { useContext, useState, useEffect } from "react";
-import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography, Chip, CircularProgress } from "@mui/material";
+import {
+    AppBar,
+    Box,
+    CssBaseline,
+    IconButton,
+    Toolbar,
+    Typography,
+    Chip,
+    CircularProgress,
+    Avatar,
+} from "@mui/material";
 import { Menu } from "lucide-react";
 import NavigationDrawer from "./navigation-drawer";
 import { Outlet, useNavigate } from "react-router-dom";
 import useIsAuthenticated from "hooks/useIsAuthenticated";
 import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
+import { API_URL } from "utils/constants";
 
 const drawerWidth = 240;
 
@@ -48,6 +59,22 @@ export default function AdminMain() {
         firstName: "",
         lastName: "",
         email: "",
+    };
+
+    // Debug: Log user data to see if profilePictureUrl is present
+    console.log("User data in Admin Main:", applicationCtx.userData);
+
+    // Format profile picture URL
+    const getProfilePictureUrl = (url: string | null | undefined): string | undefined => {
+        if (!url) return undefined;
+
+        // If it's already a data URL or an absolute URL, return as is
+        if (url.startsWith("data:") || url.startsWith("http")) {
+            return url;
+        }
+
+        // Otherwise, prepend the API URL
+        return `${API_URL}${url}`;
     };
 
     // Determine display name for role
@@ -117,18 +144,19 @@ export default function AdminMain() {
                         </Typography>
 
                         {/* User avatar */}
-                        <Box
+                        <Avatar
+                            src={
+                                applicationCtx.userData?.profilePictureUrl
+                                    ? getProfilePictureUrl(applicationCtx.userData.profilePictureUrl)
+                                    : undefined
+                            }
+                            alt={`${userData.firstName} ${userData.lastName}`}
                             sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                borderRadius: "50%",
-                                overflow: "hidden",
                                 width: 40,
                                 height: 40,
                                 bgcolor: "primary.light",
                             }}>
-                            {userData.firstName && (
+                            {!applicationCtx.userData?.profilePictureUrl && userData.firstName && (
                                 <Typography
                                     sx={{
                                         color: "#fff",
@@ -139,7 +167,7 @@ export default function AdminMain() {
                                     {userData.lastName?.charAt(0)}
                                 </Typography>
                             )}
-                        </Box>
+                        </Avatar>
                     </Box>
                 </Toolbar>
             </AppBar>

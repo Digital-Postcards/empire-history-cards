@@ -25,7 +25,8 @@ authenticationRouter.get(
               firstname: user.firstname,
               lastname: user.lastname,
               email: user.email,
-              role: user.role
+              role: user.role,
+              profilePictureUrl: user.profilePictureUrl
             }
           });
           return;

@@ -12,6 +12,7 @@ interface UserData {
     lastName?: string;
     email?: string;
     role?: UserRole;
+    profilePictureUrl?: string | null;
 }
 
 interface AppState {

@@ -13,12 +13,17 @@ export default function useIsAuthenticated(): { isLoading: boolean } {
     }
 
     useEffect(() => {
+        let isMounted = true;
+
         const checkAuth = async (retryCount = 0) => {
             try {
                 const response: AxiosResponse = await instance("/authentication/is_authenticated", {
                     method: "GET",
                     withCredentials: true, // Ensure cookies are sent with the request
                 });
+
+                // Only update state if the component is still mounted
+                if (!isMounted) return;
 
                 if (response?.data?.isAuthenticated) {
                     // Set authentication status
@@ -45,6 +50,7 @@ export default function useIsAuthenticated(): { isLoading: boolean } {
                                 lastName: response.data.user.lastname,
                                 email: response.data.user.email,
                                 role: response.data.user.role || UserRole.MANAGER,
+                                profilePictureUrl: response.data.user.profilePictureUrl || null,
                             },
                         });
                     }
@@ -66,6 +72,8 @@ export default function useIsAuthenticated(): { isLoading: boolean } {
                 setIsLoading(false);
             } catch (error: any) {
                 console.error("Error checking authentication status:", error);
+
+                if (!isMounted) return;
 
                 // If this is not the final retry attempt, try again
                 if (retryCount < 2) {
@@ -92,7 +100,12 @@ export default function useIsAuthenticated(): { isLoading: boolean } {
         };
 
         checkAuth();
-    }, [applicationCtx]);
+
+        // Cleanup function to prevent state updates if component unmounts
+        return () => {
+            isMounted = false;
+        };
+    }, []); // Empty dependency array - only run on mount
 
     return { isLoading };
 }

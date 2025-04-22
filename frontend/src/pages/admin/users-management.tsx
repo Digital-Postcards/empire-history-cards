@@ -2,7 +2,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -26,132 +26,17 @@ import {
 import { Search, UserPlus, X } from "lucide-react";
 import UserTable from "../../components/admin/user-table";
 import UserForm from "../../components/admin/user-form";
-
-const mockUsers: User[] = [
-    {
-        id: "user-1",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        password: "password123",
-        profilePictureUrl: "/placeholder.svg?height=200&width=200",
-        permissions: [
-            { id: "super_admin", name: "Super Admin", description: "Has all permissions" },
-            { id: "manage_users", name: "Manage Users", description: "Can add, edit, and delete users" },
-            { id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" },
-            { id: "view_analytics", name: "View Analytics", description: "Can view analytics and reports" },
-            { id: "manage_themes", name: "Manage Themes", description: "Can add, edit, and delete themes" },
-            { id: "manage_settings", name: "Manage Settings", description: "Can change system settings" },
-        ],
-        createdAt: new Date("2023-01-15"),
-        lastLogin: new Date("2023-06-20T14:30:00"),
-        role: "super_admin",
-    },
-    {
-        id: "user-2",
-        firstName: "Jane",
-        lastName: "Smith",
-        email: "jane.smith@example.com",
-        password: "password123",
-        profilePictureUrl: "/placeholder.svg?height=200&width=200",
-        permissions: [
-            { id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" },
-            { id: "view_analytics", name: "View Analytics", description: "Can view analytics and reports" },
-        ],
-        createdAt: new Date("2023-02-10"),
-        lastLogin: new Date("2023-06-18T09:15:00"),
-        role: "super_admin",
-    },
-    {
-        id: "user-3",
-        firstName: "Michael",
-        lastName: "Johnson",
-        email: "michael.johnson@example.com",
-        password: "password123",
-        permissions: [
-            { id: "manage_users", name: "Manage Users", description: "Can add, edit, and delete users" },
-            { id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" },
-            { id: "manage_themes", name: "Manage Themes", description: "Can add, edit, and delete themes" },
-        ],
-        createdAt: new Date("2023-03-05"),
-        lastLogin: new Date("2023-06-15T16:45:00"),
-        role: "super_admin",
-    },
-    {
-        id: "user-4",
-        firstName: "Emily",
-        lastName: "Williams",
-        email: "emily.williams@example.com",
-        password: "password123",
-        profilePictureUrl: "/placeholder.svg?height=200&width=200",
-        permissions: [{ id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" }],
-        createdAt: new Date("2023-03-20"),
-        lastLogin: new Date("2023-06-10T11:20:00"),
-        role: "super_admin",
-    },
-    {
-        id: "user-5",
-        firstName: "David",
-        lastName: "Brown",
-        email: "david.brown@example.com",
-        password: "password123",
-        permissions: [
-            { id: "view_analytics", name: "View Analytics", description: "Can view analytics and reports" },
-            { id: "manage_themes", name: "Manage Themes", description: "Can add, edit, and delete themes" },
-        ],
-        createdAt: new Date("2023-04-12"),
-        role: "super_admin",
-    },
-    {
-        id: "user-6",
-        firstName: "Sarah",
-        lastName: "Miller",
-        email: "sarah.miller@example.com",
-        password: "password123",
-        profilePictureUrl: "/placeholder.svg?height=200&width=200",
-        permissions: [
-            { id: "manage_users", name: "Manage Users", description: "Can add, edit, and delete users" },
-            { id: "manage_settings", name: "Manage Settings", description: "Can change system settings" },
-        ],
-        createdAt: new Date("2023-04-25"),
-        lastLogin: new Date("2023-06-05T13:10:00"),
-        role: "super_admin",
-    },
-    {
-        id: "user-7",
-        firstName: "James",
-        lastName: "Wilson",
-        email: "james.wilson@example.com",
-        password: "password123",
-        permissions: [
-            { id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" },
-            { id: "view_analytics", name: "View Analytics", description: "Can view analytics and reports" },
-            { id: "manage_themes", name: "Manage Themes", description: "Can add, edit, and delete themes" },
-        ],
-        createdAt: new Date("2023-05-08"),
-        lastLogin: new Date("2023-06-01T10:30:00"),
-        role: "super_admin",
-    },
-    {
-        id: "user-8",
-        firstName: "Jessica",
-        lastName: "Taylor",
-        email: "jessica.taylor@example.com",
-        password: "password123",
-        profilePictureUrl: "/placeholder.svg?height=200&width=200",
-        permissions: [{ id: "manage_cards", name: "Manage Cards", description: "Can add, edit, and delete cards" }],
-        createdAt: new Date("2023-05-15"),
-        lastLogin: new Date("2023-05-28T15:45:00"),
-        role: "super_admin",
-    },
-];
+import { userService } from "../../services/userService";
 
 export type Role = "super_admin" | "manager";
 // Define user and permission types
 export interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
+    _id: string;
+    id?: string; // Keep for backward compatibility
+    firstname: string; // Changed to lowercase 'n' to match backend
+    lastName?: string; // Keep for backward compatibility
+    firstName?: string; // Keep for backward compatibility
+    lastname: string; // Changed to lowercase 'n' to match backend
     email: string;
     password?: string;
     role: Role;
@@ -179,8 +64,8 @@ export const availablePermissions: Permission[] = [
 
 export default function UsersManagementPage() {
     // State for users data
-    const [users, setUsers] = useState<User[]>(mockUsers);
-    const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);
+    const [users, setUsers] = useState<User[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
 
     // State for pagination
@@ -211,6 +96,67 @@ export default function UsersManagementPage() {
         severity: "info",
     });
 
+    // Fetch users from API
+    const fetchUsers = async () => {
+        setLoading(true);
+        try {
+            const response = await userService.getAllUsers();
+            if (response.success && response.data) {
+                const userData = Array.isArray(response.data) ? response.data : [response.data];
+                setUsers(userData);
+                applyFilters(userData);
+            } else {
+                setNotification({
+                    open: true,
+                    message: response.message || "Failed to load users",
+                    severity: "error",
+                });
+            }
+        } catch (error: any) {
+            setNotification({
+                open: true,
+                message: error.message || "Failed to load users",
+                severity: "error",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Apply filters to the users list
+    const applyFilters = (userList: User[] = users) => {
+        let filtered = userList;
+
+        // Apply search term filter
+        if (searchTerm) {
+            filtered = filtered.filter(
+                (user) =>
+                    user.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    user.lastname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+            );
+        }
+
+        // Apply permission filter
+        if (permissionFilter) {
+            filtered = filtered.filter((user) =>
+                user.permissions.some((permission) => permission.id === permissionFilter),
+            );
+        }
+
+        setFilteredUsers(filtered);
+    };
+
+    // Effect to fetch users on component mount
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    // Effect to apply filters when search term or permission filter changes
+    useEffect(() => {
+        applyFilters();
+    }, [searchTerm, permissionFilter]);
+
     // Handle opening the add user form
     const handleAddUser = () => {
         setCurrentUser(null);
@@ -232,52 +178,87 @@ export default function UsersManagementPage() {
     };
 
     // Handle confirming user deletion
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         if (!userToDelete) return;
 
-        setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userToDelete.id));
-        setFilteredUsers((prevUsers) => prevUsers.filter((u) => u.id !== userToDelete.id));
+        try {
+            const response = await userService.deleteUser(userToDelete._id);
+            if (response.success) {
+                setUsers((prevUsers) => prevUsers.filter((u) => u._id !== userToDelete._id));
+                setFilteredUsers((prevUsers) => prevUsers.filter((u) => u._id !== userToDelete._id));
 
-        setNotification({
-            open: true,
-            message: `User ${userToDelete.firstName} ${userToDelete.lastName} has been deleted`,
-            severity: "success",
-        });
+                setNotification({
+                    open: true,
+                    message: `User ${userToDelete.firstname} ${userToDelete.lastname} has been deleted`,
+                    severity: "success",
+                });
+            } else {
+                setNotification({
+                    open: true,
+                    message: response.message || "Failed to delete user",
+                    severity: "error",
+                });
+            }
+        } catch (error: any) {
+            setNotification({
+                open: true,
+                message: error.message || "Failed to delete user",
+                severity: "error",
+            });
+        }
 
         setDeleteDialogOpen(false);
         setUserToDelete(null);
     };
 
     // Handle saving user (add or edit)
-    const handleSaveUser = (userData: Omit<User, "id" | "createdAt">) => {
-        if (formMode === "add") {
-            // Create new user
-            const newUser: User = {
-                ...userData,
-                id: `user-${Date.now()}`,
-                createdAt: new Date(),
-            };
+    const handleSaveUser = async (userData: Omit<User, "_id" | "id" | "createdAt">) => {
+        try {
+            if (formMode === "add") {
+                const response = await userService.createUser(userData);
+                if (response.success && response.data) {
+                    const newUser = response.data as User;
+                    setUsers((prevUsers) => [...prevUsers, newUser]);
+                    applyFilters([...users, newUser]);
 
-            setUsers((prevUsers) => [...prevUsers, newUser]);
-            setFilteredUsers((prevUsers) => [...prevUsers, newUser]);
+                    setNotification({
+                        open: true,
+                        message: `User ${newUser.firstname} ${newUser.lastname} has been added`,
+                        severity: "success",
+                    });
+                } else {
+                    setNotification({
+                        open: true,
+                        message: response.message || "Failed to create user",
+                        severity: "error",
+                    });
+                }
+            } else if (currentUser) {
+                const response = await userService.updateUser(currentUser._id, userData);
+                if (response.success && response.data) {
+                    const updatedUser = response.data as User;
+                    const updatedUsers = users.map((user) => (user._id === currentUser._id ? updatedUser : user));
+                    setUsers(updatedUsers);
+                    applyFilters(updatedUsers);
+
+                    setNotification({
+                        open: true,
+                        message: `User ${userData.firstname} ${userData.lastname} has been updated`,
+                        severity: "success",
+                    });
+                } else {
+                    setNotification({
+                        open: true,
+                        message: response.message || "Failed to update user",
+                        severity: "error",
+                    });
+                }
+            }
+        } catch (error: any) {
             setNotification({
                 open: true,
-                message: `User ${newUser.firstName} ${newUser.lastName} has been added`,
-                severity: "success",
-            });
-        } else if (currentUser) {
-            // Update existing user
-            const updatedUser: User = {
-                ...currentUser,
-                ...userData,
-            };
-
-            setUsers((prevUsers) => prevUsers.map((user) => (user.id === currentUser.id ? updatedUser : user)));
-            setFilteredUsers((prevUsers) => prevUsers.map((user) => (user.id === currentUser.id ? updatedUser : user)));
-            setNotification({
-                open: true,
-                message: `User ${userData.firstName} ${userData.lastName} has been updated`,
-                severity: "success",
+                message: error.message || "Failed to save user",
+                severity: "error",
             });
         }
 
@@ -391,7 +372,7 @@ export default function UsersManagementPage() {
                     <DialogContentText>
                         Are you sure you want to delete the user{" "}
                         <strong>
-                            {userToDelete?.firstName} {userToDelete?.lastName}
+                            {userToDelete?.firstname} {userToDelete?.lastname}
                         </strong>
                         ? This action cannot be undone.
                     </DialogContentText>

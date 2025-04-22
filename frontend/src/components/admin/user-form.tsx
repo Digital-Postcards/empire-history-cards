@@ -19,23 +19,25 @@ import {
 } from "@mui/material";
 import { Upload, X, Camera } from "lucide-react";
 import { User, Permission, Role } from "../../pages/admin/users-management";
+import { API_URL } from "../../utils/constants";
 
 interface UserFormProps {
     user: User | null;
-    onSave: (userData: Omit<User, "id" | "createdAt">) => void;
+    onSave: (userData: Omit<User, "_id" | "createdAt">) => void;
     onCancel: () => void;
     availablePermissions: Permission[];
 }
 
 export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
     // Form state
-    const [firstName, setFirstName] = useState(user?.firstName || "");
-    const [lastName, setLastName] = useState(user?.lastName || "");
-    const [email, setEmail] = useState(user?.email || "");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [profilePicture, setProfilePicture] = useState<string | undefined | null>(user?.profilePictureUrl);
-    const [role, setRole] = useState<Role>(user?.role || "manager");
-    const [permissions, setPermissions] = useState<Permission[]>(user?.permissions || []);
+    const [profilePicture, setProfilePicture] = useState<string | undefined | null>(null);
+    const [role, setRole] = useState<Role>("manager");
+    const [permissions, setPermissions] = useState<Permission[]>([]);
+    const [newFileUploaded, setNewFileUploaded] = useState(false);
 
     // File input ref
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,16 +51,32 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
         role?: string;
     }>({});
 
+    // Function to format profile picture URL
+    const getProfilePictureUrl = (url: string | null | undefined): string | undefined => {
+        if (!url) return undefined;
+
+        // If it's already a data URL (from new file upload) or an absolute URL, return as is
+        if (url.startsWith("data:") || url.startsWith("http")) {
+            return url;
+        }
+
+        // Otherwise, prepend the API URL
+        return `${API_URL}${url}`;
+    };
+
     // Reset form when user changes
     useEffect(() => {
         if (user) {
-            setFirstName(user.firstName);
-            setLastName(user.lastName);
-            setEmail(user.email);
+            console.log("User data for form:", user);
+            // Handle both camelCase and lowercase field names for backward compatibility
+            setFirstName(user.firstname || user.firstName || "");
+            setLastName(user.lastname || user.lastName || "");
+            setEmail(user.email || "");
             setPassword("");
             setProfilePicture(user.profilePictureUrl);
-            setRole(user.role);
-            setPermissions(user.permissions);
+            setRole(user.role || "manager");
+            setPermissions(user.permissions || []);
+            setNewFileUploaded(false);
         } else {
             setFirstName("");
             setLastName("");
@@ -67,6 +85,7 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
             setProfilePicture(undefined);
             setRole("manager"); // Default to Manager role
             setPermissions([]);
+            setNewFileUploaded(false);
         }
         setErrors({});
     }, [user]);
@@ -78,6 +97,7 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
             const reader = new FileReader();
             reader.onload = () => {
                 setProfilePicture(reader.result as string);
+                setNewFileUploaded(true);
             };
             reader.readAsDataURL(file);
         }
@@ -86,6 +106,7 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
     // Handle removing profile picture
     const handleRemoveProfilePicture = () => {
         setProfilePicture(undefined);
+        setNewFileUploaded(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -101,23 +122,23 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
             role?: string;
         } = {};
 
-        if (!firstName.trim()) {
+        if (!firstName?.trim()) {
             newErrors.firstName = "First name is required";
         }
 
-        if (!lastName.trim()) {
+        if (!lastName?.trim()) {
             newErrors.lastName = "Last name is required";
         }
 
-        if (!email.trim()) {
+        if (!email?.trim()) {
             newErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
+        } else if (!/\S+@\S+\.\S+/.test(email || "")) {
             newErrors.email = "Email is invalid";
         }
 
-        if (!user && !password.trim()) {
+        if (!user && !password?.trim()) {
             newErrors.password = "Password is required for new users";
-        } else if (password.trim() && password.length < 8) {
+        } else if (password?.trim() && password.length < 8) {
             newErrors.password = "Password must be at least 8 characters";
         }
 
@@ -133,15 +154,19 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            const userData: Omit<User, "id" | "createdAt"> = {
-                firstName,
-                lastName,
+            const userData: Omit<User, "_id" | "createdAt"> = {
+                firstname: firstName, // Match backend field name
+                lastname: lastName, // Match backend field name
                 email,
-                profilePictureUrl: profilePicture,
-                lastLogin: user?.lastLogin,
                 role: role,
                 permissions: permissions,
+                lastLogin: user?.lastLogin,
             };
+
+            // Only include profilePictureUrl if it's provided or newly uploaded
+            if (profilePicture !== null || newFileUploaded) {
+                userData.profilePictureUrl = profilePicture;
+            }
 
             // Only include password if it's provided
             if (password) {
@@ -248,7 +273,7 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
                             {profilePicture ? (
                                 <>
                                     <Avatar
-                                        src={profilePicture}
+                                        src={getProfilePictureUrl(profilePicture)}
                                         alt={`${firstName} ${lastName}`}
                                         sx={{ width: 100, height: 100 }}
                                     />

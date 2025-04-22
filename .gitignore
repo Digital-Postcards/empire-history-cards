@@ -155,3 +155,5 @@ personal-notes.txt
 
 venv/
 images/
+
+.DS_Store
