@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
     Toolbar,
@@ -13,8 +13,9 @@ import {
     Box,
     Typography,
 } from "@mui/material";
-import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home } from "lucide-react";
+import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home, Settings } from "lucide-react";
 import { useApi } from "hooks";
+import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
 
 const drawerWidth = 240;
 
@@ -30,14 +31,40 @@ interface NavItem {
     title: string;
     path: string;
     icon: React.ReactNode;
+    roles: UserRole[]; // Define which roles can see this item
 }
 
 const navItems: NavItem[] = [
-    { title: "Dashboard", path: "/admin/dashboard", icon: <Home size={20} /> },
-    { title: "Users", path: "/admin/users", icon: <Users size={20} /> },
-    { title: "Upload Cards", path: "/admin/upload-cards", icon: <Upload size={20} /> },
-    { title: "All Cards", path: "/admin/all-cards", icon: <CreditCard size={20} /> },
-    // { title: "Settings", path: "/admin/settings", icon: <Settings size={20} /> },
+    {
+        title: "Dashboard",
+        path: "/admin/dashboard",
+        icon: <Home size={20} />,
+        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
+    {
+        title: "Users",
+        path: "/admin/users",
+        icon: <Users size={20} />,
+        roles: [UserRole.SUPER_ADMIN], // Only Super Admin can access
+    },
+    {
+        title: "Upload Cards",
+        path: "/admin/upload-cards",
+        icon: <Upload size={20} />,
+        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
+    {
+        title: "All Cards",
+        path: "/admin/all-cards",
+        icon: <CreditCard size={20} />,
+        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
+    {
+        title: "Settings",
+        path: "/admin/settings",
+        icon: <Settings size={20} />,
+        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
 ];
 
 const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
@@ -50,9 +77,24 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
     const navigate = useNavigate();
     const location = useLocation();
     const api = useApi("/authentication/logout");
+    const applicationCtx = useContext(ApplicationContext);
+    const userRole = applicationCtx?.userRole;
 
-    const handleLogout = () => {
-        api.fetchData();
+    const handleLogout = async () => {
+        await api.fetchData();
+        // Reset application context
+        applicationCtx?.dispatch({
+            type: "SET_IS_AUTHENTICATED",
+            payload: false,
+        });
+        applicationCtx?.dispatch({
+            type: "SET_USER_ROLE",
+            payload: null,
+        });
+        applicationCtx?.dispatch({
+            type: "SET_USER_DATA",
+            payload: null,
+        });
         navigate("/admin/login"); // Redirect to login page
     };
 
@@ -101,28 +143,35 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
             </Toolbar>
             <Divider />
             <List>
-                {navItems.map((item) => (
-                    <ListItem key={item.title} disablePadding>
-                        <ListItemButton
-                            selected={location.pathname === item.path}
-                            onClick={() => navigate(item.path)}
-                            sx={{
-                                minHeight: 48,
-                                px: 2.5,
-                                "&.Mui-selected": {
-                                    backgroundColor: "rgba(0, 0, 0, 0.08)",
-                                },
-                                "&.Mui-selected:hover": {
-                                    backgroundColor: "rgba(0, 0, 0, 0.12)",
-                                },
-                            }}>
-                            <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.title} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                {navItems.map((item) => {
+                    // Only render menu items that the user's role can access
+                    if (!userRole || !item.roles.includes(userRole)) {
+                        return null;
+                    }
+
+                    return (
+                        <ListItem key={item.title} disablePadding>
+                            <ListItemButton
+                                selected={location.pathname === item.path}
+                                onClick={() => navigate(item.path)}
+                                sx={{
+                                    minHeight: 48,
+                                    px: 2.5,
+                                    "&.Mui-selected": {
+                                        backgroundColor: "rgba(0, 0, 0, 0.08)",
+                                    },
+                                    "&.Mui-selected:hover": {
+                                        backgroundColor: "rgba(0, 0, 0, 0.12)",
+                                    },
+                                }}>
+                                <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>
+                                    {item.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={item.title} />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
             </List>
             <Divider />
             <List>

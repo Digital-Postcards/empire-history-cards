@@ -20,6 +20,7 @@ import {
   mapRouter,
   themeRouter,
   authenticationRouter,
+  userRouter,
 } from "./routes";
 
 const app: Application = express();
@@ -35,8 +36,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(session(SESSION_CONFIG));
 app.use(cors(CORS_CONFIG));
-app.use(OpenApiValidator.middleware(OPENAPI_VALIDATOR_CONFIG));
-app.use(limiter);
+// app.use(OpenApiValidator.middleware(OPENAPI_VALIDATOR_CONFIG));
+// app.use(limiter);
 
 // Configure static directories to serve images
 app.use(
@@ -59,6 +60,7 @@ app.use(API_ROUTES.authentication, authenticationRouter);
 app.use(API_ROUTES.themes, themeRouter);
 app.use(API_ROUTES.map, mapRouter);
 app.use(API_ROUTES.cards, cardRouter);
+app.use(API_ROUTES.users, userRouter);
 
 // Healthcheck route
 app.get(API_ROUTES.healthcheck, (req: Request, res: Response) => {

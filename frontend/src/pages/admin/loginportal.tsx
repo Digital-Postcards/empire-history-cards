@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
     TextField,
     Checkbox,
@@ -13,19 +13,24 @@ import {
     Box,
     InputAdornment,
     IconButton,
+    Alert,
 } from "@mui/material";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { AxiosResponse } from "axios";
 import instance from "utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
+import actions from "utils/actions";
 
 export default function AdminLoginPortal() {
     const navigate = useNavigate();
+    const applicationCtx = useContext(ApplicationContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({ email: "", password: "" });
+    const [loginError, setLoginError] = useState("");
 
     const validateEmail = (email: string) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,6 +50,7 @@ export default function AdminLoginPortal() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoginError("");
 
         const newErrors = { email: "", password: "" };
 
@@ -63,11 +69,39 @@ export default function AdminLoginPortal() {
         setErrors(newErrors);
 
         if (!newErrors.email && !newErrors.password) {
-            const response = await authenticateCredentials(email, password);
-            if (response.status === 200) {
-                navigate("/admin/dashboard");
-            } else {
-                alert(response.data.message);
+            try {
+                const response = await authenticateCredentials(email, password);
+                if (response.status === 200) {
+                    // Save user information in the application context
+                    applicationCtx?.dispatch({
+                        type: actions.SET_IS_AUTHENTICATED,
+                        payload: true,
+                    });
+
+                    // Store user role
+                    const userRole = response.data.user.role || UserRole.MANAGER;
+                    applicationCtx?.dispatch({
+                        type: actions.SET_USER_ROLE,
+                        payload: userRole,
+                    });
+
+                    // Store user data
+                    applicationCtx?.dispatch({
+                        type: actions.SET_USER_DATA,
+                        payload: {
+                            id: response.data.user.id,
+                            firstName: response.data.user.firstname,
+                            lastName: response.data.user.lastname,
+                            email: response.data.user.email,
+                            role: userRole,
+                        },
+                    });
+
+                    // Navigate to dashboard
+                    navigate("/admin/dashboard");
+                }
+            } catch (error: any) {
+                setLoginError(error.response?.data?.message || "Login failed. Please check your credentials.");
             }
         }
     };
@@ -99,8 +133,14 @@ export default function AdminLoginPortal() {
             <div className="relative z-10 w-full md:w-1/2 flex items-center justify-center md:justify-start p-8">
                 <Paper elevation={4} className="w-full max-w-md p-8 pt-10 pb-10 bg-white/95 backdrop-blur-sm">
                     <Typography variant="h4" component="h1" className="text-center !mb-6 font-bold text-gray-800">
-                        Login
+                        Admin Login
                     </Typography>
+
+                    {loginError && (
+                        <Alert severity="error" className="mb-4">
+                            {loginError}
+                        </Alert>
+                    )}
 
                     <form onSubmit={handleSubmit}>
                         <Box className="mb-4">
@@ -175,13 +215,6 @@ export default function AdminLoginPortal() {
                             Sign In
                         </Button>
                     </form>
-
-                    <Typography variant="body2" className="!mt-4 text-center text-gray-600">
-                        Don&apos;t have an account?{" "}
-                        <a href="#" className="text-blue-600 hover:underline">
-                            Sign up
-                        </a>
-                    </Typography>
                 </Paper>
             </div>
         </div>

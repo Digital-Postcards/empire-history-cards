@@ -52,7 +52,16 @@ export class AuthenticationController {
         return;
       }
 
-      const tokenPayload = { username: userDetails.email };
+      // Update the user's last login time
+      await this.userService.updateLastLogin(userDetails.email);
+
+      // Include user ID and role in the token payload
+      const tokenPayload = { 
+        username: userDetails.email,
+        userId: userDetails._id,
+        userRole: userDetails.role || 'manager' // Default to manager if no role is set
+      };
+      
       const token = jwt.sign(tokenPayload, secretKey as jwt.Secret, {
         expiresIn: "1d",
       });
@@ -71,6 +80,8 @@ export class AuthenticationController {
             firstname: userDetails.firstname,
             lastname: userDetails.lastname,
             email: userDetails.email,
+            role: userDetails.role,
+            id: userDetails._id
           },
         });
     } catch (error: unknown) {

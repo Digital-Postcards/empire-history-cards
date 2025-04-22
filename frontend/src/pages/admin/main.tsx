@@ -1,36 +1,68 @@
-import { useContext, useState } from "react";
-import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography } from "@mui/material";
+import { useContext, useState, useEffect } from "react";
+import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography, Chip, CircularProgress } from "@mui/material";
 import { Menu } from "lucide-react";
 import NavigationDrawer from "./navigation-drawer";
 import { Outlet, useNavigate } from "react-router-dom";
 import useIsAuthenticated from "hooks/useIsAuthenticated";
-import { ApplicationContext } from "contexts/ApplicationContext";
+import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
 
 const drawerWidth = 240;
 
 export default function AdminMain() {
-    useIsAuthenticated();
+    const { isLoading } = useIsAuthenticated();
 
     const applicationCtx = useContext(ApplicationContext);
     const navigate = useNavigate();
 
-    if (!applicationCtx?.isAuthenticated) {
-        navigate("/unauthorized");
-    }
-
+    // Move useState hooks before any conditional returns
     const [mobileOpen, setMobileOpen] = useState(false);
     const [open, setOpen] = useState(true);
 
-    const [user] = useState({
-        firstName: "Akshay",
-        lastName: "Chavan",
-        email: "akshaychavan@gmail.com",
-        avatar: "/images/about/akshay.jpg",
-    });
+    // Use useEffect for navigation instead of conditional rendering
+    useEffect(() => {
+        if (!isLoading && !applicationCtx?.isAuthenticated) {
+            navigate("/admin/unauthorized-access");
+        }
+    }, [applicationCtx?.isAuthenticated, isLoading, navigate]);
+
+    // Show loading indicator while checking authentication
+    if (isLoading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    // If not authenticated, still render something minimal while the redirect happens
+    if (!applicationCtx?.isAuthenticated) {
+        return <Box sx={{ p: 4 }}>Redirecting...</Box>;
+    }
 
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
     const handleDrawerOpen = () => setOpen(true);
     const handleDrawerClose = () => setOpen(false);
+
+    // Get user data from context
+    const userData = applicationCtx.userData || {
+        firstName: "",
+        lastName: "",
+        email: "",
+    };
+
+    // Determine display name for role
+    const getRoleDisplayName = (role: UserRole | null) => {
+        if (role === UserRole.SUPER_ADMIN) return "Super Admin";
+        if (role === UserRole.MANAGER) return "Manager";
+        return "User";
+    };
+
+    // Determine color for role badge
+    const getRoleColor = (role: UserRole | null) => {
+        if (role === UserRole.SUPER_ADMIN) return "error";
+        if (role === UserRole.MANAGER) return "primary";
+        return "default";
+    };
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -67,24 +99,46 @@ export default function AdminMain() {
                     </Box>
 
                     <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {/* Role badge */}
+                        <Chip
+                            label={getRoleDisplayName(applicationCtx.userRole)}
+                            color={getRoleColor(applicationCtx.userRole) as "error" | "primary" | "default"}
+                            size="small"
+                            sx={{
+                                mr: 2,
+                                fontWeight: 500,
+                                display: { xs: "none", sm: "flex" },
+                            }}
+                        />
+
+                        {/* User name */}
                         <Typography variant="body1" sx={{ mr: 2, display: { xs: "none", sm: "block" } }}>
-                            {user.firstName} {user.lastName}
+                            {userData.firstName} {userData.lastName}
                         </Typography>
+
+                        {/* User avatar */}
                         <Box
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
+                                justifyContent: "center",
                                 borderRadius: "50%",
                                 overflow: "hidden",
                                 width: 40,
                                 height: 40,
                                 bgcolor: "primary.light",
                             }}>
-                            <img
-                                src={user.avatar || "/avatar-placeholder.png"}
-                                alt={`${user.firstName} ${user.lastName}`}
-                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                            />
+                            {userData.firstName && (
+                                <Typography
+                                    sx={{
+                                        color: "#fff",
+                                        fontSize: "1.2rem",
+                                        fontWeight: 500,
+                                    }}>
+                                    {userData.firstName.charAt(0)}
+                                    {userData.lastName?.charAt(0)}
+                                </Typography>
+                            )}
                         </Box>
                     </Box>
                 </Toolbar>
