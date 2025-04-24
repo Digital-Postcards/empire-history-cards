@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Chip, TextField, Autocomplete } from "@mui/material";
 import { X, Plus } from "lucide-react";
 import { useApi } from "hooks";
+import { API_URL } from "utils/constants";
 
 // Interface definitions
 interface CardFormData {
@@ -236,8 +237,8 @@ export function UploadCards() {
 
             formData.append("cardData", JSON.stringify(formDataToSend));
 
-            // Submit to server
-            const response = await fetch("http://localhost:3002/api/cards/upload-card", {
+            // Submit to server using API_URL instead of hardcoded URL
+            const response = await fetch(`${API_URL}/cards/upload-card`, {
                 method: "POST",
                 body: formData,
             });
