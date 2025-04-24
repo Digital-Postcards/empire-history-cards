@@ -237,7 +237,7 @@ export function UploadCards() {
 
             formData.append("cardData", JSON.stringify(formDataToSend));
 
-            // Submit to server using API_URL instead of hardcoded URL
+            // Submit to server
             const response = await fetch(`${API_URL}/cards/upload-card`, {
                 method: "POST",
                 body: formData,
