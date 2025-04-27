@@ -289,6 +289,101 @@ paths:
                   message:
                     type: string
                     example: "Internal Server Error"
+  /logs:
+    get:
+      summary: Get all logs
+      description: Returns all system logs for admin monitoring. Requires super_admin role.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: A JSON array of log entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Log"
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "500":
+          description: Internal Server Error
+    delete:
+      summary: Clear all logs
+      description: Deletes all system logs. Requires super_admin role.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Logs cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "All logs have been cleared successfully"
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "500":
+          description: Internal Server Error
+  /logs/export:
+    get:
+      summary: Export logs as CSV
+      description: Exports all system logs in CSV format. Requires super_admin role.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: CSV file containing log data
+          content:
+            text/csv:
+              schema:
+                type: string
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "404":
+          description: No logs available to export
+        "500":
+          description: Internal Server Error
+  /logs/{id}/curl:
+    get:
+      summary: Get curl command for a log entry
+      description: Generates a curl command for a specific log entry. Requires super_admin role.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the log entry
+          schema:
+            type: string
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Generated curl command
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  curlCommand:
+                    type: string
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "404":
+          description: Log entry not found
+        "500":
+          description: Internal Server Error
 components:
   schemas:
     Card:
@@ -455,6 +550,62 @@ components:
       required:
         - email
         - password
+    Log:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the log entry.
+        timestamp:
+          type: string
+          format: date-time
+          description: The time the log entry was created.
+        userId:
+          type: string
+          description: The user ID associated with this log entry.
+        username:
+          type: string
+          description: The username associated with this log entry.
+        action:
+          type: string
+          description: A description of the action performed.
+        information:
+          type: string
+          description: Detailed information about the log entry.
+        method:
+          type: string
+          description: HTTP method (GET, POST, PUT, DELETE, etc.).
+        path:
+          type: string
+          description: The API path that was accessed.
+        statusCode:
+          type: integer
+          description: The HTTP status code returned.
+        ipAddress:
+          type: string
+          description: The IP address of the requester.
+        userAgent:
+          type: string
+          description: The user agent string from the request.
+        requestDetails:
+          type: object
+          description: Additional details about the request.
+          properties:
+            headers:
+              type: object
+              description: The HTTP headers sent with the request.
+            body:
+              type: object
+              description: The request body, if present.
+            queryParams:
+              type: object
+              description: Query parameters from the request URL.
+      required:
+        - id
+        - timestamp
+        - method
+        - path
+        - statusCode
   responses:
     Error:
       description: A JSON object with error information
