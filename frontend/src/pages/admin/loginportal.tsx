@@ -73,28 +73,22 @@ export default function AdminLoginPortal() {
                 const response = await authenticateCredentials(email, password);
                 if (response.status === 200) {
                     // Save user information in the application context
-                    applicationCtx?.dispatch({
-                        type: actions.SET_IS_AUTHENTICATED,
-                        payload: true,
-                    });
-
-                    // Store user role
                     const userRole = response.data.user.role || UserRole.MANAGER;
-                    applicationCtx?.dispatch({
-                        type: actions.SET_USER_ROLE,
-                        payload: userRole,
-                    });
 
-                    // Store user data
+                    // Set all authentication information at once to prevent double auth
                     applicationCtx?.dispatch({
-                        type: actions.SET_USER_DATA,
+                        type: actions.SET_AUTH_STATE,
                         payload: {
-                            id: response.data.user.id,
-                            firstName: response.data.user.firstname,
-                            lastName: response.data.user.lastname,
-                            email: response.data.user.email,
-                            role: userRole,
-                            profilePictureUrl: response.data.user.profilePictureUrl || null,
+                            isAuthenticated: true,
+                            userRole: userRole,
+                            userData: {
+                                id: response.data.user.id,
+                                firstName: response.data.user.firstname,
+                                lastName: response.data.user.lastname,
+                                email: response.data.user.email,
+                                role: userRole,
+                                profilePictureUrl: response.data.user.profilePictureUrl || null,
+                            },
                         },
                     });
 

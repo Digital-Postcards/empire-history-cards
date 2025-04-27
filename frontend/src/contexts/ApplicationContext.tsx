@@ -46,6 +46,12 @@ const reducer = (state: AppState, action: any): AppState => {
             return { ...state, userRole: action.payload };
         case actions.SET_USER_DATA:
             return { ...state, userData: action.payload };
+        case actions.SET_AUTH_STATE:
+            return {
+                isAuthenticated: action.payload.isAuthenticated,
+                userRole: action.payload.userRole,
+                userData: action.payload.userData,
+            };
         default:
             return state;
     }

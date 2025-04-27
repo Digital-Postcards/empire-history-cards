@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { UserRole } from "../models/user";
 
-// Extend Request interface to include userId and userRole
+// Extend Request interface to include userId, userRole, and username
 interface AuthenticatedRequest extends Request {
   userId?: string;
   userRole?: string;
+  username?: string; // Add username to the interface
 }
 
 // Custom JWT payload interface
@@ -19,7 +20,7 @@ interface CustomJwtPayload extends JwtPayload {
  * Middleware function for user authorization.
  *
  * This middleware checks if the request contains a valid access token in the cookies.
- * If valid, it extracts user ID and role from the token payload and attaches them to the request.
+ * If valid, it extracts user ID, role, and username from the token payload and attaches them to the request.
  * If the token is missing or invalid, it sends a 401 Unauthorized response.
  */
 export const authenticate = (
@@ -39,6 +40,7 @@ export const authenticate = (
     ) as CustomJwtPayload;
     req.userId = data.userId;
     req.userRole = data.userRole;
+    req.username = data.username; // Attach the username to the request
     next();
   } catch (error) {
     res.status(401).json({ message: `Authentication error: ${error}` });

@@ -21,7 +21,11 @@ import {
   themeRouter,
   authenticationRouter,
   userRouter,
+  logRouter,
 } from "./routes";
+
+// Import logger middleware
+import { loggerMiddleware } from "./middleware/logger";
 
 const app: Application = express();
 const limiter = rateLimit({
@@ -45,6 +49,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Apply logger middleware
+app.use(loggerMiddleware);
+
 // Configure static directories to serve images
 app.use(
   STATIC_FILES_CONFIG.paths.postcards,
@@ -67,6 +74,7 @@ app.use(API_ROUTES.themes, themeRouter);
 app.use(API_ROUTES.map, mapRouter);
 app.use(API_ROUTES.cards, cardRouter);
 app.use(API_ROUTES.users, userRouter);
+app.use(API_ROUTES.logs, logRouter);
 
 // Healthcheck route
 app.get(API_ROUTES.healthcheck, (req: Request, res: Response) => {

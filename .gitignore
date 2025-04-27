@@ -157,3 +157,5 @@ venv/
 images/
 
 .DS_Store
+
+logs.json

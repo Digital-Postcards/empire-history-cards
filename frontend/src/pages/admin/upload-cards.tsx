@@ -241,6 +241,7 @@ export function UploadCards() {
             const response = await fetch(`${API_URL}/cards/upload-card`, {
                 method: "POST",
                 body: formData,
+                credentials: "include", // Add this to include cookies with the request
             });
 
             if (!response.ok) {

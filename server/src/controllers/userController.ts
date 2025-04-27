@@ -47,16 +47,38 @@ export class UserController {
   };
 
   /**
-   * Update a user - only accessible to super admins
+   * Update a user
+   * - Super admins can update any user
+   * - Managers can only update their own profile and cannot change their email
    */
   public updateUser = async (
-    req: Request,
+    req: Request & { userId?: string; userRole?: string },
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
       const { id } = req.params;
       const userData = req.body;
+      
+      // Check if the user is trying to update their own profile or someone else's
+      const isSelfUpdate = req.userId === id;
+      const isSuperAdmin = req.userRole === UserRole.SUPER_ADMIN;
+      
+      // Only super admins can update other users' profiles
+      if (!isSelfUpdate && !isSuperAdmin) {
+        res.status(403).json({ message: "You are not authorized to update other users' profiles" });
+        return;
+      }
+      
+      // If it's a manager updating their own profile, prevent email changes
+      if (isSelfUpdate && !isSuperAdmin && userData.email) {
+        const currentUser = await this.userService.getUserById(id);
+        if (currentUser && currentUser.email !== userData.email) {
+          res.status(403).json({ message: "Managers cannot change their email address" });
+          return;
+        }
+      }
+      
       const updatedUser = await this.userService.updateUser(id, userData);
       
       if (!updatedUser) {

@@ -1,5 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import { AdminLoginPortal, Dashboard, UsersPage, UploadCards, AllCards, SettingsPage } from "./admin-pages";
+import {
+    AdminLoginPortal,
+    Dashboard,
+    UsersPage,
+    UploadCards,
+    AllCards,
+    SettingsPage,
+    LogsDashboard,
+} from "./admin-pages";
 import AdminMain from "./main";
 import UnauthorizedAccess from "./unauthorized-access";
 import { UserRole } from "contexts/ApplicationContext";
@@ -48,6 +56,16 @@ function AdminPortal() {
                         element={
                             <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
                                 <AllCards />
+                            </RouteGuard>
+                        }
+                    />
+
+                    {/* System logs - only accessible by Super Admins */}
+                    <Route
+                        path="logs"
+                        element={
+                            <RouteGuard roles={[UserRole.SUPER_ADMIN]}>
+                                <LogsDashboard />
                             </RouteGuard>
                         }
                     />

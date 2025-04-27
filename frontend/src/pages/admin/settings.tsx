@@ -252,6 +252,7 @@ export default function SettingsPage() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
+                                            disabled={true}
                                             label="Email"
                                             type="email"
                                             value={email}

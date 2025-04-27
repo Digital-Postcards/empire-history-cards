@@ -14,7 +14,7 @@ import {
     Typography,
     Avatar,
 } from "@mui/material";
-import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home, Settings } from "lucide-react";
+import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home, Settings, ClipboardList } from "lucide-react";
 import { useApi } from "hooks";
 import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
 import { API_URL } from "utils/constants";
@@ -60,6 +60,12 @@ const navItems: NavItem[] = [
         path: "/admin/all-cards",
         icon: <CreditCard size={20} />,
         roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
+    {
+        title: "System Logs",
+        path: "/admin/logs",
+        icon: <ClipboardList size={20} />,
+        roles: [UserRole.SUPER_ADMIN], // Only Super Admin can access
     },
     {
         title: "Settings",

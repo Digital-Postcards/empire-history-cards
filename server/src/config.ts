@@ -62,5 +62,6 @@ export const API_ROUTES = {
   map: "/api/map",
   cards: "/api/cards",
   users: "/api/users",
+  logs: "/api/logs",
   healthcheck: "/healthcheck",
 };
