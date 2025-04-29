@@ -32,10 +32,10 @@ const StickyNavTabs = () => {
     return (
         <div
             className="
-                navtabs fixed md:relative md:top-0 top-[8px] left-[8px] md:left-0
+                navtabs fixed md:relative md:top-0 top-[8px] md:left-0 left-1/2 md:transform-none transform -translate-x-1/2
                 text-neutral-100
                 md:w-full w-fit
-                flex md:flex-row flex-col justify-between items-center gap-5
+                flex md:flex-row flex-col md:justify-center items-center gap-5
                 md:px-8 px-6 pt-4 md:pb-0 pb-4
                 md:bg-black bg-foreground
                 z-50
@@ -43,10 +43,16 @@ const StickyNavTabs = () => {
             ">
             <div className="flex md:flex-row flex-col items-center gap-5">
                 {!isMenuOpen && (
-                    <Menu className="md:hidden block cursor-pointer" onClick={() => setMenuOpen(!isMenuOpen)} />
+                    <Menu
+                        className="md:hidden block cursor-pointer absolute left-4"
+                        onClick={() => setMenuOpen(!isMenuOpen)}
+                    />
                 )}
                 {isMenuOpen && (
-                    <X className="md:hidden block cursor-pointer" onClick={() => setMenuOpen(!isMenuOpen)} />
+                    <X
+                        className="md:hidden block cursor-pointer absolute left-4"
+                        onClick={() => setMenuOpen(!isMenuOpen)}
+                    />
                 )}
                 <div
                     className={`md:flex gap-5 ${!isMenuOpen ? "hidden" : "absolute top-[4rem] left-0 bg-foreground block md:rounded-none rounded-md"} `}>
@@ -67,7 +73,7 @@ const StickyNavTabs = () => {
 
             {/* User profile picture */}
             {userData?.profilePictureUrl && (
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center md:absolute md:right-8">
                     <div
                         className="w-8 h-8 rounded-full overflow-hidden bg-neutral-700 flex items-center justify-center"
                         title={`${userData.firstName} ${userData.lastName}`}>
