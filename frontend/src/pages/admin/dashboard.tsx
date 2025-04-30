@@ -19,7 +19,7 @@ import {
     Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, AlertTriangle, CreditCard, Users } from "lucide-react";
+import { ArrowRight, AlertTriangle, Users } from "lucide-react";
 import instance from "../../utils/axiosConfig";
 import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
 
@@ -36,19 +36,12 @@ interface LogEntry {
     userAgent?: string;
 }
 
-interface CardStats {
-    totalCards: number;
-    postcards: number;
-    tradecards: number;
-}
-
 export const Dashboard = () => {
     const navigate = useNavigate();
     const context = useContext(ApplicationContext);
     const userRole = context?.userRole || UserRole.MANAGER; // Default to MANAGER if context is undefined
     const [recentLogs, setRecentLogs] = useState<LogEntry[]>([]);
     const [loading, setLoading] = useState(true);
-    const [cardStats, setCardStats] = useState<CardStats>({ totalCards: 0, postcards: 0, tradecards: 0 });
     const [userStats, setUserStats] = useState({ totalUsers: 0, managers: 0, superAdmins: 0 });
 
     // Fetch recent logs for super admins only
@@ -75,27 +68,6 @@ export const Dashboard = () => {
             setLoading(false);
         }
     }, [userRole]);
-
-    // Fetch card statistics for all users
-    useEffect(() => {
-        const fetchCardStats = async () => {
-            try {
-                // In a real app, this would be a dedicated endpoint. For now, simulating it.
-                const response = await instance.get("/cards", { params: { limit: 1 } });
-                if (response.status === 200) {
-                    // This is a simulation - in real app would use real data from a /stats endpoint
-                    setCardStats({
-                        totalCards: response.data.totalCount || 0,
-                        postcards: Math.floor((response.data.totalCount || 0) * 0.7), // Simulated 70% are postcards
-                        tradecards: Math.floor((response.data.totalCount || 0) * 0.3), // Simulated 30% are trade cards
-                    });
-                }
-            } catch (error) {
-                console.error("Error fetching card stats:", error);
-            }
-        };
-        fetchCardStats();
-    }, []);
 
     // Fetch user statistics (for super admins only)
     useEffect(() => {
@@ -147,63 +119,14 @@ export const Dashboard = () => {
             </Typography>
 
             <Grid container spacing={3}>
-                {/* Card Statistics - shown to all roles */}
-                <Grid item xs={12} md={userRole === UserRole.SUPER_ADMIN ? 6 : 12}>
-                    <Card>
-                        <CardHeader
-                            title="Card Statistics"
-                            action={
-                                <Button
-                                    color="primary"
-                                    endIcon={<ArrowRight />}
-                                    onClick={() => navigate("/admin/all-cards")}>
-                                    View All Cards
-                                </Button>
-                            }
-                        />
-                        <CardContent>
-                            <Grid container spacing={3}>
-                                <Grid item xs={4}>
-                                    <Box sx={{ textAlign: "center" }}>
-                                        <CreditCard size={32} color="#1976d2" />
-                                        <Typography variant="h4">{cardStats.totalCards}</Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Total Cards
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <Box sx={{ textAlign: "center" }}>
-                                        <CreditCard size={32} color="#2e7d32" />
-                                        <Typography variant="h4">{cardStats.postcards}</Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Postcards
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <Box sx={{ textAlign: "center" }}>
-                                        <CreditCard size={32} color="#ed6c02" />
-                                        <Typography variant="h4">{cardStats.tradecards}</Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Trade Cards
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
                 {/* Manager-specific content */}
                 {userRole === UserRole.MANAGER && (
                     <Grid item xs={12}>
                         <Card>
-                            <CardHeader title="Recent Uploads" />
+                            <CardHeader title="Content Management" />
                             <CardContent>
                                 <Typography variant="body1" paragraph>
-                                    Welcome to your manager dashboard. Here you can monitor your card uploads and manage
-                                    content.
+                                    Welcome to your manager dashboard. Here you can manage content and upload new cards.
                                 </Typography>
                                 <Divider sx={{ my: 2 }} />
                                 <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
@@ -230,7 +153,7 @@ export const Dashboard = () => {
 
                 {/* User Statistics - only for super admins */}
                 {userRole === UserRole.SUPER_ADMIN && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
                         <Card>
                             <CardHeader
                                 title="User Statistics"
@@ -280,7 +203,7 @@ export const Dashboard = () => {
 
                 {/* Recent Logs Card - only for super admins */}
                 {userRole === UserRole.SUPER_ADMIN && (
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{ mt: 2 }}>
                         <Card>
                             <CardHeader
                                 title="Recent System Activity"

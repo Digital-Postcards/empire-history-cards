@@ -30,7 +30,8 @@ export default class UserService {
    * Get all users
    */
   public async getAllUsers(): Promise<IUser[]> {
-    return await UserModel.find().sort({ createdAt: -1 });
+    return await UserModel.find().sort({ createdAt: -1 }).select('-_id -__v');
+  
   }
 
   /**

@@ -384,6 +384,212 @@ paths:
           description: Log entry not found
         "500":
           description: Internal Server Error
+  /users:
+    get:
+      summary: Get all users
+      description: Returns a list of all users in the system. Only accessible to super_admin role.
+      security:
+        - cookieAuth: []
+      responses:
+          '200':
+            description: A list of users
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                        example: "manager2@gmail.com"
+                      password:
+                        type: string
+                        example: "test@123"
+                      firstname:
+                        type: string
+                        example: "Manager"
+                      lastname:
+                        type: string
+                        example: "2"
+                      role:
+                        type: string
+                        example: "manager"
+                      profilePictureUrl:
+                        type: string
+                        format: uri
+                        example: "data:image/jpeg;base64,/9j/4AA"
+                      lastLogin:
+                        type: object
+                        example: "2025-04-22T20:38:54.400Z"
+                      createdAt:
+                        type: object
+                        example: "2025-04-22T20:38:06.184Z"
+          '401':
+            description: Unauthorized - Missing or invalid token
+          '500':
+            description: Server error     
+    post:
+      summary: Create a new user
+      description: Creates a new user in the system. Only accessible to super_admin role.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/User"
+                  - type: object
+                    properties:
+                      _id:
+                        type: string
+                      role:
+                        type: string
+                        enum: [super_admin, manager]
+        "400":
+          description: Bad Request - Invalid data
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "500":
+          description: Internal Server Error
+  /users/{id}:
+    put:
+      summary: Update a user
+      description: >
+        Updates an existing user's information. Super admins can update any user.
+        Regular users can only update their own profile and cannot change their email.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The user ID to update
+          schema:
+            type: string
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/User"
+                  - type: object
+                    properties:
+                      _id:
+                        type: string
+                      role:
+                        type: string
+                      profilePictureUrl:
+                        type: string
+        "400":
+          description: Bad Request - Invalid data
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized to update this user
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+    delete:
+      summary: Delete a user
+      description: Deletes a user from the system. Only accessible to super_admin role.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The user ID to delete
+          schema:
+            type: string
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+  /users/{id}/role:
+    patch:
+      summary: Change user role
+      description: Changes the role of a user. Only accessible to super_admin role.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The user ID to change role
+          schema:
+            type: string
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [super_admin, manager]
+              required:
+                - role
+      responses:
+        "200":
+          description: User role updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/User"
+                  - type: object
+                    properties:
+                      _id:
+                        type: string
+                      role:
+                        type: string
+        "400":
+          description: Bad Request - Invalid role
+        "401":
+          description: Unauthorized - Not authenticated
+        "403":
+          description: Forbidden - Not authorized as super_admin
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
 components:
   schemas:
     Card:
@@ -457,7 +663,9 @@ components:
     Theme:
       type: object
       properties:
-        _id: {}
+        _id:
+          type: string
+          description: The unique identifier for the theme
         name:
           type: string
         numberOfCards:
@@ -469,7 +677,9 @@ components:
     LocationWithCard:
       type: object
       properties:
-        _id: {}
+        _id:
+          type: string
+          description: The unique identifier for the location with card
         item:
           type: string
         number:
@@ -511,7 +721,9 @@ components:
     ScrapbookCard:
       type: object
       properties:
-        _id: {}
+        _id:
+          type: string
+          description: The unique identifier for the scrapbook card
         item:
           type: string
         description:
@@ -550,6 +762,63 @@ components:
       required:
         - email
         - password
+    UserResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The unique identifier for the user
+          example: "6807fe2ed5943eef4c621b8c"
+        email:
+          type: string
+          format: email
+          description: The unique email address of the user
+          example: "manager2@gmail.com"
+        password:
+          type: string
+          description: The user's password (hashed)
+          example: "test@123"
+        firstname:
+          type: string
+          description: The user's first name
+          example: "Manager"
+        lastname:
+          type: string
+          description: The user's last name
+          example: "2"
+        role:
+          type: string
+          enum: [super_admin, manager]
+          description: The role assigned to the user
+          example: "manager"
+        profilePictureUrl:
+          type: string
+          description: URL to the user's profile picture, may be a data URL
+          example: "data:image/jpeg;base64,/9j"
+        lastLogin:
+          type: string
+          format: date-time
+          description: The date and time when the user last logged in
+          example: "2025-04-22T20:38:54.400Z"
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time when the user was created
+          example: "2025-04-22T20:38:06.184Z"
+        __v:
+          type: integer
+          description: Version key used by MongoDB
+          example: 0
+      required:
+        - _id
+        - email
+        - password
+        - firstname
+        - lastname
+        - role
+        - lastLogin
+        - createdAt
+        - __v
     Log:
       type: object
       properties:
@@ -629,3 +898,8 @@ components:
                 type: string
             required:
               - message
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
