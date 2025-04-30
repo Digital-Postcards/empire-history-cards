@@ -447,15 +447,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: "#/components/schemas/User"
-                  - type: object
-                    properties:
-                      _id:
-                        type: string
-                      role:
-                        type: string
-                        enum: [super_admin, manager]
+                type: string
         "400":
           description: Bad Request - Invalid data
         "401":
@@ -496,7 +488,7 @@ paths:
                   - type: object
                     properties:
                       _id:
-                        type: string
+                        type: object
                       role:
                         type: string
                       profilePictureUrl:
@@ -577,7 +569,7 @@ paths:
                   - type: object
                     properties:
                       _id:
-                        type: string
+                        type: object
                       role:
                         type: string
         "400":
@@ -664,7 +656,7 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          type: object
           description: The unique identifier for the theme
         name:
           type: string
@@ -678,7 +670,7 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          type: object
           description: The unique identifier for the location with card
         item:
           type: string
@@ -722,7 +714,7 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          type: object
           description: The unique identifier for the scrapbook card
         item:
           type: string
@@ -766,7 +758,7 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          type: object
           description: The unique identifier for the user
           example: "6807fe2ed5943eef4c621b8c"
         email:

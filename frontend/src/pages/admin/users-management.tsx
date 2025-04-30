@@ -186,7 +186,6 @@ export default function UsersManagementPage() {
             if (response.success) {
                 setUsers((prevUsers) => prevUsers.filter((u) => u._id !== userToDelete._id));
                 setFilteredUsers((prevUsers) => prevUsers.filter((u) => u._id !== userToDelete._id));
-
                 setNotification({
                     open: true,
                     message: `User ${userToDelete.firstname} ${userToDelete.lastname} has been deleted`,
@@ -223,7 +222,7 @@ export default function UsersManagementPage() {
 
                     setNotification({
                         open: true,
-                        message: `User ${newUser.firstname} ${newUser.lastname} has been added`,
+                        message: `User ${newUser.firstname || newUser.firstName || ""} ${newUser.lastname || newUser.lastName || ""} has been added`,
                         severity: "success",
                     });
                 } else {
@@ -243,7 +242,7 @@ export default function UsersManagementPage() {
 
                     setNotification({
                         open: true,
-                        message: `User ${userData.firstname} ${userData.lastname} has been updated`,
+                        message: `User ${userData.firstname || userData.firstName || ""} ${userData.lastname || userData.lastName || ""} has been updated`,
                         severity: "success",
                     });
                 } else {

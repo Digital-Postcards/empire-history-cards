@@ -138,10 +138,9 @@ export default function UsersPage() {
             const response = await userService.deleteUser(userToDelete._id);
             if (response.success) {
                 setUsers((prevUsers) => prevUsers.filter((u) => u._id !== userToDelete._id));
-
                 setNotification({
                     open: true,
-                    message: `User ${userToDelete.firstName} ${userToDelete.lastName} has been deleted`,
+                    message: `User ${userToDelete.firstname} ${userToDelete.lastname} has been deleted`,
                     severity: "success",
                 });
             } else {
@@ -174,7 +173,7 @@ export default function UsersPage() {
 
                     setNotification({
                         open: true,
-                        message: `User ${newUser.firstName} ${newUser.lastName} has been added`,
+                        message: `User ${newUser.firstname || newUser.firstName || ""} ${newUser.lastname || newUser.lastName || ""} has been added`,
                         severity: "success",
                     });
                 } else {
@@ -209,7 +208,7 @@ export default function UsersPage() {
 
                     setNotification({
                         open: true,
-                        message: `User ${userData.firstName} ${userData.lastName} has been updated`,
+                        message: `User ${userData.firstname || userData.firstName || ""} ${userData.lastname || userData.lastName || ""} has been updated`,
                         severity: "success",
                     });
                 } else {
@@ -391,7 +390,8 @@ export default function UsersPage() {
                     <DialogContentText>
                         Are you sure you want to delete the user{" "}
                         <strong>
-                            {userToDelete?.firstName} {userToDelete?.lastName}
+                            {userToDelete?.firstname || userToDelete?.firstName || ""}{" "}
+                            {userToDelete?.lastname || userToDelete?.lastName || ""}
                         </strong>
                         ? This action cannot be undone.
                     </DialogContentText>

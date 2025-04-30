@@ -35,8 +35,8 @@ export class UserController {
   ): Promise<void> => {
     try {
       const userData = req.body;
-      const user = await this.userService.createUser(userData);
-      res.status(201).json(user);
+      await this.userService.createUser(userData);
+      res.status(201).json("User created successfully");
     } catch (error) {
       console.error("Error creating user:", error);
       res.status(500).json({ 

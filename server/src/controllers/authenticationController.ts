@@ -39,13 +39,26 @@ export class AuthenticationController {
         return;
       }
 
-      const isPasswordValid = await bcrypt.compare(
-        password,
-        userDetails.password
-      );
+      // Check if the stored password is already hashed (starts with $2b$)
+      let isPasswordValid: boolean;
+      
+      if (userDetails.password.startsWith('$2b$')) {
+        // Password is already hashed, use bcrypt to compare
+        isPasswordValid = await this.userService.verifyPassword(password, userDetails.password);
+      } else {
+        // Legacy plain text password comparison - this will be removed after migration
+        isPasswordValid = password === userDetails.password;
+        
+        // If the password is valid, update it to a hashed version for future logins
+        if (isPasswordValid) {
+          const hashedPassword = await bcrypt.hash(password, 10);
+          await this.userService.updateUser(userDetails._id!.toString(), { 
+            password: hashedPassword 
+          });
+        }
+      }
 
-      if (password !== userDetails.password) {
-        //TODO: use this later if(!isPasswordValid) {
+      if (!isPasswordValid) {
         res
           .status(401)
           .json({ status: 401, message: "Invalid username or password" });
