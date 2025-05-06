@@ -406,7 +406,7 @@ export const AllCards = () => {
                     InputProps={{
                         startAdornment: <Search size={18} style={{ marginRight: 8 }} />,
                     }}
-                    sx={{ flexGrow: 1, maxWidth: { xs: "100%", sm: 300 } }}
+                    sx={{ flexGrow: 1, maxWidth: { xs: "100%", sm: 600 } }}
                 />
 
                 <Button variant="outlined" startIcon={<RefreshCw size={18} />} onClick={fetchCards} disabled={loading}>

@@ -10,7 +10,7 @@ import {
     CircularProgress,
     Avatar,
 } from "@mui/material";
-import { Menu, Bell, Search, Settings } from "lucide-react";
+import { Menu, Settings } from "lucide-react";
 import NavigationDrawer from "./navigation-drawer";
 import { Outlet, useNavigate } from "react-router-dom";
 import useIsAuthenticated from "hooks/useIsAuthenticated";
@@ -134,20 +134,6 @@ export default function AdminMain() {
                     </Box>
 
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        {/* Search Button */}
-                        <IconButton
-                            color="inherit"
-                            sx={{
-                                ml: 1,
-                                backgroundColor: "rgba(0, 0, 0, 0.04)",
-                                borderRadius: "8px",
-                                "&:hover": {
-                                    backgroundColor: "rgba(0, 0, 0, 0.08)",
-                                },
-                            }}>
-                            <Search size={20} />
-                        </IconButton>
-
                         {/* Settings Button */}
                         <IconButton
                             color="inherit"
@@ -161,20 +147,6 @@ export default function AdminMain() {
                                 },
                             }}>
                             <Settings size={20} />
-                        </IconButton>
-
-                        {/* Notifications Button */}
-                        <IconButton
-                            color="inherit"
-                            sx={{
-                                ml: 1,
-                                backgroundColor: "rgba(0, 0, 0, 0.04)",
-                                borderRadius: "8px",
-                                "&:hover": {
-                                    backgroundColor: "rgba(0, 0, 0, 0.08)",
-                                },
-                            }}>
-                            <Bell size={20} />
                         </IconButton>
 
                         {/* Role badge */}
