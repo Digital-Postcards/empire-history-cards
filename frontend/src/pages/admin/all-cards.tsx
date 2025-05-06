@@ -31,7 +31,7 @@ import {
     Autocomplete,
     Modal,
 } from "@mui/material";
-import { Search, Trash2, Edit, RefreshCw, X } from "lucide-react";
+import { Search, Trash2, Edit, RefreshCw, X, Eye } from "lucide-react";
 import { useApi } from "../../hooks";
 import { useForm, Controller } from "react-hook-form";
 import { API_URL } from "../../utils/constants";
@@ -338,12 +338,40 @@ export const AllCards = () => {
         return true;
     });
 
+    // Handle view card in new tab
+    const handleViewCardDetails = (card: CardData) => {
+        const cardType = card.item; // "postcard" or "tradecard"
+        const cardId = card._id;
+        window.open(`/cards/${cardType}/${cardId}`, "_blank");
+    };
+
     // Get image URL
     const getImageUrl = (imageLink: string) => {
-        if (imageLink.startsWith("/public")) {
-            return `${API_URL}${imageLink}`;
+        if (!imageLink) {
+            return "";
         }
-        return imageLink;
+
+        // If it's already a full URL
+        if (imageLink.startsWith("http")) {
+            return imageLink;
+        }
+
+        // Ensure we have the correct format: /public/images/...
+        let path = imageLink;
+
+        // If the path is just /images/... without /public prefix, add it
+        if (path.startsWith("/images/")) {
+            path = "/public" + path;
+        }
+
+        // If the path already has /public, keep it as is
+
+        // Ensure the path starts with a slash
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+
+        return `${API_URL.replace("/api", "")}${path}`;
     };
 
     return (
@@ -481,14 +509,23 @@ export const AllCards = () => {
                                                     <IconButton
                                                         size="small"
                                                         onClick={() => handleOpenEditModal(card)}
-                                                        color="primary">
+                                                        color="primary"
+                                                        title="Edit card">
                                                         <Edit size={18} />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => handleViewCardDetails(card)}
+                                                        color="info"
+                                                        title="View card details">
+                                                        <Eye size={18} />
                                                     </IconButton>
                                                     {userRole === UserRole.SUPER_ADMIN && (
                                                         <IconButton
                                                             size="small"
                                                             onClick={() => handleOpenDeleteDialog(card._id)}
-                                                            color="error">
+                                                            color="error"
+                                                            title="Delete card">
                                                             <Trash2 size={18} />
                                                         </IconButton>
                                                     )}
