@@ -19,5 +19,7 @@ cardRouter.post(
   relocateFilesIfNeeded,
   cardController.uploadCard
 );
+cardRouter.put("/:id", authenticate, cardController.updateCard);
+cardRouter.delete("/:id", authenticate, cardController.deleteCard);
 
 export default cardRouter;

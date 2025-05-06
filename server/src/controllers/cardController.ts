@@ -9,6 +9,8 @@ export class CardController {
     this.getCardByID = this.getCardByID.bind(this);
     this.getCardsForScrapbook = this.getCardsForScrapbook.bind(this);
     this.uploadCard = this.uploadCard.bind(this);
+    this.updateCard = this.updateCard.bind(this);
+    this.deleteCard = this.deleteCard.bind(this);
   }
 
   async getPaginatedCards(req: Request, res: Response, next: NextFunction) {
@@ -96,6 +98,48 @@ export class CardController {
       res.status(201).json(result);
     } catch (error) {
       console.error("Error processing upload:", error);
+      res.status(400).json({ message: (error as Error).message });
+    }
+  }
+
+  async updateCard(req: Request, res: Response, next: NextFunction) {
+    try {
+      const cardId = req.params.id;
+      const updateData = req.body;
+      
+      const updatedCard = await this.cardService.updateCard(cardId, updateData);
+      
+      if (!updatedCard) {
+        res.status(404).json({ message: "Card not found" });
+        return;
+      }
+      
+      res.status(200).json({
+        message: "Card updated successfully",
+        card: updatedCard
+      });
+    } catch (error) {
+      console.error("Error updating card:", error);
+      res.status(400).json({ message: (error as Error).message });
+    }
+  }
+
+  async deleteCard(req: Request, res: Response, next: NextFunction) {
+    try {
+      const cardId = req.params.id;
+      
+      const result = await this.cardService.deleteCard(cardId);
+      
+      if (!result) {
+        res.status(404).json({ message: "Card not found" });
+        return;
+      }
+      
+      res.status(200).json({
+        message: "Card deleted successfully"
+      });
+    } catch (error) {
+      console.error("Error deleting card:", error);
       res.status(400).json({ message: (error as Error).message });
     }
   }

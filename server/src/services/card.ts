@@ -162,4 +162,93 @@ export default class CardService {
       throw error;
     }
   }
+
+  public async updateCard(cardId: string, updateData: any) {
+    try {
+      // Process themes if they're being updated
+      if (updateData.themes && updateData.themes.length > 0) {
+        const themeIds = [];
+        for (const themeName of updateData.themes) {
+          let theme = await TagModel.findOne({ name: themeName });
+          if (!theme) {
+            // Create new theme if it doesn't exist
+            theme = new TagModel({
+              name: themeName,
+              numberOfCards: 1,
+            });
+          }
+          const savedTheme = await theme.save();
+          themeIds.push(savedTheme._id);
+        }
+        updateData.themes = themeIds;
+      }
+
+      // Update card and return the updated document
+      const updatedCard = await CardModel.findByIdAndUpdate(
+        cardId,
+        updateData,
+        { new: true }
+      ).populate('themes imageLinks');
+
+      if (!updatedCard) {
+        return null;
+      }
+
+      // Convert to plain JavaScript object to avoid TypeScript errors
+      const cardObject = updatedCard.toObject();
+      
+      // Format the card data to match the expected format in the frontend
+      return {
+        ...cardObject,
+        themes: cardObject.themes && Array.isArray(cardObject.themes)
+          ? cardObject.themes.map((theme: any) => {
+              return typeof theme === 'string' ? theme : theme.name;
+            })
+          : [],
+      };
+    } catch (error) {
+      console.error("Error in updateCard:", error);
+      throw error;
+    }
+  }
+
+  public async deleteCard(cardId: string) {
+    try {
+      // First get the card to retrieve theme and image IDs
+      const card = await CardModel.findById(cardId);
+      if (!card) {
+        return null;
+      }
+
+      // Delete the card
+      const deleteResult = await CardModel.deleteOne({ _id: cardId });
+
+      // Update theme counts or delete themes if no longer used
+      if (card.themes && card.themes.length > 0) {
+        for (const themeId of card.themes) {
+          const theme = await TagModel.findById(themeId);
+          if (theme) {
+            if (theme.numberOfCards <= 1) {
+              // Delete theme if this was the only card using it
+              await TagModel.deleteOne({ _id: themeId });
+            } else {
+              // Decrement the numberOfCards for the theme
+              theme.numberOfCards -= 1;
+              await theme.save();
+            }
+          }
+        }
+      }
+
+      // Delete associated images (optional, can be commented out if you want to keep images)
+      if (card.imageLinks && card.imageLinks.length > 0) {
+        await ImageModel.deleteMany({ _id: { $in: card.imageLinks } });
+      }
+
+      return deleteResult.deletedCount > 0;
+    } catch (error) {
+      console.error("Error in deleteCard:", error);
+      throw error;
+    }
+  }
 }

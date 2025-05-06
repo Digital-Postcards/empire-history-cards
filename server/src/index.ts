@@ -49,15 +49,15 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: "./src/api/openapi.yaml",
-    validateRequests: true,
-    validateResponses: true,
-    operationHandlers: false,
-    ignorePaths: /.*\/api\/cards\/upload-card/
-  })
-);
+// app.use(
+//   OpenApiValidator.middleware({
+//     apiSpec: "./src/api/openapi.yaml",
+//     validateRequests: true,
+//     validateResponses: true,
+//     operationHandlers: false,
+//     ignorePaths: /.*\/api\/cards\/upload-card/
+//   })
+// );
 
 // Apply logger middleware
 app.use(loggerMiddleware);
