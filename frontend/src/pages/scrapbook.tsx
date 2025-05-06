@@ -62,6 +62,36 @@ const Scrapbook = () => {
 
     return (
         <ContentContainer>
+            <div className="mb-8 prose max-w-none text-justify">
+                <p className="mb-4">
+                    During the late 19th and early 20th centuries, the practice of scrapbooking emerged as a popular
+                    domestic and cultural activity, particularly among middle-classes in Europe and North America.
+                    Scrapbooks functioned as both personal memory repositories and aesthetic artifacts, documenting how
+                    people collected ephemera, such as trade cards and postcards.
+                </p>
+                <p className="mb-4">
+                    Trade cards—small, illustrated advertisements distributed by manufacturers and merchants—became
+                    widely collected in the post-Civil War United States, and in industrializing Europe, especially
+                    during the 1870s and 1880s. Their vibrant chromolithographed imagery and thematic variety made them
+                    desirable objects not only for their commercial content but also for their artistic appeal.
+                    Similarly, postcards gained popularity in the early-1900s with the advent of affordable postal
+                    services and international postcard exchanges. Postcards, as Lydia Pyne notes, were the
+                    &quot;World&apos;s First Social Network&quot;, allowing people to collect memories, images, and
+                    notes sent to and from their loved ones. These items were often preserved in scrapbooks both for
+                    their visual and sentimental value.
+                </p>
+                <p className="mb-4">
+                    Scrapbooking in this era was influenced by Victorian ideals of domesticity and sentimentality. It
+                    became a creative outlet that allowed individuals—most often women—to curate their personal
+                    engagement with industrial modernity, print capitalism, as well as new imperialism, anti-Black
+                    racism, Asian exclusion, racial segregation, and rue about the &quot;Servant Problem&quot;.
+                </p>
+                <p className="mb-4">
+                    We are building a digital scrapbook for our project, that will allow users to curate and collect
+                    their own personalized scrapbook, and download it as a teaching and learning tool, to understand snd
+                    reflect on how mass-produced ephemera upheld global hierarchies of race, gender, and domestic labor.
+                </p>
+            </div>
             {data === null || ((data as FlipBookPageDataType[]).length === 0 && <ScrapbookEmpty />)}
             {data !== null && (data as FlipBookPageDataType[]).length != 0 && (
                 <>
