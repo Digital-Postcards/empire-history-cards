@@ -520,7 +520,8 @@ export const AllCards = () => {
                                                         title="View card details">
                                                         <Eye size={18} />
                                                     </IconButton>
-                                                    {userRole === UserRole.SUPER_ADMIN && (
+                                                    {(userRole === UserRole.SUPER_ADMIN ||
+                                                        userRole === UserRole.MANAGER) && (
                                                         <IconButton
                                                             size="small"
                                                             onClick={() => handleOpenDeleteDialog(card._id)}
