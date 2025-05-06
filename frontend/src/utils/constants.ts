@@ -33,12 +33,63 @@ const MAIN_NAV_LINKS: NavLinkType[] = [
         path: "/cards",
     },
     {
+        label: "Bibliography",
+        path: "/bibliography",
+    },
+    {
         label: "About",
         path: "/about",
     },
 ];
 
 const MAX_ZOOM_FOR_MAP: number = 8;
+
+const BIBLIOGRAPHY_CONTENT = {
+    sections: [
+        {
+            title: "Resources on Postcards",
+            resources: [
+                "Alloula, Malek. The Colonial Harem. Minneapolis: University of Minnesota Press, 1986.",
+                'Chakraborty, Satyasikha: "Mammies, Ayahs, Baboes: Postcards of Racialized Nursemaids from the Early Twentieth Century", Visual Culture and Gender, Vol. 13, 17-31, 2018.',
+                "Khan, Omar. Paper Jewels: Postcards from the Raj. New Delhi: Mapin Publishing, 2018.",
+                "Prochaska, David, and Mendelson, Jordana: Postcards: Ephemeral Histories of Modernity. Penn State University Press, 2010.",
+                "Pyne, Lydia. Postcards: The Rise and Fall of the World's First Social Network. Reaktion Books, 2021.",
+            ],
+        },
+        {
+            title: "Resources on Trade cards and racialized advertisements",
+            resources: [
+                'Schultz, April. "The Black Mammy and the Irish Bridget: Domestic Service and the Representation of Race, 1830–1930." Éire-Ireland 48, no. 3 & 4 (Fall/Winter 2013): 176–212.',
+                "Jay, Robert. The Tradecard in Nineteenth-Century America. Columbia: University of Missouri Press, 1987.",
+                'McClintock, Anne. "Soft-Soaping Empire: Commodity Racism and Imperial Advertising." In Imperial Leather: Race, Gender, and Sexuality in the Colonial Contest, 207–231. New York: Routledge, 1995.',
+                'Mehaffy, Marilyn Maness. "Advertising Race/Raceing Advertising: The Feminine Consumer(-Nation), 1876–1900." Signs 23, no. 1 (Autumn 1997): 131–174.',
+                "Ramamurthy, Anandi. Imperial Persuaders: Images of Africa and Asia in British Advertising. Manchester: Manchester University Press, 2003.",
+            ],
+        },
+        {
+            title: "Resources on the history of domestic labor",
+            resources: [
+                "Chakraborty, Satya Shikha, Colonial Caregivers: Ayahs and the Gendered History of Race and Caste in British India. London: Cambridge University Press, 2025.",
+                "Hicks, Anasa. Hierarchies at Home: Domestic Service in Cuba from Abolition to Revolution. New York: Cambridge University Press, 2022.",
+                "Lowrie, Claire. Masters and Servants: Cultures of Empire in the Tropics. Manchester: Manchester University Press, 2016.",
+                "Martínez, Julia, Claire Lowrie, Frances Steel, and Victoria Haskins. Colonialism and Male Domestic Service across the Asia Pacific. London: Bloomsbury Academic, 2020.",
+                "Miller, Margaret Lynch. The Irish Bridget: Irish Immigrant Women in Domestic Service in America, 1840–1930. Syracuse, NY: Syracuse University Press, 2009.",
+                "Pilgrim, David. Understanding Jim Crow: Using Racist Memorabilia to Teach Tolerance and Promote Social Justice. Oakland: PM Press, 2015.",
+                "Schwartz, Laura. Feminism and the Servant Problem: Class and Domestic Labour in the Women's Suffrage Movement. Cambridge: Cambridge University Press, 2019.",
+                "Urban, Andrew. Brokering Servitude: Migration and the Politics of Domestic Labor during the Long Nineteenth Century. New York: New York University Press, 2018.",
+                "Wallace-Sanders, Kimberly. Mammy: A Century of Race, Gender, and Southern Memory. Ann Arbor: University of Michigan Press, 2008.",
+            ],
+        },
+        {
+            title: "Websites",
+            resources: [
+                "https://ayahsandamahs.com/",
+                "https://www.dwherstories.com/",
+                "https://jimcrowmuseum.ferris.edu/",
+            ],
+        },
+    ],
+};
 
 const ABOUT_PAGE_CONTENT = {
     paragraph1: `The <em>Visual Culture of Domestic Labor</em> Digital Humanities project evolved from the personal collection of historical trade cards and postcards of <a href="https://history.tcnj.edu/satya-shikha-chakraborty/" target="_blank">Satya Shikha Chakraborty, Assistant Professor of History,
@@ -279,4 +330,4 @@ const HISTORY_PAGE_CONTENT = {
     ],
 };
 
-export { API_URL, MAIN_NAV_LINKS, MAX_ZOOM_FOR_MAP, ABOUT_PAGE_CONTENT, HISTORY_PAGE_CONTENT };
+export { API_URL, MAIN_NAV_LINKS, MAX_ZOOM_FOR_MAP, ABOUT_PAGE_CONTENT, HISTORY_PAGE_CONTENT, BIBLIOGRAPHY_CONTENT };

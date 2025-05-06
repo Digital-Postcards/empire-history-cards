@@ -9,6 +9,7 @@ import { About, HomePage, Project, ScrapBook, History, MapViewer, CardDetail, Ca
 import { ApplicationContextProvider } from "contexts/ApplicationContext";
 import AdminPortal from "pages/admin";
 import UnauthorizedAccess from "pages/admin/unauthorized-access";
+import Bibliography from "pages/bibliography";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                             <Route path="project" element={<Project />}></Route>
                             <Route path="flipbook" element={<ScrapBook />}></Route>
                             <Route path="ethics-of-representation" element={<Ethics />}></Route>
+                            <Route path="bibliography" element={<Bibliography />}></Route>
                         </Route>
                         <Route path="" element={<BaseSingleLayout withCardsHeader={false} />}>
                             <Route path="themes" element={<Themes />}></Route>
