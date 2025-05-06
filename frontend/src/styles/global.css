@@ -41,6 +41,17 @@
   height: 100vh;
 }
 
+/* Fix for marker cluster popups */
+.leaflet-popup-content {
+  margin: 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.leaflet-popup {
+  max-width: 80vw;
+}
+
 .content {
   font-size: large;
 }

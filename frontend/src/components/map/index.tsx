@@ -91,6 +91,14 @@ const LeafletMap = () => {
         popupDiv.classList.add("grid-cols-" + getNumberOfCols(numberOfImages));
         popupDiv.classList.add("gap-2");
         popupDiv.classList.add("w-" + getWidthOfPopup(numberOfImages));
+
+        // Create a wrapper div with max-height and overflow settings
+        const scrollableWrapper = document.createElement("div");
+        scrollableWrapper.style.maxHeight = "60vh"; // Limit height to 60% of the viewport height
+        scrollableWrapper.style.overflowY = "auto"; // Enable vertical scrolling
+        scrollableWrapper.style.overflowX = "hidden"; // Hide horizontal scrollbar
+        scrollableWrapper.style.padding = "4px";
+
         data.forEach((element: any) => {
             const imageDiv = document.createElement("div");
             const image = document.createElement("img") as HTMLImageElement;
@@ -107,7 +115,10 @@ const LeafletMap = () => {
             imageDiv.appendChild(imageLink);
             popupDiv.appendChild(imageDiv);
         });
-        return popupDiv;
+
+        // Add the grid to the scrollable wrapper
+        scrollableWrapper.appendChild(popupDiv);
+        return scrollableWrapper;
     };
 
     const handleClusterClick: LeafletMouseEventHandlerFn = (event: any) => {
