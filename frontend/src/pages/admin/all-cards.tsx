@@ -766,6 +766,11 @@ export const AllCards = () => {
                                         <Typography>No images available</Typography>
                                     )}
 
+                                    <Alert severity="info" sx={{ mt: 1 }}>
+                                        To change or update card images, you&apos;ll need to delete this card and create
+                                        a new one with the updated images.
+                                    </Alert>
+
                                     <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
                                         <input
                                             type="checkbox"
