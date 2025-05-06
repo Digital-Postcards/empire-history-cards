@@ -1,0 +1,93 @@
+.leaflet-container {
+  height: calc(100vh - 4rem);
+  width: 100%;
+}
+
+.map-legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  max-width: 250px;
+}
+
+.map-legend h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.map-loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+}
+
+.map-loading-progress {
+  width: 60%;
+  max-width: 300px;
+  margin-top: 15px;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.map-loading-bar {
+  height: 100%;
+  background: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+.map-filter-container {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-top: 15px;
+  margin-right: 15px;
+}
+
+.cluster-popup-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px;
+}
+
+/* Make cluster popup responsive */
+@media (max-width: 768px) {
+  .map-filter-container {
+    position: static;
+    width: 100%;
+    margin: 0 0 15px 0;
+  }
+  
+  .leaflet-container {
+    height: calc(100vh - 8rem);
+  }
+}
