@@ -6,8 +6,8 @@ const HistoricMap = () => {
 
     // Better bounds for historical map projection
     const bounds: [[number, number], [number, number]] = [
-        [-70.912, -184.227], // Southwest coordinates
-        [82.774, 184.125], // Northeast coordinates
+        [-70.912, -184.227],
+        [82.774, 184.125],
     ];
 
     useEffect(() => {
