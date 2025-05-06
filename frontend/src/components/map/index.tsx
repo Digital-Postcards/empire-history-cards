@@ -6,10 +6,8 @@ import { useApi } from "hooks";
 import { ContentContainer, FilterSection, Loader } from "components/common";
 import logo from "./location.png";
 import "leaflet/dist/leaflet.css";
-import ModernMap from "./modernmap";
 import HistoricMap from "./historicmap";
 import TagFilter from "components/tagfilter";
-import MapTypeFilter from "components/maptypefilter";
 import { Button } from "shadcn/components/ui/button";
 import { Error } from "components/error";
 
@@ -19,11 +17,11 @@ const customIcon = new L.Icon({
 });
 
 const LeafletMap = () => {
-    const [mapType, setMapType] = useState<string | undefined>("historic");
     const [filterTags, setFilterTags] = useState<string[]>([]);
     const mapConfig = {
-        historic: { defaultZoom: 1, minZoom: 2, maxZoom: 4 },
-        modern: { defaultZoom: 4, minZoom: 3, maxZoom: 8 },
+        defaultZoom: 1,
+        minZoom: 2,
+        maxZoom: 4,
     };
     const [mapData, setMapData] = useState([]);
 
@@ -54,7 +52,7 @@ const LeafletMap = () => {
 
     useEffect(() => {
         getData();
-    }, [mapType]);
+    }, []);
 
     if (isLoading) return <Loader isFullSize={true} />;
 
@@ -123,7 +121,7 @@ const LeafletMap = () => {
 
     const handleClusterClick: LeafletMouseEventHandlerFn = (event: any) => {
         const zoom = event.target._zoom;
-        if (zoom !== (mapType === "historic" ? mapConfig.historic.maxZoom : mapConfig.modern.maxZoom)) return;
+        if (zoom !== mapConfig.maxZoom) return;
         const childMarkers = event.layer.getAllChildMarkers();
         const childMarkerLatLongs: any = [];
         childMarkers.map((childMarker: any) => {
@@ -152,7 +150,6 @@ const LeafletMap = () => {
         <div>
             <div className="fixed right-0 w-1/5 z-10">
                 <FilterSection>
-                    <MapTypeFilter setMapType={setMapType} />
                     <TagFilter filterOptions={{ withVerticalMargin: true }} setFilterTags={setFilterTags} />
                 </FilterSection>
             </div>
@@ -160,12 +157,12 @@ const LeafletMap = () => {
                 className="overflow-hidden col-span-8 z-0"
                 center={[0, 0]}
                 zoomControl={false}
-                zoom={mapType === "historic" ? mapConfig.historic.defaultZoom : mapConfig.modern.defaultZoom}
-                minZoom={mapType === "historic" ? mapConfig.historic.minZoom : mapConfig.modern.minZoom}
-                maxZoom={mapType === "historic" ? mapConfig.historic.maxZoom : mapConfig.modern.maxZoom}
+                zoom={mapConfig.defaultZoom}
+                minZoom={mapConfig.minZoom}
+                maxZoom={mapConfig.maxZoom}
                 scrollWheelZoom={true}
-                crs={mapType === "historic" ? L.CRS.EPSG3857 : L.CRS.EPSG3857}>
-                {mapType === "historic" ? <HistoricMap /> : <ModernMap />}
+                crs={L.CRS.EPSG3857}>
+                <HistoricMap />
                 <MarkerClusterGroup
                     chunkedLoading
                     spiderfyOnMaxZoom={false}
