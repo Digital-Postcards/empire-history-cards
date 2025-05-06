@@ -107,266 +107,105 @@ const HISTORY_PAGE_CONTENT = {
         {
             tag: "New Imperialism",
             title: "New Imperialism",
-            content: `The period of New Imperialism (1875 to 1914) marked an era of unprecedented Euro-American
-        colonial expansion into Asia, Africa, and Latin America. The modernization of technologies and
-        weaponry largely enabled this widespread imperial takeover, along with the need for captive
-        colonial markets for Euro-American industrializing economies. This era encouraged fierce
-        competition among the British, French, Dutch and other “old” empires, while encouraging the
-        entry of new global powers, such as the United States, Italy, Japan, Russia, and Germany. The
-        era of New Imperialism coincided with the heyday of trade cards and postcards, which brought the
-        Empire to common people in Western countries, enabling the consumption of accessible ephemera
-        that depicted colonized landscape and peoples. Trade cards and postcards claimed to present
-        colonized subjects with a realism undistorted by biases, especially using the new photographic
-        and chromolithographic technologies. However, in reality, these objects enabled the “systemic
-        distortion” of marginalized groups, and perpetuated racist and sexist stereotypes. Although
-        understudied by historians, trade cards and postcards were important tools of imperial
-        propaganda, and provide us valuable glimpses of social attitudes in the age of New Imperialism.`,
-            image: "/images/history/802A.jpg",
+            content: `The “golden age” of trade cards and postcards (1870s to 1940s) coincided with the period of New Imperialism, which marked an era of unprecedented Euro-American colonial expansion into Asia, Africa, and Latin America. The modernization of technologies and weaponry largely enabled this widespread imperial takeover, along with the need for captive colonial markets for Euro-American industrializing economies. This era encouraged fierce competition among the British, French, Dutch and other “old” empires, while encouraging the entry of new global powers, such as the United States, Italy, Japan, Russia, and Germany. The era of New Imperialism was the heyday of trade cards and postcards, which brought the Empire to common people in Western countries, enabling the consumption of accessible ephemera that depicted colonized landscape and peoples. Trade cards and postcards claimed to present colonized subjects with a realism undistorted by biases, especially using the new photographic and chromolithographic technologies. However, in reality, these objects enabled the “systemic distortion” of marginalized groups, and perpetuated racist and sexist stereotypes. Although understudied by historians, trade cards and postcards were important tools of imperial propaganda, and provide us valuable glimpses of social attitudes in the age of New Imperialism. A lot of the trade cards and postcards depict black, brown, and indigenous people in servile and laboring roles, naturalizing their subordinate position to white people.`,
+            image: "/images/history/New Imperialism.jpg",
         },
         {
             tag: "Jim Crow",
-            title: "Jim Crow Laws",
-            content: `After the American civil war and the abolition of slavery, a series of laws were passed
-        enforcing and legitimizing racial segregation, discrimination, disenfranchisement, and
-        anti-black racism in the United States. The period of Jim Crow laws in the late 19th and early
-        20th C was also the period when trade cards and postcards mass-circulated racist caricatures of
-        African American people, such as the Mammy and Uncle Tom which have roots in American slavery
-        and sustain the stereotypes of faithful servitude in post-emancipation America. They served as a
-        sentimental souvenir of slavery and enabled white Americans to assuage their guilt and
-        complicity in the history of slavery and the culture of racist discrimination. Trade cards and
-        postcards enabled the mass distribution of themes, such as benevolent patriarchalism, white
-        superiority, and scientific racism. Trade cards and postcards also enabled white Americans to
-        symbolically buy, gift, and own black bodies in the form of collectible ephemera in the decades
-        after abolition, and in an age when inter-racial social interaction was prohibited.`,
+            title: "Jim Crow Laws and Anti-Black Racism",
+            content: `After the American civil war and the abolition of slavery, a series of laws were passed enforcing and legitimizing racial segregation, discrimination, disenfranchisement, and anti-black racism in the United States. The period of Jim Crow laws in the late 19th and early 20th C was also the period when trade cards and postcards mass-circulated racist caricatures of African American people, such as the Mammy and Uncle Tom which have roots in American slavery and sustain the stereotypes of faithful servitude in post-emancipation America. They served as a sentimental souvenir of slavery and enabled white Americans to assuage their guilt and complicity in the history of slavery and the culture of racist discrimination. Trade cards and postcards enabled the mass distribution of themes, such as benevolent paternalism, white superiority, and scientific racism. Trade cards and postcards also enabled white Americans to symbolically buy, gift, and own black bodies in the form of collectible ephemera in the decades after abolition, and in an age when inter-racial social interaction was prohibited.`,
             image: "/images/history/30A.jpg",
         },
         {
             tag: "Asian Exclusion",
             title: "Yellow Peril and Asian Exclusion",
-            content: `The late-nineteenth century witnessed tremendous anxiety about the supposed massive influx of
-        East Asians (Yellow Peril) into Anglophone countries displacing white culture and stealing jobs.
-        The Chinese Exclusion Act of 1882 suspended Chinese immigration to the United States for 10
-        years. This effort eventually expanded into the Asian Exclusion Act of 1924, which strictly
-        limited Asian migration to the US. Asian menservants were still allowed entry to fill the
-        domestic service sector, which faced a labor shortage, yet they became targets of xenophobia.
-        The racist humor depicted in many of the trade cards and postcards exhibited here indicates how
-        American people viewed Chinese men as perfect servants due to their perceived submissiveness and
-        hard-working nature. Yet there was this paradoxical American eagerness to eradicate these
-        “perpetual foreigners” from the country.`,
-            image: "/images/history/703A.jpg",
+            content: `The late-nineteenth century witnessed tremendous anxiety about the supposed massive influx of East Asians into Anglophone countries displacing white culture and stealing white jobs. This “Yellow Peril” led to the Chinese Exclusion Act of 1882, which suspended Chinese immigration to the United States. This effort eventually expanded into the Asian Exclusion Act of 1924, which strictly limited Asian migration to the US. Asian menservants and laundrymen were still allowed entry to fill the domestic service sector, which faced a labor shortage, yet they became targets of xenophobia. The racist humor depicted in many of the trade cards and postcards exhibited here indicates how American (and also British) people viewed Chinese men as perfect servants due to their perceived submissiveness and hard-working nature. Yet there was this paradoxical American eagerness to eradicate these “unassimilable” “perpetual foreigners” from the country.`,
+            image: "/images/history/Yellow Peril and Asian Exclusion.jpg",
         },
         {
             title: "Women's Suffrage",
-            content: `During the peak period of trade card and postcard circulation, white women in Britain and in
-        North America were fighting for political rights. Their fight for the vote took them out of
-        their households, leading to a perceived crisis of domestic labor, seen as the domain of women.
-        While middle and upper-class Western women fought for political equality with men, working-class
-        women in domestic servitude were marginalized from both the women’s movements and the trade
-        union movement. In fact, domestic work was not even recognized as labor. Yet some maidservants
-        were actively invested in both suffrage and labor rights activism in this period.`,
-            image: "/images/history/399 A.jpg",
+            content: `During the peak period of trade card and postcard circulation, white women in Europe and in North America were fighting for political rights. Their fight for the vote took them out of their households, leading to a perceived crisis of domestic labor, seen as the domain of women. Anti-suffragists capitalized on the patriarchal anxieties around domestic labor, producing numerous postcards depicting husbands consigned to childcare and domestic chores, because their wives were now taking part in politics. These postcards portrayed a comic dystopia of role-reversal if women got the right to vote. In the process, domestic labor and care labor were further devalued. However, in reality, this fear was largely unfounded, as domestic labor continued to be performed by women – both unpaid housewives and paid maidservants during and after the suffrage movement. While middle and upper-class Western women fought for political equality with men, working-class women in domestic servitude were marginalized from both the women’s movement and the labor movement, as domestic labor was not seen as labor.`,
+            image: "/images/history/Women's Suffrage.jpeg",
         },
         {
             title: "Servant Problem",
-            content: `Due to the low-pay, long hours, and social stigma associated with domestic servitude, there was
-        an acute shortage of working-class white women going into domestic service in the late 1800s and
-        early 1900s. This led to a widespread perceived crisis of domestic labor, labeled by employers
-        as the “servant problem”. The few who were still working in this field were seen as less
-        desirable candidates. African American domestic workers, Chinese menservants and the Irish
-        immigrant maidservant - who predominantly worked in the domestic service sector during the
-        “Servant Problem” period - became the subject of sexist and racist humor in many of the trade
-        cards and postcards.`,
+            content: `Due to the low-pay, long hours, and social stigma associated with domestic servitude, there was an acute shortage of working-class white women going into domestic service in the late 1800s and early 1900s. This led to a widespread perceived crisis of domestic labor, labeled by employers as the “servant problem”. The few who were still working in this field were seen as less desirable candidates. African American domestic workers, Chinese menservants and the Irish immigrant maidservant - who predominantly worked in the domestic service sector during the “Servant Problem” period - became the subject of sexist and racist humor in many of the trade cards and postcards. White maids were viewed as arrogant and too difficult to employ because they were known to negotiate work contracts or leave a job in search of better working conditions or higher wages.`,
             image: "/images/history/309A.jpg",
         },
         {
-            title: "Racialized Men-Servants",
-            content: `Although domestic service underwent a feminization in the nineteenth century, non-white
-        men-servants continued to provide domestic labor in British imperial households as well as
-        American upper/middle-class households during the late 1800s and early 1900s. Although the
-        British/American white man may not have been present in the imagery, white imperial masculinity
-        is highlighted through the emasculation of black, brown and Asian men-servants.`,
-            image: "/images/history/222A.jpg",
-        },
-        {
-            title: "South Asian Men-Servants",
-            content: `British imperial households in India employed a large retinue of Indian men-servants who worked
-        specific caste-based roles such as cleaning, cooking, sweeping, serving etc. In Britain,
-        middle-class households could not afford multiple servants, particularly menservants, due to the
-        1777 Servant Tax imposed on employers for menservants, making menservants very expensive.
-        Postcards depicting Indian menservants could have been used to boast of the British imperial
-        family’s affluence. Black and brown men-servants, moreover, had a long history of denoting
-        status and imperial wealth in European family portraits. Postcards representing brown
-        men-servants served as an ethnographic visual of what Indian people looked like. Additionally,
-        the men-servants in the postcards were emasculated through their submissiveness and their
-        depiction in feminine roles such as serving, cleaning and childcare.`,
-            image: "/images/history/204A.jpg",
-        },
-        {
-            title: "Black Men-Servants/Uncle Tom stereotype",
-            content: `Black men-servants, most commonly represented as the Tom stereotype, perpetuates the narrative
-        of faithful, happy, and submissive servitude, who is reliable and ever-eager to serve. The Tom
-        caricature was developed out of the Uncle Tom character in Harriet Beecher Stowe’s novel Uncle
-        Tom’s Cabin, where he is a gentle Christian and a “faithful” domestic slave. Similar to the
-        Mammy stereotype, Tom was used to support ideologies of slavery and servitude. This stereotype
-        was explored in postcards as a way to promote the faithful black servant narrative and idolize
-        Southern plantation culture in the post-emancipation period of Jim Crow racism.`,
-            image: "/images/history/262A.jpg",
-        },
-        {
-            title: "Chinese Men-Servants/ 'Houseboy' and 'Laundryman' stereotype",
-            content: `The Chinese “houseboy” served as the answer to the pesky “servant problem” of the late 1800s.
-        Chinese immigrant men were believed to be wholly committed to a life of servitude, and were
-        presumed to be willing to dismiss their own interests to prioritize their work and their
-        employer, making them the “perfect servant”. However, the idea of a “foreign” male servant in
-        white middle-class American and British imperial homes caused sexual anxieties and compromised
-        the chastity of the house mistress. Sexual connotations and fears of “miscegenation” were
-        removed through the degrading term “boy”, routinely used for adult non-white menservants. The
-        attempt to emasculate Chinese men extended to the point where these men-servants were seen as a
-        third gender or “eunuch”, outside the binary of male and female. Caricatures of Chinese
-        “houseboys” and “laundry boys” abounded in trade cards and postcards, reflecting and
-        perpetuating anxieties of Asian immigration to the United States. The desexualized infantilized
-        Chinese “houseboy” stereotype also upheld the masculinity of white men in the British Empire.`,
-            image: "/images/history/257A.jpg",
-        },
-        {
-            title: "Monkey Brand",
-            content: `Black and Brown men-servants were animalized as a way to dehumanize and degrade them. This can
-        be seen in the popular Monkey Brand Soap advertisements in Britain, where an anthropomorphic
-        monkey was depicted performing domestic labor, understood as the domain of women. The use of a
-        monkey caricature made invisible the domestic labor of working-class white maidservants or
-        colonial men-servants. The human-monkey hybrid was meant to evoke racist humor in the wake of
-        Darwinian evolutionary theory and simian qualities attributed to supposedly “less-evolved”
-        African, Asian, and Irish people.`,
-            image: "/images/history/753A.jpg",
-        },
-        {
             title: "Racialized Maidservants",
-            content: `Within the context of New Imperialism, gendered and racialized maidservants such as the South
-        Asian ayah and Chinese amah of the British empire, the Indonesian baboe of the Dutch empire, and
-        the Mexican criada of the Spanish empire, were sentimentalized and desexualized so that they
-        could work in the private domestic spheres of white imperial homes. The baboe, ayah, amah, and
-        criada held varying roles within the imperial home, from childcare to cleaning to general
-        management, and were exoticized and sentimentalized in postcards.`,
-            image: "/images/history/345A.jpg",
+            content: `Within the context of New Imperialism, gendered and racialized maidservants such as the South Asian ayah and Chinese amah of the British empire, the Indonesian baboe of the Dutch empire, and the Mexican criada of the Spanish empire, were sentimentalized and desexualized so that they could work in the private domestic spheres of white imperial homes. The baboe, ayah, amah, and criada held varying roles within the imperial home, from childcare to cleaning to general management, and were exoticized and sentimentalized in trade cards and postcards.`,
+            image: "",
+        },
+        {
+            title: "African American Mammy",
+            content: `The Mammy stereotype had its roots in American slavery during the antebellum period, but peaked in popularity during the Jim Crow era, and served both as a sentimental souvenir of slavery and as a way of whitewashing the cruelty of slavery. Trade cards and postcards depicting the black Mammy flourished in the United States in the late-1800s and early-1900s. The Mammy was usually desexualized (despite her accentuated bosom and hips) and depicted as a strict but loving black maidservant and nanny, who was portrayed as particularly attached to white children, often more than her own children. This erased the sad realities of many black women, who were separated from their own children during the era or slavery and even afterwards, as they took care of white children and toiled in white homes. Many of the trade cards and postcards, particularly the linen postcards depicting the Mammy figure, are degradingly racist, more so than the depictions of colonized maidservants in European colonial empires.`,
+            image: "/images/history/Mammy.jpg",
         },
         {
             title: "Indian Ayah",
-            content: `The ayah figure of South Asia was a crucial facet of British colonial presence in the
-        subcontinent and served as a larger symbol for British respectability, interracial relations,
-        and wealth. Ayahs were contracted Indian nursemaids who provided childcare and domestic labor
-        services to British families, both in South Asia and during the long trans-oceanic voyages
-        across the British Empire. The prominence of ayahs in the British colonial imagination coincided
-        with the rise of fears regarding miscegenation. As hierarchies of race and scientific racism
-        solidified, white Britons were anxious to maintain their racial purity in the empire. The ayah
-        in particular was a target because of her intimate contact with the British family. Thus, the
-        resulting caricature strove to desexualize her to the fullest extent possible: depicting the
-        ayah as past her sexual prime, unattractive, and maternal. Pictorial representations of the ayah
-        figure draped her in expensive, yet respectable clothing and jewelry to showcase the benevolence
-        and wealth of her employers. She was deliberately exoticized, either through her stereotypical
-        native attire or her tropical location, in order to fit the role of an Indian woman in the
-        British imagination. This was achieved through staged “type” photographs to fulfill a particular
-        white fantasy that was presented as real and anthropological.`,
-            image: "/images/history/106A.jpg",
+            content: `The ayah figure of South Asia was a crucial facet of British colonial presence in the subcontinent and served as a larger symbol for British respectability and interracial harmony. Ayahs were contracted Indian nursemaids who provided childcare and domestic labor services to British families, both in South Asia and during the long trans-oceanic voyages across the British Empire. The ayah figure was desexualized and maternalized. Pictorial representations of the ayah figure draped her in expensive, yet respectable clothing and jewelry to showcase the benevolence and wealth of her employers. She was deliberately exoticized, either through her stereotypical native attire or her tropical location, in order to fit the role of an Indian woman in the British imagination. This was often achieved through staged “type” photographs to fulfill a particular white fantasy that was presented as real and anthropological.`,
+            image: "/images/history/ayah.jpg",
         },
         {
             title: "Chinese Amah",
-            content: `The amah figure, like the ayah, was another racialized Asian maidservant who was idolized in
-        British imperial imagination. Amahs were commonly recruited from China’s Canton province and
-        they sailed to Singapore and SE Asia to work as nursemaids, cooks, and housekeepers in the
-        British Empire. They wore black and white uniforms and were referred to as “Black & White
-        Amahs”.`,
-            image: "/images/history/455A.jpg",
+            content: `The amah figure, like the ayah, was another racialized Asian maidservant who was idolized in British imperial imagination. Amahs were commonly recruited from China’s Canton province and they sailed to Singapore and SE Asia to work as nursemaids, cooks, and housekeepers in the British Empire. They wore black and white uniforms and were referred to as “Black & White Amahs”. Not too many postcards are available depicting the Chinese amah, probably because their peak employment decades were slightly after the “golden age” of postcards.`,
+            image: "/images/history/Chinese Amah.jpg",
         },
         {
             title: "Indonesian Baboe",
-            content: `The baboe was the counterpart of the ayah in the Dutch Empire in Indonesia. Javanese and
-        Balinese women were recruited as baboes to look after Dutch children in the SE Asian empire.
-        Their colorful sarong and traditional slendang in which they carried children became the
-        subjects of exoticization and Dutch Orientalist fascination.`,
-            image: "/images/history/453A.jpg",
+            content: `The baboe was the counterpart of the ayah in the Dutch Empire in Indonesia. Javanese and Balinese women were recruited as baboes to look after Dutch children in the SE Asian empire. Their colorful sarong and traditional slendang in which they carried children became the subjects of exoticization and Dutch Orientalist fascination. Postcards depicting the baboe are much rarer than those depicting the ayah or mammy.`,
+            image: "/images/history/Baboe.jpg",
         },
         {
             title: "Mexican Criada",
-            content: `Native American domestic servants such as the Mexican criada were racialized in visual sources
-        and ironically also exoticized as foreigners. Mexican domestics were initially young, unmarried
-        women, but imperial domestic service later expanded to married women to augment the family
-        income. Despite their frequent participation in movements to ensure their rights and
-        protections, postcards depicted them as docile veiled figures.`,
-            image: "/images/history/176A.jpg",
-        },
-        {
-            title: "Mammy",
-            content: `The African American Mammy differs from other stereotypes of Black people (the Sambo, Tom,
-            Sapphire, etc.) in its scope, sentiment, and reach throughout time. The Mammy is frequently
-            portrayed as an older woman who works as a domestic servant for a middle or upper class white
-            family. Her tasks throughout the house are generalized and all-encompassing, but the Mammy is
-            mostly regarded as performing as a nanny or child-carer. This stereotype supposes the individual
-            to be wholly desexualized (despite her accentuated bosom and hips), perpetually nurturing, and
-            strict but loving. She is often depicted as being tall with broad shoulders, which is meant to
-            be a means of masculinizing her; she is stereotyped as wearing a knotted, bright headdress -
-            which is meant to be evocative of her heritage as an “exotic,” “otherized,” individual. Some
-            traits seen in the Mammy figure are also found in other stereotypes of black people: the thick
-            red lips, a simian appearance, and (sometimes, in the case of the Mammy) a knack for incivility.
-            The Mammy is often illustrated as being nurturing and loving toward the white children she is
-            employed to care for, and cruel and cold toward her own biological Black children. This facet of
-            the stereotype is meant to suggest the inherent preferability of white people and the
-            benevolence with which the white family claimed to civilize their black employees. This
-            stereotype had its roots in American slavery during the antebellum period, but has remained as a
-            common symbol throughout the world ever since. The Mammy figure peaked in popularity during the
-            Jim Crow era, and served both as a sentimental souvenir of slavery and as a way of whitewashing
-            the cruelty of slavery.`,
-            image: "/images/history/19A.jpg",
-        },
-        {
-            title: "Working-class White Maidservants",
-            content: `In the 19th century, both the United States and Britain experienced a feminization of the
-        domestic industry due to factors such as the 1777 British tax on male servants, and the
-        industrial employment opportunities for men. In the 19th century and early 20th century, a great
-        number of these domestic workers were working-class white women, often separated from their
-        employers not only by their socioeconomic status but through their national origins.`,
-            image: "/images/history/310A.jpg",
+            content: `Indigenous domestic servants such as the Mexican criada were racialized in visual sources and ironically also exoticized as foreigners. Mexican domestics were initially young, unmarried women, but imperial domestic service later expanded to married women to augment the family income. Despite their frequent participation in movements to ensure their rights and protections, postcards depicted them as docile veiled and exotic figures.`,
+            image: "/images/history/Mexican Criada.jpg",
         },
         {
             title: "Irish 'Bridget'",
-            content: `Ireland provided a significant number of domestic workers from the 1840s and onward in the U.S.,
-        becoming the single-largest group among servants in eastern metropolitan areas by 1850. These
-        Irish immigrants often lacked formal training and hailed from rural, impoverished regions. The
-        American and British public often referred to Irish immigrant domestics as “Bridgets,” alluding
-        to an important Irish Catholic figure named Saint Brigid, which was also a popular name for
-        girls in the mid-19th century. In this context, however, this name served as a shorthand used to
-        homogenize the Irish population in British and American imagination. Urban middle-class white
-        families frequently hired a live-in “Bridget” to signify their refinement, respectability, and
-        social status. Common racialized tropes within the postcards in our collection depict “Bridgets”
-        as lazy, ignorant, unaware of the parameters of their social status, and intoxicated.
-        Conversely, they are also depicted as promiscuous, defiant, demanding, and devout Roman
-        Catholics, all traits which threatened middle-class Protestant values. Belief in the promiscuity
-        of &quot;Bridgets&quot; also positioned them in opposition with Victorian ideals of white
-        womanhood that centralized sexual propriety and modesty, while helping distort the unfortuante
-        reality of &quot;Bridgets&quot; suffering sexual predation from male employers. Other
-        &quot;Bridgets&quot; were viewed as arrogant and too &quot;difficult&quot; to employ because
-        they were known to negotiate work contracts or leave a job in search of better working
-        conditions or higher wages. Some visual sources also degraded “Bridgets” further by giving them
-        simian-like features similar to those used in depicting non-white colonial subjects, considered
-        racial inferiors at the time. Although Irish immigrants were racialized as “not quite white,”
-        their light complexion ultimately allowed subsequent generations of Irish workers to become
-        integrated into the fold of whiteness. This privilege granted the Irish opportunities for class
-        mobility, wealth-building, and gaining social respectability. For these reasons, issues of
-        systemic oppression do not affect people of Irish descent today in the same way that they affect
-        people of African descent, for example.`,
-            image: "/images/history/361A.jpg",
+            content: `Ireland provided a significant number of domestic workers in Britain and well as in the U.S. from the mid-1800s, particularly after the Irish Famine. Irish immigrants often lacked formal training and hailed from rural, impoverished regions. The American and British public often referred to Irish immigrant domestics as “Bridgets,” alluding to the Catholic Saint Brigid, also a popular name for Irish girls. Common racialized tropes within the postcards in our collection depict “Bridgets” as lazy, ignorant, unaware of the parameters of their social status, and intoxicated. Conversely, they are also depicted as promiscuous, defiant, demanding, and devout Roman Catholics, all traits which threatened middle-class Protestant values. Some visual sources also degraded “Bridgets” further by giving them simian-like features similar to those used in depicting non-white colonial subjects, considered racial inferiors at the time. Although Irish immigrants were racialized as “not quite white,” their light complexion ultimately allowed subsequent generations of Irish workers to become integrated into the fold of whiteness. This privilege granted Irish maidservants opportunities for class mobility, wealth-building, and gaining social respectability, in ways that were not available to maidservants of African descent, for example.`,
+            image: "/images/history/Irish Bridget.jpg",
         },
         {
-            title: "French Eroticized Postcards",
-            content: `The French postcards in our collection that depict racialized female domestics tend to transport
-        a European consumer to a specific imagined site, specifically that of the “Oriental Harem.” In
-        earlier times, harems were sectioned-off spaces within a Muslim household for wives, concubines,
-        and female servants. Depicting such spaces gave consumers of the ephemera a voyeuristic delight
-        in unveiling the mystery shrouding the intimate domestic lives of their non-white colonized
-        subjects. The racialized female domestics, often shown with exposed breasts and carrying items
-        like vases or coffee, are at once sexualized and not only bolster the popular conception of the
-        “Orient” as a place of sexual laxity, but also suggest the serene refreshment that such
-        domestics could provide to an employer or postcard recipient.`,
-            image: "/images/history/154A.jpg",
+            title: "Working-class White Maidservants",
+            content: `Many of the postcards in our collection are of white maidservants in European and North American homes. In the 19th century, both the United States and Britain experienced a feminization of the domestic service industry with growing industrial employment opportunities for men, and the cult of domesticity for women. In the 19th century and early 20th century, many maidservants were working-class and immigrant white women, separated from their employers not only by their socioeconomic status but sometimes also through their national origins. Many of the postcards in our collection depict young white maidservants in sexually compromised situations, either with their middle-class master, or with their working-class suitors, particularly policemen – the “Bobby” or “Copper”. Belief in the promiscuity of working-class and immigrant maidservants positioned them in opposition with ideals of middle-class white womanhood that centralized sexual propriety and modesty, while helping distort the unfortunate reality of young maidservants; suffering sexual predation from male employers and then blamed and laid off by their mistresses.`,
+            image: "/images/history/White maidservant.jpg",
+        },
+        {
+            title: "Racialized Men-Servants",
+            content: `Although domestic service underwent a feminization in the nineteenth century, non-white men-servants continued to provide domestic labor in European imperial households as well as American upper/middle-class households during the late 1800s and early 1900s. Although the European/American white man may not have been always present in the imagery, white imperial masculinity is highlighted through the emasculation of black, brown and Asian men-servants in these trade cards and postcards.`,
+            image: "",
+        },
+        {
+            title: "Indian Men-Servants",
+            content: `British imperial households in India employed a large retinue of Indian men-servants who worked specific caste-based roles such as cleaning, cooking, sweeping, serving etc. In Britain, middle-class households could not afford multiple servants, particularly menservants, due to the 1777 Servant Tax imposed on employers for menservants, making menservants very expensive. Postcards depicting Indian menservants could have been used to boast of the British imperial family’s affluence. Black and brown men-servants, moreover, had a long history of denoting status and imperial wealth in European family portraits. Postcards representing brown men-servants served as an ethnographic visual of what Indian people looked like. Additionally, the men-servants in the postcards were emasculated through their submissiveness and their depiction in domestic roles such as serving, cleaning and childcare, which were feminized in Britain.`,
+            image: "/images/history/Indian menservants.jpg",
+        },
+        {
+            title: "Black Men-Servants",
+            content: `Black men-servants, most commonly represented as the Tom stereotype, perpetuates the narrative of faithful, happy, and submissive servitude, who is reliable and ever-eager to serve. The Tom caricature was developed out of the Uncle Tom character in Harriet Beecher Stowe’s novel Uncle Tom’s Cabin, where he is a gentle Christian and a “faithful” domestic slave. Similar to the Mammy stereotype, Tom was used to support ideologies of slavery and servitude. This stereotype was explored in postcards as a way to promote the faithful black servant narrative and idolize Southern plantation culture in the post-emancipation period of Jim Crow racism. Some of the black menservant figures examined in our project also depict African and Caribbean menservants in European colonial empires.`,
+            image: "/images/history/Black menservants.jpg",
+        },
+        {
+            title: "Chinese Men-Servants",
+            content: `The Chinese “houseboy” served as the answer to the pesky “servant problem” of the late 1800s. Chinese immigrant men were believed to be wholly committed to a life of servitude, and were presumed to be willing to dismiss their own interests to prioritize their work and their employer, making them the “perfect servant”. However, the idea of a “foreign” male servant in white middle-class American and British imperial homes caused sexual anxieties and compromised the chastity of the house mistress. Sexual connotations and fears of “miscegenation” were removed through the degrading term “boy”, routinely used for adult non-white menservants. The attempt to emasculate Chinese men extended to the point where these men-servants were seen as a third gender or “eunuch”, outside the binary of male and female. Caricatures of Chinese “houseboys” and “laundry boys” abounded in trade cards and postcards, reflecting and perpetuating anxieties of Asian immigration to the United States. The desexualized infantilized Chinese “houseboy” stereotype also upheld the masculinity of white men in the British Empire.`,
+            image: "/images/history/Chinese menservants.jpg",
+        },
+        {
+            title: "Black Pete",
+            content: `Black Pete (Zwarte Piet) is Santa Claus’ helper/servant in Dutch and Belgian Christmas culture. He is a racially ambiguous dark-skinned person, originally depicted as Moorish, but he gradually morphed into a generic “Oriental” figure by the early-1900s, representing various colonized subjects of the Dutch Empire (i.e., West Indies, Indonesia, various African and Caribbean colonies). In the Belgian postcards, Black Pete is painted in un unnatural shade of jet black, similar to Belgian racist caricatures of colonized Congolese people. In popular Christmas postcards from the early-1900s, Black Pete and Santa Claus serve as foils to each other; Santa Claus is light-skinned, old, tall, wise, and benevolent—Black Pete is dark-skinned, young, and unserious. Black Pete exists in a subservient role, depicted doing the physical labor (usually carrying a sack or basket full of toys), while Santa Claus only interacts with the children and/or rides a horse instead of walking on equal footing with Black Pete. These choices by postcard illustrators naturalized the servile role of people of color in the Dutch and Belgian Empires.`,
+            image: "/images/history/Black Pete.jpeg",
+        },
+        {
+            title: "Monkey Brand",
+            content: `Black and Brown men-servants were animalized as a way to dehumanize and degrade them. This can be seen in the popular Monkey Brand Soap advertisements in Britain, where an anthropomorphic monkey was depicted performing domestic labor, understood as the domain of women. The use of a monkey caricature made invisible the domestic labor of working-class white maidservants or colonial servants. The human-monkey hybrid was meant to evoke racist humor in the wake of Darwinian evolutionary theory and simian qualities attributed to supposedly “less-evolved” African, Asian, and Irish people.`,
+            image: "/images/history/753A.jpg",
+        },
+        {
+            title: "Harem Postcards and Eunuchs",
+            content: `The French postcards in our collection that depict racialized domestics tend to transport European consumers to the imagined site of the “Oriental Harem.” Historically, harems were sectioned-off spaces within a Muslim household for wives, concubines, and female servants, guarded by castrated men, called eunuchs. Depicting such spaces gave European consumers of the ephemera a voyeuristic delight in unveiling the mystery shrouding the intimate domestic lives of their non-white colonized subjects, particularly in North Africa and Asia. The racialized female domestics, often shown with exposed breasts and carrying items like vases or coffee, are at once sexualized, and not only bolster the popular conception of the “Orient” as a place of sexual laxity, but also suggest the serene refreshment that such domestics could provide to an employer or postcard recipient. A stereotypical figure that frequently appears on the French postcards is that of the “eunuch” – the gender-ambiguous guard of the harem, who was particularly fetishized and exoticized in the harem postcards. Dark-skinned maids serving light-skinned mistresses were also a staple of the harem postcard genre.`,
+            image: "/images/history/Harem - eunuch.jpg",
         },
     ],
     conclusion: [
