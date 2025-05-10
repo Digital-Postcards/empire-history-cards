@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Chip, TextField, Autocomplete } from "@mui/material";
-import { X, Plus } from "lucide-react";
+import { X, Plus, RotateCw, RotateCcw, RefreshCw } from "lucide-react";
 import { useApi } from "hooks";
 import { API_URL } from "utils/constants";
 
@@ -35,6 +35,7 @@ interface ImageFile {
     file: File;
     preview: string;
     id: string;
+    rotation: number;
 }
 
 // Default form values
@@ -135,6 +136,7 @@ export function UploadCards() {
                 file,
                 preview: URL.createObjectURL(file),
                 id: `${prefix}-${Date.now()}`,
+                rotation: 0,
             });
         }
     };
@@ -153,6 +155,7 @@ export function UploadCards() {
                 file,
                 preview: URL.createObjectURL(file),
                 id: `additional-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+                rotation: 0,
             }));
 
             setAdditionalImages((prev) => [...prev, ...newImages]);
@@ -188,6 +191,30 @@ export function UploadCards() {
         });
     };
 
+    // Function to handle rotation of images
+    const rotateImage = (id: string, newRotation: number) => {
+        // Handle front image rotation
+        if (frontImage && frontImage.id === id) {
+            setFrontImage({
+                ...frontImage,
+                rotation: newRotation,
+            });
+            return;
+        }
+
+        // Handle back image rotation
+        if (backImage && backImage.id === id) {
+            setBackImage({
+                ...backImage,
+                rotation: newRotation,
+            });
+            return;
+        }
+
+        // Handle additional images rotation
+        setAdditionalImages((prev) => prev.map((img) => (img.id === id ? { ...img, rotation: newRotation } : img)));
+    };
+
     // Form submission
     const onSubmit = async (data: CardFormData) => {
         if (!frontImage) {
@@ -202,11 +229,18 @@ export function UploadCards() {
             // Create a FormData object to send the images and form data
             const formData = new FormData();
 
-            // Append images
+            // Append images with their rotation information
             formData.append("frontImage", frontImage.file);
-            if (backImage) formData.append("backImage", backImage.file);
+            formData.append("frontImageRotation", frontImage.rotation.toString());
+
+            if (backImage) {
+                formData.append("backImage", backImage.file);
+                formData.append("backImageRotation", backImage.rotation.toString());
+            }
+
             additionalImages.forEach((img, index) => {
                 formData.append(`additionalImage-${index}`, img.file);
+                formData.append(`additionalImageRotation-${index}`, img.rotation.toString());
             });
 
             // Process themes to handle new ones
@@ -279,6 +313,7 @@ export function UploadCards() {
         image: ImageFile | null,
         onClick: () => void,
         removeHandler: () => void,
+        rotateImage: (id: string, newRotation: number) => void,
     ) => (
         <div className="border border-gray-300 rounded-md p-4">
             <h3 className="text-sm font-medium text-gray-700 mb-2">{title}</h3>
@@ -289,14 +324,36 @@ export function UploadCards() {
                         src={image.preview}
                         alt={`${title.toLowerCase()} of card`}
                         className="w-full h-48 object-contain mb-2"
+                        style={{ transform: `rotate(${image.rotation}deg)` }}
                     />
-                    <button
-                        type="button"
-                        onClick={removeHandler}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                        <X size={16} />
-                    </button>
+                    <div className="absolute top-2 right-2 flex space-x-1">
+                        <button
+                            type="button"
+                            onClick={() => removeHandler()}
+                            className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                            <X size={16} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => rotateImage(image.id, (image.rotation + 90) % 360)}
+                            className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                            <RotateCw size={16} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => rotateImage(image.id, (image.rotation - 90 + 360) % 360)}
+                            className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                            <RotateCcw size={16} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => rotateImage(image.id, 0)}
+                            className="bg-gray-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                            <RefreshCw size={16} />
+                        </button>
+                    </div>
                     <p className="text-xs text-gray-500 truncate">{image.file.name}</p>
+                    {image.rotation !== 0 && <p className="text-xs text-blue-600">Rotated {image.rotation}°</p>}
                 </div>
             ) : (
                 <div
@@ -516,6 +573,7 @@ export function UploadCards() {
                                     frontImage,
                                     () => frontImageRef.current?.click(),
                                     removeFrontImage,
+                                    rotateImage,
                                 )}
 
                                 {/* Back Image Upload */}
@@ -524,6 +582,7 @@ export function UploadCards() {
                                     backImage,
                                     () => backImageRef.current?.click(),
                                     removeBackImage,
+                                    rotateImage,
                                 )}
                             </div>
 

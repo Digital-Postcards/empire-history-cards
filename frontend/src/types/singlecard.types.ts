@@ -1,4 +1,5 @@
 export type Image = {
+    _id?: string;
     name: string;
     link: string;
     size: {

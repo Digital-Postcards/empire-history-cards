@@ -98,8 +98,28 @@ export default class CardService {
       // 1. Create image entries
       const imageLinks = [];
       for (const [fieldname, fileArray] of Object.entries(uploadedFiles)) {
-        for (const file of fileArray) {
-          // Create image entry
+        for (const [index, file] of fileArray.entries()) {
+          // Get the rotation value from the corresponding form field
+          let orientation = 1; // Default value
+          
+          // Extract the orientation from the request body
+          let rotationFieldName = '';
+          
+          // Handle different file field naming patterns
+          if (fieldname === 'frontImage' || fieldname === 'backImage') {
+            rotationFieldName = `${fieldname}Rotation`;
+          } else if (fieldname.startsWith('additionalImage-')) {
+            // For additional images which use indexed fields
+            rotationFieldName = `${fieldname}Rotation`;
+          }
+          
+          if (body[rotationFieldName]) {
+            orientation = parseInt(body[rotationFieldName], 10);
+          }
+          
+          console.log(`Image ${fieldname} orientation: ${orientation}`);
+          
+          // Create image entry with the correct orientation
           const image = new ImageModel({
             name: file.originalname,
             link: file.path.replace(process.env.IMAGES_DIR || "", "/images"),
@@ -107,7 +127,7 @@ export default class CardService {
               width: 0, // TODO: Get actual image dimensions
               height: 0,
             },
-            orientation: 1,
+            orientation: orientation, // Use the orientation value from the frontend
             cardNumber: cardData.number.toString(),
           });
           const savedImage = await image.save();

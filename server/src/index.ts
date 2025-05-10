@@ -22,6 +22,7 @@ import {
   authenticationRouter,
   userRouter,
   logRouter,
+  imageRouter,
 } from "./routes";
 
 // Import logger middleware
@@ -45,7 +46,7 @@ app.use(session(SESSION_CONFIG));
 app.use(cors({
   origin: ['http://localhost:3000', 'https://visualdomesticlaborhistory.khoury.northeastern.edu'],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -85,6 +86,7 @@ app.use(API_ROUTES.map, mapRouter);
 app.use(API_ROUTES.cards, cardRouter);
 app.use(API_ROUTES.users, userRouter);
 app.use(API_ROUTES.logs, logRouter);
+app.use(API_ROUTES.images, imageRouter);
 
 // Healthcheck route
 app.get(API_ROUTES.healthcheck, (req: Request, res: Response) => {

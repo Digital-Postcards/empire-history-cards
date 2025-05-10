@@ -3,6 +3,7 @@ import CardImageInViewer from "./image";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCw } from "lucide-react";
 import { Button } from "shadcn/components/ui/button";
 import { CardViewerProps, CardViewerToolbarProps } from "types";
+import { updateImageOrientation } from "../../../services/imageService";
 
 const CardViewerToolbarIcon = (props: { isIconOnly: boolean; onClick?: () => any; children: ReactNode }) => {
     const size: any = props?.isIconOnly ? "icon" : "default";
@@ -55,7 +56,9 @@ const CardViewer = (props: CardViewerProps) => {
 
     useEffect(() => {
         setOrientation(props?.images[currentImageInViewer].orientation);
-    }, [currentImageInViewer]);
+        // Reset rotation to match stored orientation
+        setRotate(0);
+    }, [currentImageInViewer, props?.images]);
 
     const nextImage = () => {
         setCurrentImageInViewer((currentImageInViewer + 1) % props?.images.length);
@@ -69,8 +72,32 @@ const CardViewer = (props: CardViewerProps) => {
         setRotate(0);
     };
 
-    const handleRotate = () => {
-        setRotate((rotate + 90) % 360);
+    const handleRotate = async () => {
+        const newRotate = (rotate + 90) % 360;
+        setRotate(newRotate);
+
+        const currentImage = props?.images[currentImageInViewer];
+
+        // Only persist if the image has an ID
+        if (currentImage._id) {
+            try {
+                // Calculate the new orientation value by adding the rotation to the original orientation
+                // The orientation value in the database is the base orientation (1-8 based on EXIF standards)
+                // For simplicity, we'll simply use the rotation angle (0, 90, 180, 270)
+                // If needed, a more complex calculation can be implemented based on EXIF standards
+                const newOrientation = newRotate;
+
+                await updateImageOrientation(currentImage._id, newOrientation);
+
+                // Update the local orientation state
+                setOrientation(newOrientation);
+
+                // Update the image data in the props (this is a mutable update but works for immediate UI feedback)
+                currentImage.orientation = newOrientation;
+            } catch (error) {
+                console.error("Failed to update image orientation:", error);
+            }
+        }
     };
 
     return (

@@ -18,8 +18,8 @@ class IImage {
 	@prop({ _id: false })
 	public size?: Size;
 
-	@prop()
-	public orientation?: number;
+	@prop({ required: true, default: 1 })
+	public orientation!: number;
 
 	@prop({ required: true })
 	public cardNumber!: number;
@@ -28,4 +28,4 @@ class IImage {
 
 const ImageModel = getModelForClass(IImage);
 export default ImageModel;
-export { IImage }; 
+export { IImage };

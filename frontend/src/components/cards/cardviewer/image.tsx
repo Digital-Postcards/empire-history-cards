@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CardImageInViewerProps } from "types";
+import RotatedImage from "../../common/RotatedImage";
 
 const CardImageInViewer = (props: CardImageInViewerProps) => {
     const [imageWidth, setImageWidth] = useState(props?.orientation === 1 ? 400 : 700);
@@ -10,21 +11,19 @@ const CardImageInViewer = (props: CardImageInViewerProps) => {
 
     let computedClasses = "border-white border-[1rem] transition-all duration-300 ease-in ";
     if (props?.isBlur) computedClasses += "blur-sm";
-    if (props?.rotate) {
-        if (props.rotate === 90) {
-            computedClasses += " rotate-90";
-        } else if (props?.rotate === 180) {
-            computedClasses += " rotate-180";
-        } else if (props?.rotate === 270) {
-            computedClasses += " rotate-[270deg]";
-        }
-    }
+
+    // Calculate the total rotation by combining stored orientation and temporary rotation
+    const totalRotation = (props.rotate || 0) + (props.orientation || 0);
 
     return (
-        <img
-            width={imageWidth}
+        <RotatedImage
             src={process.env.REACT_APP_SERVER_URL + "/public" + props?.imageURL}
-            className={`h-full w-auto object-cover ${computedClasses}`}
+            alt="Card image"
+            orientation={totalRotation}
+            width={imageWidth}
+            height="auto"
+            className={computedClasses}
+            objectFit="cover"
         />
     );
 };

@@ -63,5 +63,6 @@ export const API_ROUTES = {
   cards: "/api/cards",
   users: "/api/users",
   logs: "/api/logs",
+  images: "/api/images",
   healthcheck: "/healthcheck",
 };

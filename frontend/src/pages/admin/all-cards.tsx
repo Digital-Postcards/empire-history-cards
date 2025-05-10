@@ -31,11 +31,13 @@ import {
     Autocomplete,
     Modal,
 } from "@mui/material";
-import { Search, Trash2, Edit, RefreshCw, X, Eye } from "lucide-react";
+import { Search, Trash2, Edit, RefreshCw, X, Eye, RotateCw, RotateCcw } from "lucide-react";
 import { useApi } from "../../hooks";
 import { useForm, Controller } from "react-hook-form";
 import { API_URL } from "../../utils/constants";
 import { ApplicationContext, UserRole } from "../../contexts/ApplicationContext";
+import RotatedImage from "../../components/common/RotatedImage";
+import { updateImageOrientation } from "../../services/imageService";
 
 // Interface definitions
 interface ThemeOption {
@@ -115,6 +117,10 @@ export const AllCards = () => {
 
     // State for themes
     const [availableThemes, setAvailableThemes] = useState<ThemeOption[]>([]);
+
+    // State for image rotations in edit modal
+    const [imageOrientations, setImageOrientations] = useState<{ [key: string]: number }>({});
+    const [hasRotationChanges, setHasRotationChanges] = useState<boolean>(false);
 
     // API hooks
     const cardsApi = useApi("/cards", { method: "GET" });
@@ -197,13 +203,53 @@ export const AllCards = () => {
             ...card,
             themes: card.themes.map((theme) => (typeof theme === "string" ? { id: theme, name: theme } : theme)),
         });
+
+        // Initialize image orientations from current card data
+        const orientations: { [key: string]: number } = {};
+        card.imageLinks.forEach((image) => {
+            orientations[image._id] = image.orientation || 0;
+        });
+        setImageOrientations(orientations);
+        setHasRotationChanges(false);
+
         setEditModalOpen(true);
     };
 
     const handleCloseEditModal = () => {
         setEditModalOpen(false);
         setCurrentCard(null);
+        setImageOrientations({});
+        setHasRotationChanges(false);
     };
+
+    const handleRotateImage = (imageId: string, direction: "clockwise" | "counterclockwise" | number) => {
+        if (!currentCard) return;
+
+        const currentOrientation = imageOrientations[imageId] || 0;
+        let newOrientation = currentOrientation;
+
+        if (direction === "clockwise") {
+            newOrientation = (currentOrientation + 90) % 360;
+        } else if (direction === "counterclockwise") {
+            newOrientation = (currentOrientation - 90 + 360) % 360;
+        } else if (typeof direction === "number") {
+            newOrientation = (currentOrientation + direction) % 360;
+            // Handle negative results correctly
+            if (newOrientation < 0) newOrientation += 360;
+        } else {
+            console.warn(`Invalid rotation direction: ${direction}`);
+            return;
+        }
+
+        setImageOrientations((prev) => ({
+            ...prev,
+            [imageId]: newOrientation,
+        }));
+
+        setHasRotationChanges(true);
+    };
+
+    // Function to get current orientation label
 
     // Delete handlers
     const handleOpenDeleteDialog = (cardId: string) => {
@@ -248,7 +294,7 @@ export const AllCards = () => {
         }
     };
 
-    // Card update handler
+    // Card update handler - now also saves image rotations
     const handleUpdateCard = async (data: CardData) => {
         if (!currentCard) return;
 
@@ -267,6 +313,7 @@ export const AllCards = () => {
                 themes: processedThemes,
             };
 
+            // First save the card data
             const response = await fetch(`${API_URL}/cards/${currentCard._id}`, {
                 method: "PUT",
                 headers: {
@@ -280,8 +327,34 @@ export const AllCards = () => {
                 throw new Error("Failed to update card");
             }
 
-            // Update card in state
+            // If we have rotation changes, save them now
+            if (hasRotationChanges) {
+                const savePromises = currentCard.imageLinks.map(async (image) => {
+                    const newOrientation = imageOrientations[image._id];
+                    const currentOrientation = image.orientation || 0;
+
+                    // Only update images where orientation has changed
+                    if (newOrientation !== currentOrientation) {
+                        await updateImageOrientation(image._id, newOrientation);
+                    }
+                });
+
+                await Promise.all(savePromises);
+            }
+
+            // Update card in state with new orientations
             const updatedCard = await response.json();
+
+            // Apply our orientation changes to the returned card data
+            if (updatedCard.card && updatedCard.card.imageLinks) {
+                updatedCard.card.imageLinks = updatedCard.card.imageLinks.map((img: any) => {
+                    if (imageOrientations[img._id] !== undefined) {
+                        return { ...img, orientation: imageOrientations[img._id] };
+                    }
+                    return img;
+                });
+            }
+
             setCards(cards.map((card) => (card._id === currentCard._id ? { ...card, ...updatedCard.card } : card)));
 
             setNotification({
@@ -455,10 +528,13 @@ export const AllCards = () => {
                                         <TableRow key={card._id} hover>
                                             <TableCell width={100}>
                                                 {card.imageLinks && card.imageLinks.length > 0 && (
-                                                    <img
+                                                    <RotatedImage
                                                         src={getImageUrl(card.imageLinks[0].link)}
                                                         alt={`Card ${card.number}`}
-                                                        style={{ width: 60, height: 60, objectFit: "cover" }}
+                                                        orientation={card.imageLinks[0].orientation}
+                                                        width={60}
+                                                        height={60}
+                                                        objectFit="cover"
                                                     />
                                                 )}
                                             </TableCell>
@@ -573,6 +649,18 @@ export const AllCards = () => {
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
                         <Typography variant="h5" component="h2">
                             Edit Card #{currentCard?.number}
+                            {hasRotationChanges && (
+                                <Typography
+                                    component="span"
+                                    sx={{
+                                        ml: 2,
+                                        fontSize: "0.8rem",
+                                        color: "warning.main",
+                                        fontStyle: "italic",
+                                    }}>
+                                    (Image rotation changes will be saved when you click Save Changes)
+                                </Typography>
+                            )}
                         </Typography>
                         <IconButton onClick={handleCloseEditModal} size="small">
                             <X />
@@ -739,8 +827,8 @@ export const AllCards = () => {
                                         Card Images
                                     </Typography>
 
-                                    {currentCard.imageLinks && currentCard.imageLinks.length > 0 ? (
-                                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                    {currentCard?.imageLinks && currentCard.imageLinks.length > 0 ? (
+                                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
                                             {currentCard.imageLinks.map((image, index) => (
                                                 <Box
                                                     key={image._id || index}
@@ -748,18 +836,57 @@ export const AllCards = () => {
                                                         border: "1px solid #e0e0e0",
                                                         borderRadius: 1,
                                                         overflow: "hidden",
-                                                        width: 150,
-                                                        height: 150,
+                                                        width: 180,
+                                                        height: 180,
+                                                        position: "relative",
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
                                                     }}>
-                                                    <img
+                                                    <RotatedImage
                                                         src={getImageUrl(image.link)}
                                                         alt={`Card image ${index}`}
-                                                        style={{
-                                                            width: "100%",
-                                                            height: "100%",
-                                                            objectFit: "cover",
-                                                        }}
+                                                        orientation={imageOrientations[image._id] ?? image.orientation}
+                                                        width={150}
+                                                        height={150}
+                                                        objectFit="cover"
                                                     />
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            gap: 1,
+                                                            mt: 1,
+                                                            justifyContent: "center",
+                                                            position: "absolute",
+                                                            bottom: 5,
+                                                            background: "rgba(255,255,255,0.8)",
+                                                            borderRadius: 1,
+                                                            p: 0.5,
+                                                        }}>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() =>
+                                                                handleRotateImage(image._id, "counterclockwise")
+                                                            }
+                                                            sx={{
+                                                                bgcolor: "primary.light",
+                                                                color: "white",
+                                                                "&:hover": { bgcolor: "primary.main" },
+                                                            }}>
+                                                            <RotateCcw size={16} />
+                                                        </IconButton>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => handleRotateImage(image._id, "clockwise")}
+                                                            sx={{
+                                                                bgcolor: "primary.light",
+                                                                color: "white",
+                                                                "&:hover": { bgcolor: "primary.main" },
+                                                            }}>
+                                                            <RotateCw size={16} />
+                                                        </IconButton>
+                                                    </Box>
                                                 </Box>
                                             ))}
                                         </Box>
@@ -768,8 +895,8 @@ export const AllCards = () => {
                                     )}
 
                                     <Alert severity="info" sx={{ mt: 1 }}>
-                                        To change or update card images, you&apos;ll need to delete this card and create
-                                        a new one with the updated images.
+                                        Rotate images using the buttons below each image. Rotations will be saved when
+                                        you submit the form.
                                     </Alert>
 
                                     <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
@@ -817,7 +944,12 @@ export const AllCards = () => {
                                 <Button variant="outlined" onClick={handleCloseEditModal}>
                                     Cancel
                                 </Button>
-                                <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={isSubmitting}
+                                    startIcon={hasRotationChanges && <RotateCw size={16} />}>
                                     {isSubmitting ? "Saving..." : "Save Changes"}
                                 </Button>
                             </Box>
