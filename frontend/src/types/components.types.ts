@@ -48,8 +48,12 @@ interface CardInfoBoxProps {
     tags: string[];
     date: string;
     location: string;
+    country: string | null;
+    postmarked: string | null;
     company: string;
     companyInformation: string;
+    number: number;
+    item?: "postcard" | "tradecard";
 }
 
 interface CardViewerProps {

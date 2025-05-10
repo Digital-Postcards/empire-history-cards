@@ -19,6 +19,8 @@ interface SingleCard {
     company: string;
     date: string;
     companyInformation: string;
+    country: string | null;
+    postmarked: string | null;
     description: string | null;
     analysis: string | null;
     message: string | null;

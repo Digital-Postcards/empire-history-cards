@@ -31,7 +31,7 @@ const CardDetail = () => {
             <div className="md:col-span-6 col-span-8 p-6 h-fit pb-12 md:order-1 order-2">
                 <CardViewer images={(data as SingleCard).imageLinks} isBlur={(data as SingleCard).isBlurByDefault} />
                 {(data as SingleCard)?.description && (
-                    <InfoSection label="History">
+                    <InfoSection label="Description">
                         <p className="text-justify">{(data as any)?.description}</p>
                     </InfoSection>
                 )}
@@ -51,8 +51,12 @@ const CardDetail = () => {
                     tags={(data as SingleCard).themes}
                     date={(data as SingleCard).date}
                     location={(data as SingleCard).place}
+                    country={(data as SingleCard).country}
+                    postmarked={(data as SingleCard).postmarked}
                     company={(data as SingleCard).company}
                     companyInformation={(data as SingleCard).companyInformation}
+                    number={(data as SingleCard).number}
+                    item={(data as SingleCard).item}
                 />
             </div>
         </SubLayoutWithGrid>
