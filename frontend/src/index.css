@@ -25,11 +25,3 @@ body {
     font-size: 21px;
     color: #dfdc5e !important;
 }
-
-.history-image {
-    display: block;
-    max-width: 280px;
-    max-height: 420px;
-    width: auto;
-    height: auto;
-}

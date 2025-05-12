@@ -166,6 +166,7 @@ const HISTORY_PAGE_CONTENT = {
             title: "Jim Crow Laws and Anti-Black Racism",
             content: `After the American civil war and the abolition of slavery, a series of laws were passed enforcing and legitimizing racial segregation, discrimination, disenfranchisement, and anti-black racism in the United States. The period of Jim Crow laws in the late 19th and early 20th C was also the period when trade cards and postcards mass-circulated racist caricatures of African American people, such as the Mammy and Uncle Tom which have roots in American slavery and sustain the stereotypes of faithful servitude in post-emancipation America. They served as a sentimental souvenir of slavery and enabled white Americans to assuage their guilt and complicity in the history of slavery and the culture of racist discrimination. Trade cards and postcards enabled the mass distribution of themes, such as benevolent paternalism, white superiority, and scientific racism. Trade cards and postcards also enabled white Americans to symbolically buy, gift, and own black bodies in the form of collectible ephemera in the decades after abolition, and in an age when inter-racial social interaction was prohibited.`,
             image: "/images/history/30A.jpg",
+            imageRotation: -90,
         },
         {
             tag: "Asian Exclusion",
@@ -182,6 +183,7 @@ const HISTORY_PAGE_CONTENT = {
             title: "Servant Problem",
             content: `Due to the low-pay, long hours, and social stigma associated with domestic servitude, there was an acute shortage of working-class white women going into domestic service in the late 1800s and early 1900s. This led to a widespread perceived crisis of domestic labor, labeled by employers as the “servant problem”. The few who were still working in this field were seen as less desirable candidates. African American domestic workers, Chinese menservants and the Irish immigrant maidservant - who predominantly worked in the domestic service sector during the “Servant Problem” period - became the subject of sexist and racist humor in many of the trade cards and postcards. White maids were viewed as arrogant and too difficult to employ because they were known to negotiate work contracts or leave a job in search of better working conditions or higher wages.`,
             image: "/images/history/309A.jpg",
+            imageRotation: -90,
         },
         {
             title: "Racialized Maidservants",

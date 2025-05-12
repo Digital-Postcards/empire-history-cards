@@ -8,6 +8,7 @@ const TextSection = (props: {
     content: string;
     image?: string;
     imagePosition?: "left" | "right"; // Add image position prop,
+    imageRotation?: number; // Add imageRotation prop to allow rotation
     tag?: string | "";
 }) => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const TextSection = (props: {
                 <h2 className="top-12 bg-background py-3 lg:text-5xl md:text-4xl text-3xl font-light tracking-wider text-neutral-500 z-10">
                     {props?.title}
                 </h2>
-                <div className={`flex flex-col md:flex-row gap-10 mt-4`}>
+                <div className="flex flex-col md:flex-row gap-10 mt-4">
                     {/* Text Section */}
                     <div
                         className={`w-full ${props.image ? "md:w-1/2 lg:w-2/3" : ""} animate-slide-in text-neutral-600 text-justify`}>
@@ -25,25 +26,39 @@ const TextSection = (props: {
                     </div>
                     {/* Image Section */}
                     {props.image && (
-                        <div className="history-image w-full md:w-1/2 lg:w-1/3 relative group animate-fade-in">
-                            {/* Image with Gradient Overlay */}
-                            <div className="relative overflow-hidden rounded-lg shadow-lg">
-                                <img
-                                    src={props.image}
-                                    alt={props.title}
-                                    className="w-full h-auto object-cover transform transition-transform duration-300 group-hover:scale-105"
-                                />
-                                {/* Gradient Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                {/* "View More" Button */}
-                                <button
-                                    className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white text-xs px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                    onClick={() => {
-                                        // TODO: update this later
-                                        if (props.tag) navigate(`/cards?withTags=${props.tag}`);
+                        <div className="w-full md:w-1/2 lg:w-1/3 relative group animate-fade-in flex justify-center">
+                            {/* Image Container */}
+                            <div className="relative max-w-[280px] inline-block">
+                                <div
+                                    style={{
+                                        transform:
+                                            props.imageRotation !== undefined
+                                                ? `rotate(${props.imageRotation}deg)`
+                                                : "none",
+                                        display: "inline-block",
+                                        position: "relative",
                                     }}>
-                                    View More
-                                </button>
+                                    {/* The image */}
+                                    <img
+                                        src={props.image}
+                                        alt={props.title}
+                                        className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                                        style={{
+                                            display: "block", // Ensures no gap at bottom of image
+                                        }}
+                                    />
+                                    {/* Gradient Overlay - contained within the same rotated container as the image */}
+                                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        {/* "View More" Button positioned inside the overlay */}
+                                        <button
+                                            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white text-xs px-4 py-2 rounded-full opacity-100 transition-opacity duration-300"
+                                            onClick={() => {
+                                                if (props.tag) navigate(`/cards?withTags=${props.tag}`);
+                                            }}>
+                                            View More
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -77,7 +92,8 @@ const History = () => {
                         title={section.title}
                         content={section.content}
                         image={section.image}
-                        imagePosition={index % 2 === 0 ? "left" : "right"}
+                        imagePosition="right"
+                        imageRotation={section.imageRotation}
                         tag={section.tag}
                     />
                 ))}
@@ -94,6 +110,7 @@ const History = () => {
                         title={section.title}
                         content={section.content}
                         // image={section.image}
+                        imageRotation={section.imageRotation}
                         tag={section.tag}
                     />
                 ))}
