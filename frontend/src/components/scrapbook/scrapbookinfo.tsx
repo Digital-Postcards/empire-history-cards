@@ -18,17 +18,17 @@ const ScrapBookInfo = (props: { currentPageInfoIndex: number; data: FlipBookPage
             {!props?.isDisabled && (
                 <HoverCardContent>
                     <div className="flex flex-wrap gap-x-2">
-                        {props?.data?.themes.map((tag: any, index: number) => {
+                        {props?.data?.themes?.map((tag: any, index: number) => {
                             return (
                                 <>
                                     <p className="text-sm text-neutral-500">{tag}</p>
-                                    {index !== props?.data.themes.length - 1 && <span>{"🞄"}</span>}
+                                    {index !== props?.data?.themes?.length - 1 && <span>{"🞄"}</span>}
                                 </>
                             );
                         })}
                     </div>
-                    <p className="mt-4">{props?.data.description}</p>
-                    <a href={"/cards/" + props?.data.item + "/" + props?.data._id}>
+                    <p className="mt-4">{props?.data?.description}</p>
+                    <a href={"/cards/" + props?.data?.item + "/" + props?.data?._id}>
                         <Button className="mt-2">See more...</Button>
                     </a>
                 </HoverCardContent>

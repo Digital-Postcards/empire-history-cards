@@ -5,7 +5,7 @@ import "styles/loader.css";
 
 import BaseSingleLayout from "layouts/single";
 
-import { About, HomePage, Project, ScrapBook, History, MapViewer, CardDetail, Cards, Themes, Ethics } from "pages";
+import { About, HomePage, ScrapBook, History, MapViewer, CardDetail, Cards, Themes, Ethics } from "pages";
 import { ApplicationContextProvider } from "contexts/ApplicationContext";
 import AdminPortal from "pages/admin";
 import UnauthorizedAccess from "pages/admin/unauthorized-access";

@@ -150,29 +150,29 @@ export default function UserTable({
                                     <TableCell>
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
                                             <Avatar
-                                                src={user.profilePictureUrl || "/placeholder.svg"}
-                                                alt={`${user.firstName} ${user.lastName}`}
+                                                src={user?.profilePictureUrl || "/placeholder.svg"}
+                                                alt={`${user?.firstName} ${user?.lastName}`}
                                                 sx={{ mr: 2, width: 40, height: 40 }}
                                             />
                                             <Box>
                                                 <Typography variant="body1">
-                                                    {user.firstName} {user.lastName}
+                                                    {user?.firstName} {user?.lastName}
                                                 </Typography>
                                                 <Typography variant="caption" color="text.secondary">
-                                                    Added {new Date(user.createdAt).toLocaleDateString()}
+                                                    Added {new Date(user?.createdAt).toLocaleDateString()}
                                                 </Typography>
                                             </Box>
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell>{user?.email}</TableCell>
                                     <TableCell>
                                         <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
-                                            {user.password ? "••••••••" : "Not set"}
+                                            {user?.password ? "••••••••" : "Not set"}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                            {user.permissions.slice(0, 3).map((permission) => (
+                                            {user?.permissions.slice(0, 3).map((permission) => (
                                                 <Tooltip key={permission.id} title={permission.description}>
                                                     <Chip
                                                         icon={getPermissionIcon(permission.id)}
@@ -185,9 +185,9 @@ export default function UserTable({
                                                     />
                                                 </Tooltip>
                                             ))}
-                                            {user.permissions.length > 3 && (
+                                            {user?.permissions.length > 3 && (
                                                 <Chip
-                                                    label={`+${user.permissions.length - 3} more`}
+                                                    label={`+${user?.permissions.length - 3} more`}
                                                     size="small"
                                                     variant="outlined"
                                                 />
@@ -195,10 +195,10 @@ export default function UserTable({
                                         </Box>
                                     </TableCell>
                                     <TableCell>
-                                        {user.lastLogin
-                                            ? new Date(user.lastLogin).toLocaleDateString() +
+                                        {user?.lastLogin
+                                            ? new Date(user?.lastLogin).toLocaleDateString() +
                                               " " +
-                                              new Date(user.lastLogin).toLocaleTimeString([], {
+                                              new Date(user?.lastLogin).toLocaleTimeString([], {
                                                   hour: "2-digit",
                                                   minute: "2-digit",
                                               })

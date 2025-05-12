@@ -5,10 +5,10 @@ import { Fragment } from "react";
 const TagsInInfoBox = (props: { tags: string[] }) => {
     return (
         <>
-            {props?.tags.map((tag: string, index: number) => (
+            {props?.tags?.map((tag: string, index: number) => (
                 <Fragment key={index}>
                     <p className="text-primary">{tag}</p>
-                    {index !== props?.tags.length - 1 && <span className="mx-1">{"•"}</span>}
+                    {index !== props?.tags?.length - 1 && <span className="mx-1">{"•"}</span>}
                 </Fragment>
             ))}
         </>

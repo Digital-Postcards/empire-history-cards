@@ -58,19 +58,19 @@ export default class CardService {
       let cardsForScrapBook: any = [];
       cards.forEach((card: any) => {
         cardsForScrapBook.push({
-          _id: card._id,
-          item: card.item,
-          description: card.description.slice(0, 300).trim() + "...",
-          themes: card.themes.map((theme: any) => theme.name),
-          image: "/public" + card.imageLinks[0].link,
+          _id: card?._id,
+          item: card?.item,
+          description: card?.description ? card.description.slice(0, 300).trim() + "..." : "",
+          themes: card?.themes?.map((theme: any) => theme?.name) || [],
+          image: card?.imageLinks?.[0]?.link ? "/public" + card.imageLinks[0].link : "",
         });
       });
       return cardsForScrapBook;
     }
 
     return cards.map((card: any) => ({
-      ...card._doc,
-      themes: card._doc.themes.map((item: any) => item.name),
+      ...card?._doc,
+      themes: card?._doc?.themes?.map((item: any) => item?.name) || [],
     }));
   }
 
@@ -80,10 +80,8 @@ export default class CardService {
     );
     if (card)
       return {
-        ...card._doc,
-        themes: card._doc.themes.map((item: any) => {
-          return item.name;
-        }),
+        ...card?._doc,
+        themes: card?._doc?.themes?.map((item: any) => item?.name) || [],
       };
     else return null;
   }
