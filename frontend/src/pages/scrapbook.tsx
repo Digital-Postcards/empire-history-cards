@@ -88,7 +88,7 @@ const Scrapbook = () => {
                 </p>
                 <p className="mb-4">
                     We are building a digital scrapbook for our project, that will allow users to curate and collect
-                    their own personalized scrapbook, and download it as a teaching and learning tool, to understand snd
+                    their own personalized scrapbook, and download it as a teaching and learning tool, to understand and
                     reflect on how mass-produced ephemera upheld global hierarchies of race, gender, and domestic labor.
                 </p>
             </div>

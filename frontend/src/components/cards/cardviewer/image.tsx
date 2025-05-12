@@ -3,11 +3,27 @@ import { CardImageInViewerProps } from "types";
 import RotatedImage from "../../common/RotatedImage";
 
 const CardImageInViewer = (props: CardImageInViewerProps) => {
-    const [imageWidth, setImageWidth] = useState(props?.orientation === 1 ? 400 : 700);
+    // Determine if image is portrait (90/270 degrees) or landscape (0/180 degrees)
+    const isPortraitOrientation = (angle: number) => {
+        // Normalize the angle to 0-359 range
+        const normalizedAngle = ((angle % 360) + 360) % 360;
+        return normalizedAngle === 90 || normalizedAngle === 270;
+    };
+
+    // Check if current orientation is portrait or landscape
+    const initialOrientation = isPortraitOrientation(props?.orientation || 0);
+
+    // Set initial width based on orientation
+    const [imageWidth, setImageWidth] = useState(initialOrientation ? 400 : 700);
+
     useEffect(() => {
-        setImageWidth(props?.orientation === 1 ? 400 : 500);
-        if (props?.rotate !== 0) setImageWidth(imageWidth === 400 ? 500 : 400);
-    }, [props?.orientation, props?.rotate]);
+        // Calculate the total rotation by combining stored orientation and temporary rotation
+        const totalRotation = (props.rotate || 0) + (props.orientation || 0);
+
+        // Update width based on whether the total rotation results in portrait or landscape orientation
+        const isPortrait = isPortraitOrientation(totalRotation);
+        setImageWidth(isPortrait ? 400 : 500);
+    }, [props.orientation, props.rotate]);
 
     let computedClasses = "border-white border-[1rem] transition-all duration-300 ease-in ";
     if (props?.isBlur) computedClasses += "blur-sm";

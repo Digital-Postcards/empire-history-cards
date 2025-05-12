@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useMemo } from "react";
 import CardImageInViewer from "./image";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCw } from "lucide-react";
 import { Button } from "shadcn/components/ui/button";
@@ -48,51 +48,77 @@ const CardViewerToolbar = (props: CardViewerToolbarProps) => {
     );
 };
 
+// Helper function to determine if an image is a front image (suffixed with A)
+const isFrontImage = (link: string): boolean => {
+    // Check if the filename ends with A before the file extension
+    return /A\.[^.]+$/.test(link);
+};
+
+// Helper function to determine if an image is a back image (suffixed with B)
+const isBackImage = (link: string): boolean => {
+    // Check if the filename ends with B before the file extension
+    return /B\.[^.]+$/.test(link);
+};
+
 const CardViewer = (props: CardViewerProps) => {
+    // Sort images to ensure front images (A) come before back images (B)
+    const sortedImages = useMemo(() => {
+        if (!props?.images || props.images.length === 0) {
+            return props?.images || [];
+        }
+
+        // Create a copy of images to avoid mutating props
+        return [...props.images].sort((a, b) => {
+            // If one is a front image and the other is a back image
+            if (isFrontImage(a.link) && isBackImage(b.link)) {
+                return -1; // A comes before B
+            }
+            if (isBackImage(a.link) && isFrontImage(b.link)) {
+                return 1; // B comes after A
+            }
+            // Otherwise, maintain original order
+            return 0;
+        });
+    }, [props.images]);
+
     const [currentImageInViewer, setCurrentImageInViewer] = useState<number>(0);
     const [isBlur, setIsBlur] = useState<boolean>(props?.isBlur);
     const [rotate, setRotate] = useState<number>(0);
-    const [orientation, setOrientation] = useState<number | null>(props?.images[currentImageInViewer].orientation);
+    const [orientation, setOrientation] = useState<number | null>(sortedImages[currentImageInViewer]?.orientation || 0);
 
     useEffect(() => {
-        setOrientation(props?.images[currentImageInViewer].orientation);
-        // Reset rotation to match stored orientation
+        setOrientation(sortedImages[currentImageInViewer]?.orientation || 0);
         setRotate(0);
-    }, [currentImageInViewer, props?.images]);
+    }, [currentImageInViewer, sortedImages]);
 
     const nextImage = () => {
-        setCurrentImageInViewer((currentImageInViewer + 1) % props?.images.length);
+        setCurrentImageInViewer((currentImageInViewer + 1) % sortedImages.length);
         setIsBlur(props?.isBlur);
         setRotate(0);
     };
 
     const previousImage = () => {
-        setCurrentImageInViewer((currentImageInViewer - 1 + props?.images.length) % props?.images.length);
+        setCurrentImageInViewer((currentImageInViewer - 1 + sortedImages.length) % sortedImages.length);
         setIsBlur(props?.isBlur);
         setRotate(0);
     };
 
     const handleRotate = async () => {
-        const newRotate = (rotate + 90) % 360;
-        setRotate(newRotate);
+        const newRotate = rotate + 90;
+        setRotate(newRotate % 360);
 
-        const currentImage = props?.images[currentImageInViewer];
+        const currentImage = sortedImages[currentImageInViewer];
 
-        // Only persist if the image has an ID
         if (currentImage._id) {
             try {
-                // Calculate the new orientation value by adding the rotation to the original orientation
-                // The orientation value in the database is the base orientation (1-8 based on EXIF standards)
-                // For simplicity, we'll simply use the rotation angle (0, 90, 180, 270)
-                // If needed, a more complex calculation can be implemented based on EXIF standards
-                const newOrientation = newRotate;
+                const currentOrientation = orientation || 0;
+                const newOrientation = (currentOrientation + 90) % 360;
 
                 await updateImageOrientation(currentImage._id, newOrientation);
 
-                // Update the local orientation state
                 setOrientation(newOrientation);
+                setRotate(0);
 
-                // Update the image data in the props (this is a mutable update but works for immediate UI feedback)
                 currentImage.orientation = newOrientation;
             } catch (error) {
                 console.error("Failed to update image orientation:", error);
@@ -104,17 +130,17 @@ const CardViewer = (props: CardViewerProps) => {
         <div className="relative flex flex-col w-full h-[66vh] border rounded-lg">
             <div className="h-full bg-neutral-100 flex justify-center items-center overflow-hidden">
                 <CardImageInViewer
-                    orientation={props?.images[currentImageInViewer].orientation}
+                    orientation={orientation}
                     rotate={rotate}
                     isBlur={isBlur}
-                    imageURL={props?.images[currentImageInViewer].link}
+                    imageURL={sortedImages[currentImageInViewer].link}
                 />
             </div>
             <CardViewerToolbar
                 orientation={orientation}
                 rotate={rotate}
                 isBlur={isBlur}
-                imageURL={props?.images[currentImageInViewer].link}
+                imageURL={sortedImages[currentImageInViewer].link}
                 handleRotate={handleRotate}
                 setIsBlur={setIsBlur}
                 nextImage={nextImage}
