@@ -21,7 +21,6 @@ function App() {
                             <Route path="" element={<HomePage />}></Route>
                             <Route path="about" element={<About />}></Route>
                             <Route path="history" element={<History />}></Route>
-                            <Route path="project" element={<Project />}></Route>
                             <Route path="flipbook" element={<ScrapBook />}></Route>
                             <Route path="ethics-of-representation" element={<Ethics />}></Route>
                             <Route path="bibliography" element={<Bibliography />}></Route>
