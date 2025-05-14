@@ -7,13 +7,13 @@ const CardImageInViewer = (props: CardImageInViewerProps) => {
     }, []);
 
     return (
-        <div className="card-image-parent overflow-hidden aspect-[1.1/1] rounded-t-lg bg-white">
+        <div className="card-image-parent overflow-hidden aspect-[1.1/1] rounded-t-lg bg-white w-full h-full">
             <div
-                className={`w-full h-full flex transition-all justify-center p-3 ${props?.orientation === 2 ? "rotate-180" : ""}`}
+                className={`w-full h-full flex transition-all justify-center items-center p-3 ${props?.orientation === 2 ? "rotate-180" : ""}`}
                 style={{ transform: `rotate(${props?.rotate}deg)` }}>
                 <img
                     src={props?.imageURL}
-                    className={`${props?.isBlur ? "blur-sm" : ""} object-contain transition-all ease-in-out duration-300`}
+                    className={`${props?.isBlur ? "blur-sm" : ""} max-h-full max-w-full object-contain transition-all ease-in-out duration-300`}
                     alt="Card"
                 />
             </div>

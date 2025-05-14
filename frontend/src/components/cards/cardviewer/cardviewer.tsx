@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCw } from "lucide-react";
 import { Button } from "shadcn/components/ui/button";
 import { CardViewerProps, CardViewerToolbarProps } from "types";
 import { updateImageOrientation } from "../../../services/imageService";
+const REACT_APP_SERVER_URL =
+    process.env.REACT_APP_SERVER_URL || "https://visualdomesticlaborhistory.khoury.northeastern.edu";
 
 const CardViewerToolbarIcon = (props: { isIconOnly: boolean; onClick?: () => any; children: ReactNode }) => {
     const size: any = props?.isIconOnly ? "icon" : "default";
@@ -133,14 +135,14 @@ const CardViewer = (props: CardViewerProps) => {
                     orientation={orientation}
                     rotate={rotate}
                     isBlur={isBlur}
-                    imageURL={sortedImages[currentImageInViewer].link}
+                    imageURL={`${REACT_APP_SERVER_URL}/public${sortedImages[currentImageInViewer].link}`}
                 />
             </div>
             <CardViewerToolbar
                 orientation={orientation}
                 rotate={rotate}
                 isBlur={isBlur}
-                imageURL={sortedImages[currentImageInViewer].link}
+                imageURL={`${REACT_APP_SERVER_URL}/public${sortedImages[currentImageInViewer].link}`}
                 handleRotate={handleRotate}
                 setIsBlur={setIsBlur}
                 nextImage={nextImage}
