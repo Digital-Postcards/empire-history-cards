@@ -60,6 +60,30 @@ const Scrapbook = () => {
         );
     }
 
+    // Group images in pairs for two per page display
+    const createPairedPages = (data: FlipBookPageDataType[]) => {
+        const pairedPages = [];
+        for (let i = 0; i < data.length; i += 2) {
+            if (i + 1 < data.length) {
+                // There are two images available for this page
+                pairedPages.push({
+                    ...data[i],
+                    secondImage: data[i + 1].image,
+                    pageNumber: Math.floor(i / 2) + 1,
+                });
+            } else {
+                // Only one image is available for this page
+                pairedPages.push({
+                    ...data[i],
+                    pageNumber: Math.floor(i / 2) + 1,
+                });
+            }
+        }
+        return pairedPages;
+    };
+
+    const pairedPages = data ? createPairedPages(data as FlipBookPageDataType[]) : [];
+
     return (
         <ContentContainer>
             <div className="mb-8 prose max-w-none text-justify">
@@ -104,7 +128,7 @@ const Scrapbook = () => {
                         maxShadowOpacity={0.4}
                         onFlip={handlePageFlip}
                         size="stretch">
-                        {(data as FlipBookPageDataType[]).map((flipbook_page: FlipBookPageDataType, index: number) => {
+                        {pairedPages.map((flipbook_page: any, index: number) => {
                             return (
                                 <ScrapBookPage
                                     key={flipbook_page._id}
@@ -112,6 +136,7 @@ const Scrapbook = () => {
                                     item={flipbook_page.item}
                                     pageNumber={index + 1}
                                     image={flipbook_page.image}
+                                    secondImage={flipbook_page.secondImage}
                                     description={flipbook_page.description}
                                     themes={flipbook_page.themes}
                                 />
@@ -120,9 +145,9 @@ const Scrapbook = () => {
                     </HTMLFlipBook>
                     <div className="mt-6 flex justify-between items-center md:px-2 px-0 pb-24">
                         <ScrapBookInfo
-                            currentPageInfoIndex={currentPageInfoIndex}
-                            data={data[currentPageInfoIndex]}
-                            isDisabled={currentPageInfoIndex === (data as FlipBookPageDataType[]).length}
+                            currentPageInfoIndex={currentPageInfoIndex * 2}
+                            data={data[currentPageInfoIndex * 2]}
+                            isDisabled={currentPageInfoIndex * 2 >= (data as FlipBookPageDataType[]).length}
                         />
                         <div className="flex items-center">
                             <Button
@@ -133,7 +158,9 @@ const Scrapbook = () => {
                                 <ChevronLeft />
                             </Button>
                             <Button
-                                disabled={currentPageInfoIndex >= (data as FlipBookPageDataType[]).length - 2}
+                                disabled={
+                                    currentPageInfoIndex >= Math.ceil((data as FlipBookPageDataType[]).length / 2) - 1
+                                }
                                 size={"icon"}
                                 className="mx-1"
                                 onClick={gotoNext}>
@@ -141,9 +168,9 @@ const Scrapbook = () => {
                             </Button>
                         </div>
                         <ScrapBookInfo
-                            currentPageInfoIndex={currentPageInfoIndex + 1}
-                            data={data[currentPageInfoIndex + 1]}
-                            isDisabled={currentPageInfoIndex === (data as FlipBookPageDataType[]).length}
+                            currentPageInfoIndex={currentPageInfoIndex * 2 + 1}
+                            data={data[currentPageInfoIndex * 2 + 1]}
+                            isDisabled={currentPageInfoIndex * 2 + 1 >= (data as FlipBookPageDataType[]).length}
                         />
                     </div>
                 </>
