@@ -117,7 +117,7 @@ const ABOUT_PAGE_CONTENT = {
             },
         },
         {
-            imageURL: "/images/about/akshay.jpg",
+            imageURL: "/images/about/akshay2.jpeg",
             name: "Akshay Chavan",
             role: "MSCS Student",
             // aspectRatio: "900 / 746",

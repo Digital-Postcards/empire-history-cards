@@ -57,12 +57,18 @@ export default class CardService {
     if (isInScrapbook) {
       let cardsForScrapBook: any = [];
       cards.forEach((card: any) => {
+        // Filter imageLinks to only include front images (those ending with 'A')
+        const frontImages = card?.imageLinks?.filter((image: any) => {
+          const link = image.link || '';
+          return /\/[^\/]*A\.(jpe?g|png)$/i.test(link);
+        }) || [];
+        
         cardsForScrapBook.push({
           _id: card?._id,
           item: card?.item,
           description: card?.description ? card.description.slice(0, 300).trim() + "..." : "",
           themes: card?.themes?.map((theme: any) => theme?.name) || [],
-          image: card?.imageLinks?.[0]?.link ? "/public" + card.imageLinks[0].link : "",
+          image: frontImages[0]?.link ? "/public" + frontImages[0].link : "",
         });
       });
       return cardsForScrapBook;
@@ -80,8 +86,10 @@ export default class CardService {
     );
     if (card)
       return {
-        ...card?._doc,
-        themes: card?._doc?.themes?.map((item: any) => item?.name) || [],
+        ...card._doc,
+        themes: card._doc.themes.map((item: any) => {
+          return item.name;
+        }),
       };
     else return null;
   }
