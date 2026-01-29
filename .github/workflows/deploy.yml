@@ -20,7 +20,18 @@ jobs:
         run: |
           echo "::group::Updating package lists"
           echo "Updating package lists..."
-          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S apt update -y || { echo "Failed to update package lists"; exit 1; }
+          echo "Waiting for apt lock(timeout 10s)"
+          for i in {1..60}; do
+            if sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1; then
+              echo "apt update lock held... waiting ($i/60)"
+              sleep 10
+            else
+              echo "apt lock free"
+              break
+            fi
+          done
+
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S timeout 10m apt-get update -y || { echo "Failed to update package lists"; exit 1; }
           echo "::endgroup::"
 
           echo "::group::Installing necessary packages"
