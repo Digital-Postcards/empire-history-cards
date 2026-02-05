@@ -81,6 +81,8 @@ use database
 show collections
 ```
 
+Note: Verify MongoDB database name is set correctly after setup. Otherwise, if `MONGODB_URI` does not specify a database, MongoDB may default to the `test` database. If you intentionally imported your collections into test, no changes are required.
+
 You can also verify records:
 
 ```js

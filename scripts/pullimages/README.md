@@ -27,3 +27,29 @@ Simply run [`./index.sh`](./index.sh)
 ## What happens?
 
 The script downloads images from the Google Drive (from folders *Postcards* and *Tradecards*) and stores them on your local file system by creating a directory structure as specified by your environment variables `LOCAL_POSTCARDS_DIR` and `LOCAL_TRADECARDS_DIR`.
+
+# Getting postcard/tradecard images locally from Server
+
+To pull images from the server, follow the steps below:
+
+## Step 1: Create a local folder to store images
+
+From your local machine:
+
+```bash
+mkdir -p folder_name
+cd folder_name
+```
+
+## Step 2: Copy images from the server using scp
+
+Run the following commands in the folder you created:
+
+```bash
+scp -r dhroot@129.10.111.197:/path/to/postcards ./postcards
+scp -r dhroot@129.10.111.197:/path/to/tradecards ./tradecards
+```
+
+## Step 3: Point the backend to the images directory
+
+In server .env, set IMAGES_DIR to the parent directory that contains both postcards/ and tradecards/
