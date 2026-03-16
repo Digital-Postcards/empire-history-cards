@@ -13,39 +13,42 @@ const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
     baseDirectory: __dirname,
     recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+    allConfig: js.configs.all,
 });
 
-export default [...compat.extends(
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-), {
-    ignores: ["node_nodules"],
-    plugins: {
-        react,
-        "@typescript-eslint": typescriptEslint,
-        prettier,
-    },
-
-    languageOptions: {
-        globals: {
-            ...globals.browser,
+export default [
+    ...compat.extends(
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+    ),
+    {
+        ignores: ["node_nodules"],
+        plugins: {
+            react,
+            "@typescript-eslint": typescriptEslint,
+            prettier,
         },
 
-        parser: tsParser,
-        ecmaVersion: 12,
-        sourceType: "module",
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+            },
 
-        parserOptions: {
-            ecmaFeatures: {
-                jsx: true,
+            parser: tsParser,
+            ecmaVersion: 12,
+            sourceType: "module",
+
+            parserOptions: {
+                ecmaFeatures: {
+                    jsx: true,
+                },
             },
         },
-    },
 
-    rules: {
-        "prettier/prettier": "error",
+        rules: {
+            "prettier/prettier": "error",
+        },
     },
-}];
+];

@@ -1,9 +1,10 @@
-import LeafletMap from "components/map";
+// import LeafletMap from "components/map";
+import EmpireFilterMap from "components/map/empirefiltermap";
 
 const Map = () => {
     return (
         <>
-            <LeafletMap />
+            <EmpireFilterMap />
         </>
     );
 };
