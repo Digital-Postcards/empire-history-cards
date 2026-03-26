@@ -14,7 +14,7 @@ import {
     Typography,
     Avatar,
 } from "@mui/material";
-import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home, Settings, ClipboardList } from "lucide-react";
+import { ChevronLeft, LogOut, Upload, CreditCard, Users, Home, Settings, ClipboardList, Map } from "lucide-react";
 import { useApi } from "hooks";
 import { ApplicationContext, UserRole } from "contexts/ApplicationContext";
 import { API_URL } from "utils/constants";
@@ -71,6 +71,12 @@ const navItems: NavItem[] = [
         title: "Settings",
         path: "/admin/settings",
         icon: <Settings size={20} />,
+        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
+    {
+        title: "Map Editor",
+        path: "/admin/map",
+        icon: <Map size={20} />,
         roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
     },
 ];

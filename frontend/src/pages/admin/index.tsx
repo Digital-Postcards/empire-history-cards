@@ -7,6 +7,7 @@ import {
     AllCards,
     SettingsPage,
     LogsDashboard,
+    AdminMap,
 } from "./admin-pages";
 import AdminMain from "./main";
 import UnauthorizedAccess from "./unauthorized-access";
@@ -76,6 +77,14 @@ function AdminPortal() {
                         element={
                             <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
                                 <SettingsPage />
+                            </RouteGuard>
+                        }
+                    />
+                    <Route
+                        path="map"
+                        element={
+                            <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
+                                <AdminMap /> {/* new component */}
                             </RouteGuard>
                         }
                     />

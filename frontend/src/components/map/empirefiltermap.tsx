@@ -1,17 +1,15 @@
-import { useState, useEffect } from "react";
-import { MapContainer, ZoomControl, Tooltip, Marker } from "react-leaflet";
-import { useApi } from "hooks";
+import { useState, useEffect, useMemo } from "react";
+import { MapContainer, ZoomControl, Marker, Tooltip } from "react-leaflet";
+import L from "leaflet";
 import { ContentContainer } from "components/common";
 import "leaflet/dist/leaflet.css";
 import HistoricMap from "./historicmap";
 import EmpireFilter from "./EmpireFilter";
 import { Error } from "components/error";
 import "./map.css";
-import L from "leaflet";
 
 const IMAGE_WIDTH = 1500;
 const IMAGE_HEIGHT = 780;
-
 const BOUNDS = {
     minLat: -70.912,
     maxLat: 82.774,
@@ -25,12 +23,6 @@ const pixelToLatLng = (x: number, y: number): [number, number] => {
     return [lat, lng];
 };
 
-const latLngToPixel = (lat: number, lng: number): [number, number] => {
-    const x = ((lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)) * IMAGE_WIDTH;
-    const y = ((BOUNDS.maxLat - lat) / (BOUNDS.maxLat - BOUNDS.minLat)) * IMAGE_HEIGHT;
-    return [Math.round(x), Math.round(y)];
-};
-
 const EMPIRE_COLORS: Record<string, string> = {
     British: "#e63946",
     American: "#2a9d8f",
@@ -42,53 +34,43 @@ const EMPIRE_COLORS: Record<string, string> = {
 
 const EmpireFilterMap = () => {
     const [filterEmpire, setFilterEmpire] = useState<string | null>(null);
-    const [originalMapData, setOriginalMapData] = useState([]);
     const [mapData, setMapData] = useState([]);
     const [countries, setCountries] = useState<any[]>([]);
     const [sidebarVisible, setSidebarVisible] = useState(false);
-    const [editMode, setEditMode] = useState(false);
+    const [isLoadingCards, setIsLoadingCards] = useState(false); // ← loading state
 
-    const { fetchData } = useApi("/map/allcardswithlocation", { method: "GET" });
-
-    // Fetch cards
-    useEffect(() => {
-        const getData = async () => {
-            const data = await fetchData();
-            setOriginalMapData(data);
-            setMapData(data);
-        };
-        getData();
-    }, []);
-
-    // Fetch countries for pins
+    // Fetch countries once on load
     useEffect(() => {
         const getCountries = async () => {
             const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/map/countries`);
-            const data = await (await res).json();
-            console.log("-----------------------", data);
+            const data = await res.json();
             setCountries(data);
         };
         getCountries();
     }, []);
 
-    // Filter cards by empire
-    const filterCards = () => {
-        let filtered: any = originalMapData;
-        if (filterEmpire) {
-            filtered = (filtered as any[]).filter((data: any) => data.empire === filterEmpire);
-        }
-        setMapData(filtered);
-    };
-
+    // FIX 2 & 3 — combined into one useEffect, slide-in waits for cards
     useEffect(() => {
-        filterCards();
-    }, [filterEmpire]);
-
-    useEffect(() => {
-        if (filterEmpire) {
-            const t = setTimeout(() => setSidebarVisible(true), 10);
-            return () => clearTimeout(t);
+        if (!filterEmpire) {
+            setMapData([]);
+            setSidebarVisible(false);
+            return;
         }
+
+        const getCards = async () => {
+            setIsLoadingCards(true);
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_URL}/api/map/allcardswithlocation?empire=${filterEmpire}`,
+            );
+            const data = await res.json();
+            setMapData(data);
+            setIsLoadingCards(false);
+
+            // Slide in AFTER cards are loaded
+            setTimeout(() => setSidebarVisible(true), 10);
+        };
+
+        getCards();
     }, [filterEmpire]);
 
     const handleClose = () => {
@@ -96,23 +78,22 @@ const EmpireFilterMap = () => {
         setTimeout(() => setFilterEmpire(null), 400);
     };
 
-    const availableEmpires = originalMapData
-        .map((card: any) => card.empire)
-        .filter((empire, index, self: any[]) => empire && self.indexOf(empire) === index);
+    const availableEmpires = countries
+        .map((c: any) => c.empire)
+        .filter((empire, index, self: any[]) => empire && self.indexOf(empire) === index)
+        .sort();
 
-    const handleDragEnd = async (countryId: string, lat: number, lng: number) => {
-        const [x, y] = latLngToPixel(lat, lng);
-        try {
-            await fetch(`${process.env.REACT_APP_SERVER_URL}/api/map/countries/${countryId}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ coordinates: [x, y] }),
-            });
-            setCountries((prev) => prev.map((c) => (c._id === countryId ? { ...c, coordinates: [x, y] } : c)));
-        } catch (error) {
-            console.error("Failed to update:", error);
-        }
-    };
+    // FIX 1 — memoize pin positions so they don't recalculate on every render
+    const visiblePins = useMemo(() => {
+        if (!filterEmpire) return [];
+        return countries
+            .filter((c) => c.empire === filterEmpire)
+            .map((country) => ({
+                ...country,
+                latLng: pixelToLatLng(country.coordinates[0], country.coordinates[1]),
+            }));
+    }, [countries, filterEmpire]);
+
     if (!mapData)
         return (
             <ContentContainer>
@@ -153,7 +134,7 @@ const EmpireFilterMap = () => {
                         empires={availableEmpires}
                     />
                     <div style={{ marginTop: "16px", fontSize: "13px", color: "#6b7280" }}>
-                        {originalMapData.length} cards total
+                        {countries.length} countries total
                     </div>
                 </div>
             </div>
@@ -207,61 +188,57 @@ const EmpireFilterMap = () => {
                             borderBottom: "1px solid #e5e7eb",
                             marginBottom: "16px",
                         }}>
-                        {mapData.length} cards
+                        {isLoadingCards ? "Loading..." : `${mapData.length} cards`}
                     </div>
+
+                    {/* FIX 3 — loading spinner while cards fetch */}
                     <div style={{ flex: 1, overflowY: "auto" }}>
-                        <div style={{ display: "grid", gap: "12px" }}>
-                            {mapData.map((card: any) => (
-                                <a
-                                    key={card._id}
-                                    href={`/cards/${card.item}s/${card._id}`}
-                                    style={{ display: "block", textDecoration: "none" }}
-                                    onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
-                                    onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}>
-                                    <div
-                                        style={{
-                                            border: "1px solid #d1d5db",
-                                            borderRadius: "4px",
-                                            overflow: "hidden",
-                                            backgroundColor: "white",
-                                            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                                        }}>
-                                        <img
-                                            src={`${process.env.REACT_APP_SERVER_URL}/public${card.imageLinks?.[0]?.link || ""}`}
-                                            alt={`${card.item} #${card.number}`}
-                                            style={{ width: "100%", height: "160px", objectFit: "cover" }}
-                                        />
-                                        <div style={{ padding: "8px" }}>
-                                            <div style={{ fontSize: "12px", fontWeight: 500, color: "#374151" }}>
-                                                {card.item} #{card.number}
+                        {isLoadingCards ? (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    padding: "40px 0",
+                                    color: "#6b7280",
+                                }}>
+                                Loading cards...
+                            </div>
+                        ) : (
+                            <div style={{ display: "grid", gap: "12px" }}>
+                                {mapData.map((card: any) => (
+                                    <a
+                                        key={card._id}
+                                        href={`/cards/${card.item}s/${card._id}`}
+                                        style={{ display: "block", textDecoration: "none" }}
+                                        onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+                                        onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}>
+                                        <div
+                                            style={{
+                                                border: "1px solid #d1d5db",
+                                                borderRadius: "4px",
+                                                overflow: "hidden",
+                                                backgroundColor: "white",
+                                                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                                            }}>
+                                            <img
+                                                src={`${process.env.REACT_APP_SERVER_URL}/public${card.imageLinks?.[0]?.link || ""}`}
+                                                alt={`${card.item} #${card.number}`}
+                                                loading="lazy"
+                                                style={{ width: "100%", height: "160px", objectFit: "cover" }}
+                                            />
+                                            <div style={{ padding: "8px" }}>
+                                                <div style={{ fontSize: "12px", fontWeight: 500, color: "#374151" }}>
+                                                    {card.item} #{card.number}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </a>
-                            ))}
-                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-            <button
-                onClick={() => setEditMode((prev) => !prev)}
-                style={{
-                    position: "fixed",
-                    bottom: "20px",
-                    right: "20px",
-                    zIndex: 10,
-                    padding: "10px 16px",
-                    backgroundColor: editMode ? "#e63946" : "#1f2937",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                }}>
-                {editMode ? "Exit Edit Mode" : "Edit Pin Positions"}
-            </button>
 
             <MapContainer
                 className="overflow-hidden z-0"
@@ -274,16 +251,13 @@ const EmpireFilterMap = () => {
                 crs={L.CRS.EPSG3857}>
                 <ZoomControl position="topleft" />
                 <HistoricMap />
-                {filterEmpire &&
-                    countries
-                        .filter((c) => c.empire === filterEmpire)
-                        .map((country) => {
-                            const [lat, lng] = pixelToLatLng(country.coordinates[0], country.coordinates[1]);
-                            const color = EMPIRE_COLORS[filterEmpire] || "#666";
 
-                            const pinIcon = L.divIcon({
-                                className: "",
-                                html: `<div style="
+                {/* FIX 1 — use memoized pins */}
+                {visiblePins.map((country) => {
+                    const color = EMPIRE_COLORS[filterEmpire!] || "#666";
+                    const pinIcon = L.divIcon({
+                        className: "",
+                        html: `<div style="
                             width: ${country.size}px;
                             height: ${country.size}px;
                             background-color: ${color};
@@ -291,30 +265,17 @@ const EmpireFilterMap = () => {
                             border-radius: 50% 50% 50% 0;
                             transform: rotate(-45deg);
                             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                            "></div>`,
-                                iconSize: [country.size, country.size],
-                                iconAnchor: [country.size / 2, country.size],
-                            });
+                        "></div>`,
+                        iconSize: [country.size, country.size],
+                        iconAnchor: [country.size / 2, country.size],
+                    });
 
-                            return (
-                                <Marker
-                                    key={country._id}
-                                    position={[lat, lng]}
-                                    icon={pinIcon}
-                                    draggable={editMode}
-                                    eventHandlers={{
-                                        dragend: (e) => {
-                                            const { lat: newLat, lng: newLng } = e.target.getLatLng();
-                                            handleDragEnd(country._id, newLat, newLng);
-                                        },
-                                    }}>
-                                    <Tooltip>
-                                        {country.empire}
-                                        {editMode ? " (drag to move)" : ""}
-                                    </Tooltip>
-                                </Marker>
-                            );
-                        })}
+                    return (
+                        <Marker key={country._id} position={country.latLng} icon={pinIcon}>
+                            <Tooltip>{country.name}</Tooltip>
+                        </Marker>
+                    );
+                })}
             </MapContainer>
         </div>
     );
