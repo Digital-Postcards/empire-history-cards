@@ -1,6 +1,7 @@
 import CardModel from "../models/card";
 import ImageModel from "../models/image";
 import TagModel from "../models/tag";
+import CountryModel from "../models/country";
 
 export default class CardService {
   public async getCardsByFilter(query: any, projection?: any) {
@@ -10,6 +11,7 @@ export default class CardService {
       withTags,
       isInScrapbook,
       originalLocation,
+      empire,
       page = 1,
       limit = 20,
       isPopulate = true,
@@ -20,13 +22,20 @@ export default class CardService {
     if (year) _query.date = { $regex: year };
     if (isInScrapbook) _query.isInScrapbook = isInScrapbook;
     if (originalLocation) _query.originalLocation = originalLocation;
+    if (empire) {
+      // get all countries for this empire
+      const empirecountries = await CountryModel.find({ empire });
+      const countryNames = empirecountries.map((c) => c.name);
 
+      // find cards by empire OR by country
+      _query.$or = [{ empire: empire }, { country: { $in: countryNames } }];
+    }
     let cards;
     if (withTags) {
       // Handle theme filtering using aggregation pipeline
       const themeNames = Array.isArray(withTags) ? withTags : [withTags];
       const themeNamesDecoded = themeNames.map((name) =>
-        decodeURIComponent(name)
+        decodeURIComponent(name),
       );
 
       // First, find the theme IDs for the given names
@@ -40,7 +49,7 @@ export default class CardService {
         cards = await CardModel.find(_query, projection);
       } else {
         cards = await CardModel.find(_query, projection).populate(
-          "themes imageLinks"
+          "themes imageLinks",
         );
       }
     } else {
@@ -49,7 +58,7 @@ export default class CardService {
         cards = await CardModel.find(_query, projection);
       } else {
         cards = await CardModel.find(_query, projection).populate(
-          "themes imageLinks"
+          "themes imageLinks",
         );
       }
     }
@@ -58,15 +67,18 @@ export default class CardService {
       let cardsForScrapBook: any = [];
       cards.forEach((card: any) => {
         // Filter imageLinks to only include front images (those ending with 'A')
-        const frontImages = card?.imageLinks?.filter((image: any) => {
-          const link = image.link || '';
-          return /\/[^\/]*A\.(jpe?g|png)$/i.test(link);
-        }) || [];
-        
+        const frontImages =
+          card?.imageLinks?.filter((image: any) => {
+            const link = image.link || "";
+            return /\/[^\/]*A\.(jpe?g|png)$/i.test(link);
+          }) || [];
+
         cardsForScrapBook.push({
           _id: card?._id,
           item: card?.item,
-          description: card?.description ? card.description.slice(0, 300).trim() + "..." : "",
+          description: card?.description
+            ? card.description.slice(0, 300).trim() + "..."
+            : "",
           themes: card?.themes?.map((theme: any) => theme?.name) || [],
           image: frontImages[0]?.link ? "/public" + frontImages[0].link : "",
         });
@@ -81,9 +93,8 @@ export default class CardService {
   }
 
   public async getCardById(id: string) {
-    const card: any = await CardModel.findById(id).populate(
-      "themes imageLinks"
-    );
+    const card: any =
+      await CardModel.findById(id).populate("themes imageLinks");
     if (card)
       return {
         ...card._doc,
@@ -107,24 +118,24 @@ export default class CardService {
         for (const [index, file] of fileArray.entries()) {
           // Get the rotation value from the corresponding form field
           let orientation = 1; // Default value
-          
+
           // Extract the orientation from the request body
-          let rotationFieldName = '';
-          
+          let rotationFieldName = "";
+
           // Handle different file field naming patterns
-          if (fieldname === 'frontImage' || fieldname === 'backImage') {
+          if (fieldname === "frontImage" || fieldname === "backImage") {
             rotationFieldName = `${fieldname}Rotation`;
-          } else if (fieldname.startsWith('additionalImage-')) {
+          } else if (fieldname.startsWith("additionalImage-")) {
             // For additional images which use indexed fields
             rotationFieldName = `${fieldname}Rotation`;
           }
-          
+
           if (body[rotationFieldName]) {
             orientation = parseInt(body[rotationFieldName], 10);
           }
-          
+
           console.log(`Image ${fieldname} orientation: ${orientation}`);
-          
+
           // Create image entry with the correct orientation
           const image = new ImageModel({
             name: file.originalname,
@@ -213,8 +224,8 @@ export default class CardService {
       const updatedCard = await CardModel.findByIdAndUpdate(
         cardId,
         updateData,
-        { new: true }
-      ).populate('themes imageLinks');
+        { new: true },
+      ).populate("themes imageLinks");
 
       if (!updatedCard) {
         return null;
@@ -222,15 +233,16 @@ export default class CardService {
 
       // Convert to plain JavaScript object to avoid TypeScript errors
       const cardObject = updatedCard.toObject();
-      
+
       // Format the card data to match the expected format in the frontend
       return {
         ...cardObject,
-        themes: cardObject.themes && Array.isArray(cardObject.themes)
-          ? cardObject.themes.map((theme: any) => {
-              return typeof theme === 'string' ? theme : theme.name;
-            })
-          : [],
+        themes:
+          cardObject.themes && Array.isArray(cardObject.themes)
+            ? cardObject.themes.map((theme: any) => {
+                return typeof theme === "string" ? theme : theme.name;
+              })
+            : [],
       };
     } catch (error) {
       console.error("Error in updateCard:", error);

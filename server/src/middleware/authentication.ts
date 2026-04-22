@@ -26,7 +26,7 @@ interface CustomJwtPayload extends JwtPayload {
 export const authenticate = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const token = req.cookies?.access_token;
   if (!token) {
@@ -36,13 +36,18 @@ export const authenticate = (
   try {
     const data = jwt.verify(
       token,
-      process.env.SECRET_KEY as jwt.Secret
+      process.env.SECRET_KEY as jwt.Secret,
     ) as CustomJwtPayload;
     req.userId = data.userId;
     req.userRole = data.userRole;
     req.username = data.username; // Attach the username to the request
     next();
   } catch (error) {
+    console.log("error");
+    console.log("u", req.userId);
+    console.log("role", req.userRole);
+    console.log("name", req.username);
+    console.log("secret", process.env.SECRET_KEY);
     res.status(401).json({ message: `Authentication error: ${error}` });
   }
   return;
@@ -55,10 +60,12 @@ export const authenticate = (
 export const requireSuperAdmin = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   if (req.userRole !== UserRole.SUPER_ADMIN) {
-    res.status(403).json({ message: "Access denied. Super Admin role required." });
+    res
+      .status(403)
+      .json({ message: "Access denied. Super Admin role required." });
     return;
   }
   next();
@@ -71,10 +78,15 @@ export const requireSuperAdmin = (
 export const requireManager = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
-  if (req.userRole !== UserRole.MANAGER && req.userRole !== UserRole.SUPER_ADMIN) {
-    res.status(403).json({ message: "Access denied. Manager role or higher required." });
+  if (
+    req.userRole !== UserRole.MANAGER &&
+    req.userRole !== UserRole.SUPER_ADMIN
+  ) {
+    res
+      .status(403)
+      .json({ message: "Access denied. Manager role or higher required." });
     return;
   }
   next();

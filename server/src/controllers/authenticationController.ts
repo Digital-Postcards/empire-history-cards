@@ -16,7 +16,7 @@ export class AuthenticationController {
   authenticateCredentials = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<any> => {
     try {
       const { email, password } = req.body;
@@ -28,9 +28,8 @@ export class AuthenticationController {
         return;
       }
 
-      const userDetails: IUser | null = await this.userService.getUserDetails(
-        email
-      );
+      const userDetails: IUser | null =
+        await this.userService.getUserDetails(email);
 
       if (!userDetails) {
         res
@@ -41,19 +40,22 @@ export class AuthenticationController {
 
       // Check if the stored password is already hashed (starts with $2b$)
       let isPasswordValid: boolean;
-      
-      if (userDetails.password.startsWith('$2b$')) {
+
+      if (userDetails.password.startsWith("$2b$")) {
         // Password is already hashed, use bcrypt to compare
-        isPasswordValid = await this.userService.verifyPassword(password, userDetails.password);
+        isPasswordValid = await this.userService.verifyPassword(
+          password,
+          userDetails.password,
+        );
       } else {
         // Legacy plain text password comparison - this will be removed after migration
         isPasswordValid = password === userDetails.password;
-        
+
         // If the password is valid, update it to a hashed version for future logins
         if (isPasswordValid) {
           const hashedPassword = await bcrypt.hash(password, 10);
-          await this.userService.updateUser(userDetails._id!.toString(), { 
-            password: hashedPassword 
+          await this.userService.updateUser(userDetails._id!.toString(), {
+            password: hashedPassword,
           });
         }
       }
@@ -69,12 +71,12 @@ export class AuthenticationController {
       await this.userService.updateLastLogin(userDetails.email);
 
       // Include user ID and role in the token payload
-      const tokenPayload = { 
+      const tokenPayload = {
         username: userDetails.email,
         userId: userDetails._id,
-        userRole: userDetails.role || 'manager' // Default to manager if no role is set
+        userRole: userDetails.role || "manager", // Default to manager if no role is set
       };
-      
+
       const token = jwt.sign(tokenPayload, secretKey as jwt.Secret, {
         expiresIn: "1d",
       });
@@ -95,7 +97,7 @@ export class AuthenticationController {
             email: userDetails.email,
             role: userDetails.role,
             id: userDetails._id,
-            profilePictureUrl: userDetails.profilePictureUrl
+            profilePictureUrl: userDetails.profilePictureUrl,
           },
         });
     } catch (error: unknown) {
@@ -114,7 +116,7 @@ export class AuthenticationController {
   logout = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<any> => {
     try {
       return res

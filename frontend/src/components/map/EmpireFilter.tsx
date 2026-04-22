@@ -7,15 +7,6 @@ interface EmpireFilterProps {
 const EmpireFilter = ({ selectedEmpire, onEmpireChange, empires }: EmpireFilterProps) => {
     return (
         <div className="mb-4">
-            <label
-                style={{
-                    display: "block",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    marginBottom: "8px",
-                }}>
-                Filter by Empire
-            </label>
             <select
                 data-testid="empire-select"
                 value={selectedEmpire || ""}

@@ -7,6 +7,7 @@ import {
     AllCards,
     SettingsPage,
     LogsDashboard,
+    AdminMap,
 } from "./admin-pages";
 import AdminMain from "./main";
 import UnauthorizedAccess from "./unauthorized-access";
@@ -59,6 +60,14 @@ function AdminPortal() {
                             </RouteGuard>
                         }
                     />
+                    <Route
+                        path="map"
+                        element={
+                            <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
+                                <AdminMap /> {/* new component */}
+                            </RouteGuard>
+                        }
+                    />
 
                     {/* System logs - only accessible by Super Admins */}
                     <Route
@@ -76,6 +85,14 @@ function AdminPortal() {
                         element={
                             <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
                                 <SettingsPage />
+                            </RouteGuard>
+                        }
+                    />
+                    <Route
+                        path="map"
+                        element={
+                            <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
+                                <AdminMap /> {/* new component */}
                             </RouteGuard>
                         }
                     />
