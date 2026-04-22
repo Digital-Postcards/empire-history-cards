@@ -62,6 +62,12 @@ const navItems: NavItem[] = [
         roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
     },
     {
+        title: "Map Editor",
+        path: "/admin/map",
+        icon: <Map size={20} />,
+        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
+    },
+    {
         title: "System Logs",
         path: "/admin/logs",
         icon: <ClipboardList size={20} />,

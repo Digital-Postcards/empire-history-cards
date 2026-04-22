@@ -7,7 +7,7 @@ const mapController = new MapController();
 
 mapRouter.get("/allcardswithlocation", mapController.getAllLocations);
 
-// GET /api/map/countries — all countries or filtered by empire
+// GET /api/map/countries - all countries
 const getCountries = async (
   req: express.Request,
   res: express.Response,
@@ -21,7 +21,7 @@ const getCountries = async (
   }
 };
 
-// PATCH /api/map/countries/:id — update coordinates after drag
+// PATCH /api/map/countries/:id - update coordinates after drag
 const updateCountryCoordinates = async (
   req: express.Request,
   res: express.Response,

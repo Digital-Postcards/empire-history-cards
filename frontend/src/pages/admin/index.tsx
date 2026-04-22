@@ -60,6 +60,14 @@ function AdminPortal() {
                             </RouteGuard>
                         }
                     />
+                    <Route
+                        path="map"
+                        element={
+                            <RouteGuard roles={[UserRole.SUPER_ADMIN, UserRole.MANAGER]}>
+                                <AdminMap /> {/* new component */}
+                            </RouteGuard>
+                        }
+                    />
 
                     {/* System logs - only accessible by Super Admins */}
                     <Route

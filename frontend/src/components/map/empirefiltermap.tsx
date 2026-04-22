@@ -24,12 +24,18 @@ const pixelToLatLng = (x: number, y: number): [number, number] => {
 };
 
 const EMPIRE_COLORS: Record<string, string> = {
-    British: "#e63946",
-    American: "#2a9d8f",
+    American: "#808000",
+    British: "#ebaf8f",
     French: "#457b9d",
-    Ottoman: "#e9c46a",
-    Dutch: "#f4a261",
-    Other: "#adb5bd",
+    Ottoman: "#1a1717",
+    Dutch: "#8B4513",
+    Belgian: "#FFD700",
+    German: "#FFA500",
+    Japanese: "#4a4a4a",
+    Mexican: "#800080",
+    Cuban: "#9d9982",
+    Russian: "#d3d3d3",
+    Portuguese: "#90EE90",
 };
 
 const EmpireFilterMap = () => {
@@ -37,7 +43,7 @@ const EmpireFilterMap = () => {
     const [mapData, setMapData] = useState([]);
     const [countries, setCountries] = useState<any[]>([]);
     const [sidebarVisible, setSidebarVisible] = useState(false);
-    const [isLoadingCards, setIsLoadingCards] = useState(false); // ← loading state
+    const [isLoadingCards, setIsLoadingCards] = useState(false);
 
     // Fetch countries once on load
     useEffect(() => {
@@ -49,7 +55,6 @@ const EmpireFilterMap = () => {
         getCountries();
     }, []);
 
-    // FIX 2 & 3 — combined into one useEffect, slide-in waits for cards
     useEffect(() => {
         if (!filterEmpire) {
             setMapData([]);
@@ -65,14 +70,13 @@ const EmpireFilterMap = () => {
             const data = await res.json();
             setMapData(data);
             setIsLoadingCards(false);
-
-            // Slide in AFTER cards are loaded
             setTimeout(() => setSidebarVisible(true), 10);
         };
 
         getCards();
     }, [filterEmpire]);
 
+    console.log(mapData);
     const handleClose = () => {
         setSidebarVisible(false);
         setTimeout(() => setFilterEmpire(null), 400);
@@ -83,7 +87,6 @@ const EmpireFilterMap = () => {
         .filter((empire, index, self: any[]) => empire && self.indexOf(empire) === index)
         .sort();
 
-    // FIX 1 — memoize pin positions so they don't recalculate on every render
     const visiblePins = useMemo(() => {
         if (!filterEmpire) return [];
         return countries
@@ -105,6 +108,7 @@ const EmpireFilterMap = () => {
         <div style={{ position: "relative" }}>
             {/* Empire Selector */}
             <div
+                data-testid="empire-selector-container"
                 style={{
                     position: "fixed",
                     right: "20px",
@@ -133,13 +137,9 @@ const EmpireFilterMap = () => {
                         onEmpireChange={setFilterEmpire}
                         empires={availableEmpires}
                     />
-                    <div style={{ marginTop: "16px", fontSize: "13px", color: "#6b7280" }}>
-                        {countries.length} countries total
-                    </div>
                 </div>
             </div>
 
-            {/* Sidebar */}
             <div
                 style={{
                     position: "fixed",
@@ -191,7 +191,6 @@ const EmpireFilterMap = () => {
                         {isLoadingCards ? "Loading..." : `${mapData.length} cards`}
                     </div>
 
-                    {/* FIX 3 — loading spinner while cards fetch */}
                     <div style={{ flex: 1, overflowY: "auto" }}>
                         {isLoadingCards ? (
                             <div
@@ -242,7 +241,7 @@ const EmpireFilterMap = () => {
 
             <MapContainer
                 className="overflow-hidden z-0"
-                center={[22, 0]}
+                center={[20, 32]}
                 zoomControl={false}
                 zoom={1}
                 minZoom={2}
@@ -252,27 +251,26 @@ const EmpireFilterMap = () => {
                 <ZoomControl position="topleft" />
                 <HistoricMap />
 
-                {/* FIX 1 — use memoized pins */}
                 {visiblePins.map((country) => {
                     const color = EMPIRE_COLORS[filterEmpire!] || "#666";
                     const pinIcon = L.divIcon({
                         className: "",
                         html: `<div style="
-                            width: ${country.size}px;
-                            height: ${country.size}px;
+                            width: 14px;
+                            height: 14px;
                             background-color: ${color};
                             border: 2px solid white;
                             border-radius: 50% 50% 50% 0;
                             transform: rotate(-45deg);
                             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
                         "></div>`,
-                        iconSize: [country.size, country.size],
-                        iconAnchor: [country.size / 2, country.size],
                     });
 
                     return (
                         <Marker key={country._id} position={country.latLng} icon={pinIcon}>
-                            <Tooltip>{country.name}</Tooltip>
+                            <Tooltip direction="top">
+                                <strong>{country.name}</strong> - {country.empire} Empire
+                            </Tooltip>
                         </Marker>
                     );
                 })}

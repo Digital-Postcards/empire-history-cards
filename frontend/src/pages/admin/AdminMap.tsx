@@ -4,9 +4,6 @@ import "leaflet/dist/leaflet.css";
 import HistoricMap from "../../components/map/historicmap";
 import L from "leaflet";
 import { Box, Typography, FormControl, Select, MenuItem, InputLabel, Chip } from "@mui/material";
-import { MapPin } from "lucide-react";
-
-// ── Same constants as EmpireFilterMap ────────────────────────────────
 const IMAGE_WIDTH = 1500;
 const IMAGE_HEIGHT = 780;
 
@@ -30,12 +27,18 @@ const latLngToPixel = (lat: number, lng: number): [number, number] => {
 };
 
 const EMPIRE_COLORS: Record<string, string> = {
-    British: "#e63946",
-    American: "#2a9d8f",
+    American: "#808000",
+    British: "#ebaf8f",
     French: "#457b9d",
-    Ottoman: "#e9c46a",
-    Dutch: "#f4a261",
-    Other: "#adb5bd",
+    Ottoman: "#ffffff",
+    Dutch: "#8B4513",
+    Belgian: "#FFD700",
+    German: "#FFA500",
+    Japanese: "#4a4a4a",
+    Mexican: "#800080",
+    Cuban: "#9d9982",
+    Russian: "#d3d3d3",
+    Portuguese: "#90EE90",
 };
 
 const AdminMap = () => {
@@ -78,12 +81,12 @@ const AdminMap = () => {
         .map((c) => c.empire)
         .filter((empire, index, self) => empire && self.indexOf(empire) === index)
         .sort();
+
     // Filter countries based on selected empire
     const visibleCountries = filterEmpire === "all" ? [] : countries.filter((c) => c.empire === filterEmpire);
-
+    console.log(visibleCountries);
     return (
         <Box sx={{ position: "relative", height: "calc(100vh - 64px)" }}>
-            {/* Top toolbar */}
             <Box
                 sx={{
                     position: "absolute",
@@ -99,7 +102,6 @@ const AdminMap = () => {
                     borderRadius: "8px",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                 }}>
-                <MapPin size={20} color="#1976d2" />
                 <Typography variant="subtitle1" fontWeight={600}>
                     Map Pin Editor
                 </Typography>
@@ -119,8 +121,6 @@ const AdminMap = () => {
                         ))}
                     </Select>
                 </FormControl>
-
-                {/* Save status */}
                 {saveStatus === "saving" && <Chip label="Saving" size="small" color="warning" />}
                 {saveStatus === "saved" && <Chip label=" Saved" size="small" color="success" />}
                 {saveStatus === "error" && <Chip label="Error" size="small" color="error" />}
@@ -140,8 +140,6 @@ const AdminMap = () => {
                 crs={L.CRS.EPSG3857}>
                 <ZoomControl position="topleft" />
                 <HistoricMap />
-
-                {/* All pins — always draggable in admin */}
                 {visibleCountries.map((country) => {
                     const [lat, lng] = pixelToLatLng(country.coordinates[0], country.coordinates[1]);
                     const color = EMPIRE_COLORS[country.empire] || "#666";
@@ -149,17 +147,16 @@ const AdminMap = () => {
                     const pinIcon = L.divIcon({
                         className: "",
                         html: `<div style="
-                            width: 15px;
-                            height: 15px;
-                            background-color: ${color};
-                            border: 2px solid white;
-                            border-radius: 50% 50% 50% 0;
-                            transform: rotate(-45deg);
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                            cursor: grab;
-                        "></div>`,
-                        iconSize: [country.size, country.size],
-                        iconAnchor: [country.size / 2, country.size],
+                                width: 14px;
+                                height: 14px;
+                                background-color: ${color};
+                                border: 2px solid white;
+                                border-radius: 50% 50% 50% 0;
+                                transform: rotate(-45deg);
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                                "></div>`,
+                        iconSize: [14, 14],
+                        iconAnchor: [7, 14],
                     });
 
                     return (

@@ -13,4 +13,3 @@ class ICountry {
 
 const CountryModel = getModelForClass(ICountry);
 export default CountryModel;
-export { ICountry };
