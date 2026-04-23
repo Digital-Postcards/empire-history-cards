@@ -32,7 +32,9 @@ const CardDetail = () => {
                 <CardViewer images={(data as SingleCard).imageLinks} isBlur={(data as SingleCard).isBlurByDefault} />
                 {(data as SingleCard)?.description && (
                     <InfoSection label="Description">
-                        <p className="text-justify">{(data as any)?.description}</p>
+                        <p data-testid="card-description" className="text-justify">
+                            {(data as any)?.description}
+                        </p>
                     </InfoSection>
                 )}
                 {(data as SingleCard)?.analysis && (
