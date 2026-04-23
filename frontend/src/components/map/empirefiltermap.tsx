@@ -191,7 +191,7 @@ const EmpireFilterMap = () => {
                         {isLoadingCards ? "Loading..." : `${mapData.length} cards`}
                     </div>
 
-                    <div style={{ flex: 1, overflowY: "auto" }}>
+                    <div data-testid="card-count" style={{ flex: 1, overflowY: "auto" }}>
                         {isLoadingCards ? (
                             <div
                                 style={{
