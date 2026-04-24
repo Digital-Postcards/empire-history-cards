@@ -79,12 +79,6 @@ const navItems: NavItem[] = [
         icon: <Settings size={20} />,
         roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
     },
-    {
-        title: "Map Editor",
-        path: "/admin/map",
-        icon: <Map size={20} />,
-        roles: [UserRole.SUPER_ADMIN, UserRole.MANAGER],
-    },
 ];
 
 const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
