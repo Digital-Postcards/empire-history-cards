@@ -11,8 +11,6 @@ import {
 } from "./helper";
 
 // USER STORY 3 - Historical Authenticity
-//
-//
 // Values: Historical Integrity, Scholarly Accuracy, Trust
 
 test.beforeEach(async ({ page }) => {
@@ -63,7 +61,12 @@ test("AC2/AC3/AC4/AC5 - map is unmodified at rest before empire selection", asyn
  * Story 3 - AC7: Pins disappear and the map returns to its unmodified state
  *                when the user clicks "Back to Empires".
  */
-test("AC6/AC7 - pins appear on empire selection and disappear on close", async ({ page }) => {
+
+/**
+ * Story 3 - AC6: Country pins appear on the map only when an empire is
+ *                deliberately selected by the user.
+ */
+test("AC6 - pins appear only after empire is deliberately selected", async ({ page }) => {
     // AC6 precondition - no pins before any selection
     const before = await page.locator(".leaflet-marker-icon").count();
     expect(before, "No pins before empire selected").toBe(0);
@@ -74,8 +77,21 @@ test("AC6/AC7 - pins appear on empire selection and disappear on close", async (
     // AC6 - pins appear after a deliberate empire selection
     const after = await page.locator(".leaflet-marker-icon").count();
     expect(after, "Pins should appear after empire selected").toBeGreaterThan(0);
+});
 
-    // AC7 - pins disappear and map is restored when user navigates back
+/**
+ * Story 3 - AC7: Pins disappear and the map returns to its unmodified state
+ *                when the user clicks "Back to Empires".
+ */
+test("AC7 - pins disappear and map restores when Back to Empires clicked", async ({ page }) => {
+    // setup - select an empire to get pins on the map first
+    await page.locator('[data-testid="empire-select"]').selectOption("British");
+    await page.waitForTimeout(500);
+
+    const pinsBefore = await page.locator(".leaflet-marker-icon").count();
+    expect(pinsBefore, "Pins should be visible before closing").toBeGreaterThan(0);
+
+    // AC7 - click back and verify map is restored
     await page.getByRole("button", { name: "← Back to Empires" }).click();
     await page.waitForTimeout(450);
 
