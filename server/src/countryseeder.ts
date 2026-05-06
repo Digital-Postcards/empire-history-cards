@@ -257,7 +257,7 @@ const cards = [
 ];
 
 const seed = async () => {
-  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/database";
+  const uri = "mongodb://localhost:27017/database";
 
   try {
     await mongoose.connect(uri);
@@ -274,20 +274,13 @@ const seed = async () => {
     await CardModel.insertMany(cards);
     console.log(`Seeded ${cards.length} cards`);
 
-    const passwordHash = await bcrypt.hash(
-      process.env.TEST_ADMIN_PASSWORD || "hello1234",
-      10,
-    );
+    const passwordHash = await bcrypt.hash("hello1234", 10);
     await UserModel.create({
       email: process.env.TEST_ADMIN_EMAIL || "test.admin@gmail.com",
       password: passwordHash,
-      role: "SUPER_ADMIN",
+      role: "super_admin",
     });
     console.log("Seeded test admin user");
-
-    console.log(
-      `Test seeding complete - ${countries.length} countries, ${cards.length} cards, 1 admin user`,
-    );
     process.exit(0);
   } catch (error) {
     console.error("Seeding failed:", error);
