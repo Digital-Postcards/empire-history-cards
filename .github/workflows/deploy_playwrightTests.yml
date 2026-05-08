@@ -60,15 +60,6 @@ jobs:
         env:
           REACT_APP_SERVER_URL: http://localhost:3002
 
-      - name: Wait for servers to be ready
-        run: |
-          sleep 8
-          echo "Backend logs"
-          cat /tmp/backend.log
-          echo "Frontend logs"
-          cat /tmp/frontend.log
-          npx wait-on http://localhost:3000 http://localhost:3002 --timeout 60000
-
       - name: Install Playwright browsers
         working-directory: ./frontend
         run: npx playwright install chromium --with-deps
