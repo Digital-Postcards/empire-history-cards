@@ -29,10 +29,6 @@ jobs:
         working-directory: ./server
         run: npm ci
 
-      - name: Build backend
-        working-directory: ./server
-        run: npm run build
-
       - name: Seed test data
         working-directory: ./server
         run: npx ts-node src/countryseeder.ts
@@ -41,14 +37,18 @@ jobs:
           TEST_ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           TEST_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
 
+      - name: Create images directory
+        run: mkdir -p /tmp/images
+
       - name: Start backend
         working-directory: ./server
-        run: npm start &
+        run: npm run dev > /tmp/backend.log 2>&1 &
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           MONGODB_URI: mongodb://localhost:27017/database
           PORT: 3002
           NODE_ENV: production
+          IMAGES_DIR: /tmp/images
 
       - name: Install frontend dependencies
         working-directory: ./frontend
@@ -56,12 +56,18 @@ jobs:
 
       - name: Start frontend
         working-directory: ./frontend
-        run: npm start &
+        run: npm start > /tmp/frontend.log 2>&1 &
         env:
           REACT_APP_SERVER_URL: http://localhost:3002
 
       - name: Wait for servers to be ready
-        run: npx wait-on http://localhost:3000 http://localhost:3002 --timeout 60000
+        run: |
+          sleep 8
+          echo "Backend logs"
+          cat /tmp/backend.log
+          echo "Frontend logs"
+          cat /tmp/frontend.log
+          npx wait-on http://localhost:3000 http://localhost:3002 --timeout 60000
 
       - name: Install Playwright browsers
         working-directory: ./frontend
