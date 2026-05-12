@@ -77,5 +77,5 @@ jobs:
           name: playwright-report
           path: |
             frontend/playwright-report/
-            frontend/card-detail.png
+            frontend/admin-map.png
           retention-days: 30
