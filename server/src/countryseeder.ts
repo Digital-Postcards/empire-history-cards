@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import CountryModel from "../src/models/country";
 import CardModel from "../src/models/card";
 import UserModel from "../src/models/user";
+import ImageModel from "../src/models/image";
 import bcrypt from "bcrypt";
 
 const countries = [
@@ -262,25 +263,33 @@ const seed = async () => {
   try {
     await mongoose.connect(uri);
     console.log("Connected to MongoDB");
-
     await CountryModel.deleteMany({});
     await CardModel.deleteMany({});
     await UserModel.deleteMany({});
     console.log("Cleared existing collections");
-
     await CountryModel.insertMany(countries);
     console.log(`Seeded ${countries.length} countries`);
-
-    await CardModel.insertMany(cards);
-    console.log(`Seeded ${cards.length} cards`);
-
+    await ImageModel.deleteMany({});
+    console.log("Cleared image collection");
+    const testImage = await ImageModel.create({
+      name: "101A",
+      link: "/images/postcards/101A.jpg",
+      size: { width: 1920, height: 1485 },
+      orientation: 1,
+      cardNumber: "292",
+    });
+    const cardsWithImage = cards.map((card) => ({
+      ...card,
+      imageLinks: [testImage._id],
+    }));
+    await CardModel.insertMany(cardsWithImage);
+    console.log(`Seeded ${cardsWithImage.length} cards`);
     const passwordHash = await bcrypt.hash("hello1234", 10);
     await UserModel.create({
       email: "test.admin@gmail.com",
       password: passwordHash,
       role: "super_admin",
     });
-    console.log("Seeded test admin user");
     process.exit(0);
   } catch (error) {
     console.error("Seeding failed:", error);

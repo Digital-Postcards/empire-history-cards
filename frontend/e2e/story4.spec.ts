@@ -29,6 +29,10 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
     test("admin map page is accessible after login", async ({ page }) => {
         await loginAsAdmin(page);
         await page.goto(`${BASE_URL}/admin/map`);
+        await page.waitForLoadState("networkidle");
+        await page.screenshot({ path: "admin-map.png" });
+        console.log("Page URL:", page.url());
+        console.log("Page title:", await page.title());
         await expect(page.locator("text=Map Pin Editor")).toBeVisible({
             timeout: 30000,
         });
