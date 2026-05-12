@@ -276,7 +276,7 @@ const seed = async () => {
 
     const passwordHash = await bcrypt.hash("hello1234", 10);
     await UserModel.create({
-      email: process.env.TEST_ADMIN_EMAIL || "test.admin@gmail.com",
+      email: "test.admin@gmail.com",
       password: passwordHash,
       role: "super_admin",
     });
