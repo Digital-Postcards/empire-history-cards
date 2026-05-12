@@ -95,6 +95,8 @@ test("AC6 - clicking a card navigates to card detail page", async ({ page }) => 
     const firstCard = page.locator('a[href*="/cards/"]').first();
     await expect(firstCard).toBeVisible({ timeout: 10000 });
     await firstCard.click();
+    await page.waitForLoadState("networkidle");
+    await page.screenshot({ path: "card-detail.png" });
 
     // AC6 - navigated to card detail page
     await expect(page).toHaveURL(/\/cards\//, { timeout: 10000 });

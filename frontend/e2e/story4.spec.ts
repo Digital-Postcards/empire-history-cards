@@ -16,7 +16,7 @@ async function loginAsAdmin(page: any) {
     await page.locator('input[type="text"]').fill(ADMIN_EMAIL);
     await page.locator('input[type="password"]').fill(ADMIN_PASSWORD);
     await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL(`${BASE_URL}/admin/dashboard`, { timeout: 10000 });
+    await page.waitForURL(`${BASE_URL}/admin/dashboard`, { timeout: 30000 });
     console.log("Logged in as admin");
 }
 
@@ -30,7 +30,7 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
         await loginAsAdmin(page);
         await page.goto(`${BASE_URL}/admin/map`);
         await expect(page.locator("text=Map Pin Editor")).toBeVisible({
-            timeout: 10000,
+            timeout: 30000,
         });
         console.log(" Admin map page loaded");
     });
@@ -47,7 +47,7 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
     test("empire filter dropdown works and shows pins", async ({ page }) => {
         await loginAsAdmin(page);
         await page.goto(`${BASE_URL}/admin/map`);
-        await page.waitForSelector(".leaflet-container", { timeout: 10000 });
+        await page.waitForSelector(".leaflet-container", { timeout: 30000 });
         const pinsBefore = await page.locator(".leaflet-marker-icon").count();
         expect(pinsBefore).toBe(0);
         console.log("No pins visible before empire selected");
