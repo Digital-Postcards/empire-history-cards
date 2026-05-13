@@ -27,6 +27,12 @@ async function loginAsAdmin(page: any) {
  */
 test.describe("Admin Map : Drag and Drop Pin Editor", () => {
     test("admin map page is accessible after login", async ({ page }) => {
+        page.on("console", (msg) => {
+            if (msg.type() === "error") console.log("Console error:", msg.text());
+        });
+        page.on("requestfailed", (request) => {
+            console.log("Failed request:", request.url(), request.failure()?.errorText);
+        });
         await loginAsAdmin(page);
         await page.goto(`${BASE_URL}/admin/map`);
         await page.waitForLoadState("networkidle");
