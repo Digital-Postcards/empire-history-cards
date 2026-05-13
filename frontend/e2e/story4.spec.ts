@@ -3,7 +3,7 @@ import { test, expect, request as apiRequest } from "@playwright/test";
 const ADMIN_EMAIL = "test.admin@gmail.com";
 const ADMIN_PASSWORD = "hello1234";
 const BASE_URL = "http://localhost:3000";
-const API_URL = "http://localhost:3002";
+const API_URL = "http://localhost:3000";
 
 /**
  * Logs in as an admin user by navigating to the login page,
