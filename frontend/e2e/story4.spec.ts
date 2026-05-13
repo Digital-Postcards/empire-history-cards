@@ -17,7 +17,7 @@ async function loginAsAdmin(page: any) {
     await page.locator('input[type="password"]').fill(ADMIN_PASSWORD);
     await page.getByRole("button", { name: "Sign In" }).click();
     await page.waitForURL(`${BASE_URL}/admin/dashboard`, { timeout: 30000 });
-    console.log("Logged in as admin");
+    await page.context().storageState({ path: "auth.json" });
 }
 
 /**
@@ -42,7 +42,6 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
         await expect(page.locator("text=Map Pin Editor")).toBeVisible({
             timeout: 30000,
         });
-        console.log(" Admin map page loaded");
     });
 
     /**
