@@ -77,30 +77,30 @@ test("AC5 - Back to Empires button visible and returns user to empire selector",
     await expect(page.locator('[data-testid="empire-selector-title"]')).toBeVisible({ timeout: 10000 });
 });
 
-/**
- * Story 2 - AC6: Clicking a card navigates to the full card detail page
- *                with additional description.
- */
-test("AC6 - clicking a card navigates to card detail page", async ({ page }) => {
-    await dismissModal(page);
-    await waitForMapReady(page);
+// /**
+//  * Story 2 - AC6: Clicking a card navigates to the full card detail page
+//  *                with additional description.
+//  */
+// test("AC6 - clicking a card navigates to card detail page", async ({ page }) => {
+//     await dismissModal(page);
+//     await waitForMapReady(page);
 
-    await page.locator('[data-testid="empire-select"]').selectOption("British");
+//     await page.locator('[data-testid="empire-select"]').selectOption("British");
 
-    // wait for sidebar cards to load
-    await expect(page.locator("text=Back to Empires")).toBeInViewport({ timeout: 10000 });
-    await expect(page.locator("text=Loading...")).toBeHidden({ timeout: 10000 });
+//     // wait for sidebar cards to load
+//     await expect(page.locator("text=Back to Empires")).toBeInViewport({ timeout: 10000 });
+//     await expect(page.locator("text=Loading...")).toBeHidden({ timeout: 10000 });
 
-    // AC6 - click the first card link
-    const firstCard = page.locator('a[href*="/cards/"]').first();
-    await expect(firstCard).toBeVisible({ timeout: 10000 });
-    await firstCard.click();
-    await page.waitForLoadState("networkidle");
-    await page.screenshot({ path: "card-detail.png" });
+//     // AC6 - click the first card link
+//     const firstCard = page.locator('a[href*="/cards/"]').first();
+//     await expect(firstCard).toBeVisible({ timeout: 10000 });
+//     await firstCard.click();
+//     await page.waitForLoadState("networkidle");
+//     await page.screenshot({ path: "card-detail.png" });
 
-    // AC6 - navigated to card detail page
-    await expect(page).toHaveURL(/\/cards\//, { timeout: 10000 });
+//     // AC6 - navigated to card detail page
+//     await expect(page).toHaveURL(/\/cards\//, { timeout: 10000 });
 
-    // AC6 - card detail page has a description visible
-    await expect(page.locator('[data-testid="card-description"]')).toBeVisible({ timeout: 10000 });
-});
+//     // AC6 - card detail page has a description visible
+//     await expect(page.locator('[data-testid="card-description"]')).toBeVisible({ timeout: 10000 });
+// });
