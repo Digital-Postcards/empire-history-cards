@@ -47,7 +47,7 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           MONGODB_URI: mongodb://localhost:27017/database
           PORT: 3002
-          NODE_ENV: production
+          NODE_ENV: development
           IMAGES_DIR: /tmp/images
 
       - name: Install frontend dependencies
