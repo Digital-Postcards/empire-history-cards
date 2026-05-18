@@ -58,7 +58,7 @@ jobs:
         working-directory: ./frontend
         run: npm start > /tmp/frontend.log 2>&1 &
         env:
-          REACT_APP_SERVER_URL: ""
+          REACT_APP_SERVER_URL: http://localhost:3002
 
       - name: Install Playwright browsers
         working-directory: ./frontend
