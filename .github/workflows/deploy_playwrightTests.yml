@@ -58,7 +58,7 @@ jobs:
         working-directory: ./frontend
         run: npm start > /tmp/frontend.log 2>&1 &
         env:
-          REACT_APP_SERVER_URL: http://localhost:3002
+          REACT_APP_SERVER_URL: ""
 
       - name: Install Playwright browsers
         working-directory: ./frontend
@@ -77,5 +77,4 @@ jobs:
           name: playwright-report
           path: |
             frontend/playwright-report/
-            frontend/admin-map.png
           retention-days: 30

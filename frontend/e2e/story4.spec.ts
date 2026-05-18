@@ -1,60 +1,32 @@
-import { test, expect, request as apiRequest } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 const ADMIN_EMAIL = "test.admin@gmail.com";
 const ADMIN_PASSWORD = "hello1234";
 const BASE_URL = "http://localhost:3000";
-const API_URL = "http://localhost:3000";
-
-/**
- * Logs in as an admin user by navigating to the login page,
- * filling in credentials and waiting for redirect to dashboard
- */
+const API_URL = "http://localhost:3002";
 
 async function loginAsAdmin(page: any) {
     await page.goto(`${BASE_URL}/admin/login`);
-
     await page.locator('input[type="text"]').fill(ADMIN_EMAIL);
     await page.locator('input[type="password"]').fill(ADMIN_PASSWORD);
     await page.getByRole("button", { name: "Sign In" }).click();
     await page.waitForURL(`${BASE_URL}/admin/dashboard`, { timeout: 30000 });
-    await page.context().storageState({ path: "auth.json" });
+    console.log("Logged in as admin");
 }
 
-/**
- * Verifies that an authenticated admin can access the map editor page
- *
- * Expected: "Map Pin Editor" panel is visible after navigating to /admin/map
- */
 test.describe("Admin Map : Drag and Drop Pin Editor", () => {
-    test("admin map page is accessible after login", async ({ page }) => {
-        page.on("console", (msg) => {
-            if (msg.type() === "error") console.log("Console error:", msg.text());
-        });
-        page.on("requestfailed", (request) => {
-            console.log("Failed request:", request.url(), request.failure()?.errorText);
-        });
+    test.beforeEach(async ({ page }) => {
         await loginAsAdmin(page);
-        await page.goto(`${BASE_URL}/admin/map`);
-        await page.waitForLoadState("networkidle");
-        await page.screenshot({ path: "admin-map.png" });
-        console.log("Page URL:", page.url());
-        console.log("Page title:", await page.title());
-        await expect(page.locator("text=Map Pin Editor")).toBeVisible({
-            timeout: 30000,
-        });
     });
 
-    /**
-     * Verifies that selecting an empire from the filter dropdown
-     * renders the correct country pins on the map.
-     *
-     * Expected:
-     * No pins visible before an empire is selected
-     * Pins appear after selecting "British" from the dropdown
-     */
+    test("admin map page is accessible after login", async ({ page }) => {
+        await page.goto(`${BASE_URL}/admin/map`);
+        await page.waitForLoadState("networkidle");
+        await expect(page.locator("text=Map Pin Editor")).toBeVisible({ timeout: 30000 });
+        console.log("Admin map page loaded");
+    });
 
     test("empire filter dropdown works and shows pins", async ({ page }) => {
-        await loginAsAdmin(page);
         await page.goto(`${BASE_URL}/admin/map`);
         await page.waitForSelector(".leaflet-container", { timeout: 30000 });
         const pinsBefore = await page.locator(".leaflet-marker-icon").count();
@@ -67,20 +39,6 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
         expect(pinsAfter).toBeGreaterThan(0);
         console.log(`${pinsAfter} pins visible after selecting British`);
     });
-
-    /**
-     * Verifies that dragging a pin persists the updated coordinates
-     * to the database via the PATCH /api/map/countries/:id endpoint.
-     *
-     * This test simulates the drag and drop action by directly calling
-     * the PATCH endpoint since Leaflet drag events cannot be reliably
-     * triggered through Playwright's mouse simulation.
-     *
-     * Expected:
-     * PATCH request returns 200
-     * Updated coordinates are stored in the database
-     * Original coordinates are restored after the test
-     */
 
     test("dragging a pin updates coordinates in database", async ({ request }) => {
         const countriesRes = await request.get(`${API_URL}/api/map/countries?empire=British`);
@@ -106,6 +64,6 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
             data: { coordinates: originalCoordinates },
             headers: { "Content-Type": "application/json" },
         });
-        console.log(` Coordinates restored to: [${originalCoordinates}]`);
+        console.log(`Coordinates restored to: [${originalCoordinates}]`);
     });
 });
