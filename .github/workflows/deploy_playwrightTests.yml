@@ -77,4 +77,6 @@ jobs:
           name: playwright-report
           path: |
             frontend/playwright-report/
+            /tmp/backend.log
+            /tmp/frontend.log
           retention-days: 30
