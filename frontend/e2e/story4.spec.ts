@@ -7,9 +7,38 @@ const API_URL = "http://localhost:3002";
 
 async function loginAsAdmin(page: any) {
     await page.goto(`${BASE_URL}/admin/login`);
+
+    page.on("console", (msg: any) => console.log("BROWSER:", msg.type(), msg.text()));
+
+    page.on("request", (request: any) => {
+        if (request.url().includes("authentication")) {
+            console.log("REQ:", request.method(), request.url());
+            console.log("REQ HEADERS:", JSON.stringify(request.headers()));
+            if (request.postData()) console.log("REQ BODY:", request.postData());
+        }
+    });
+
+    page.on("response", async (response: any) => {
+        if (response.url().includes("authentication")) {
+            console.log("RES STATUS:", response.status(), response.url());
+            console.log("RES HEADERS:", JSON.stringify(response.headers()));
+            try {
+                console.log("RES BODY:", await response.text());
+            } catch (e) {}
+        }
+    });
+
+    page.on("requestfailed", (request: any) => {
+        console.log("FAILED:", request.url(), request.failure()?.errorText);
+    });
+
     await page.locator('input[type="text"]').fill(ADMIN_EMAIL);
     await page.locator('input[type="password"]').fill(ADMIN_PASSWORD);
     await page.getByRole("button", { name: "Sign In" }).click();
+
+    console.log("Clicked sign in, waiting for redirect...");
+    console.log("Current URL before wait:", page.url());
+
     await page.waitForURL(`${BASE_URL}/admin/dashboard`, { timeout: 30000 });
     console.log("Logged in as admin");
 }

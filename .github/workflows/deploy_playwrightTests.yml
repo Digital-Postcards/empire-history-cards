@@ -42,7 +42,7 @@ jobs:
 
       - name: Start backend
         working-directory: ./server
-        run: npm run dev > /tmp/backend.log 2>&1 &
+        run: npx ts-node src/server.ts > /tmp/backend.log 2>&1 &
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           MONGODB_URI: mongodb://localhost:27017/database
@@ -58,7 +58,7 @@ jobs:
         working-directory: ./frontend
         run: npm start > /tmp/frontend.log 2>&1 &
         env:
-          REACT_APP_SERVER_URL: ""
+          REACT_APP_SERVER_URL: http://localhost:3002
 
       - name: Install Playwright browsers
         working-directory: ./frontend
@@ -77,4 +77,6 @@ jobs:
           name: playwright-report
           path: |
             frontend/playwright-report/
+            /tmp/backend.log
+            /tmp/frontend.log
           retention-days: 30
