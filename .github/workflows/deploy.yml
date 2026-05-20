@@ -1,12 +1,16 @@
 name: Digital Humanities Production Deployment
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Playwright Tests"]
+    types:
+      - completed
     branches: ["main"]
 
 jobs:
   deploy-frontend:
     runs-on: [ubuntu]
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
