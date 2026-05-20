@@ -56,15 +56,15 @@ const DEFAULT_FORM_VALUES = {
     themes: [],
 };
 
-// Empire options
-const EMPIRE_OPTIONS = [
-    { id: "british", name: "British" },
-    { id: "french", name: "French" },
-    { id: "ottoman", name: "Ottoman" },
-    { id: "american", name: "American" },
-    { id: "dutch", name: "Dutch" },
-    { id: "other", name: "Other" },
-];
+// // Empire options
+// const EMPIRE_OPTIONS = [
+//     { id: "british", name: "British" },
+//     { id: "french", name: "French" },
+//     { id: "ottoman", name: "Ottoman" },
+//     { id: "american", name: "American" },
+//     { id: "dutch", name: "Dutch" },
+//     { id: "other", name: "Other" },
+// ];
 
 export function UploadCards() {
     // State management
@@ -75,9 +75,16 @@ export function UploadCards() {
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [availableThemes, setAvailableThemes] = useState<ThemeOption[]>([]);
+    const [countries, setCountries] = useState<any[]>([]);
 
     // API hook for fetching themes
     const themesApi = useApi("/themes", { method: "GET" });
+
+    const getCountries = async () => {
+        const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/map/countries`);
+        const data = await res.json();
+        setCountries(data);
+    };
 
     // Fetch themes on component mount
     useEffect(() => {
@@ -95,6 +102,7 @@ export function UploadCards() {
             }
         };
         fetchThemes();
+        getCountries();
     }, []);
 
     // Refs for file inputs
@@ -122,6 +130,11 @@ export function UploadCards() {
         };
     }, [frontImage, backImage, additionalImages]);
 
+    const empireOptions = countries
+        .map((c: any) => c.empire)
+        .filter((empire, index, self: any[]) => empire && self.indexOf(empire) === index)
+        .sort()
+        .map((empire: string) => ({ id: empire.toLowerCase(), name: empire }));
     // Image handlers
     const handleImageChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -453,10 +466,10 @@ export function UploadCards() {
                                 render={({ field, fieldState: { error } }) => (
                                     <Autocomplete
                                         id="empire-select"
-                                        options={EMPIRE_OPTIONS}
+                                        options={empireOptions}
                                         value={
                                             field.value
-                                                ? EMPIRE_OPTIONS.find((option) => option.name === field.value) || null
+                                                ? empireOptions.find((option) => option.name === field.value) || null
                                                 : null
                                         }
                                         getOptionLabel={(option) => option.name}
