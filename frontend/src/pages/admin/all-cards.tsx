@@ -75,15 +75,15 @@ interface CardData {
     }[];
 }
 
-// Empire options
-const EMPIRE_OPTIONS = [
-    { id: "british", name: "British" },
-    { id: "french", name: "French" },
-    { id: "ottoman", name: "Ottoman" },
-    { id: "american", name: "American" },
-    { id: "dutch", name: "Dutch" },
-    { id: "other", name: "Other" },
-];
+// // Empire options
+// const EMPIRE_OPTIONS = [
+//     { id: "british", name: "British" },
+//     { id: "french", name: "French" },
+//     { id: "ottoman", name: "Ottoman" },
+//     { id: "american", name: "American" },
+//     { id: "dutch", name: "Dutch" },
+//     { id: "other", name: "Other" },
+// ];
 
 export const AllCards = () => {
     // State for cards data
@@ -121,6 +121,7 @@ export const AllCards = () => {
     // State for image rotations in edit modal
     const [imageOrientations, setImageOrientations] = useState<{ [key: string]: number }>({});
     const [hasRotationChanges, setHasRotationChanges] = useState<boolean>(false);
+    const [countries, setCountries] = useState<any[]>([]);
 
     // API hooks
     const cardsApi = useApi("/cards", { method: "GET" });
@@ -168,12 +169,23 @@ export const AllCards = () => {
             console.error("Error fetching themes:", error);
         }
     };
-
+    const getCountries = async () => {
+        const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/map/countries`);
+        const data = await res.json();
+        setCountries(data);
+    };
     // Load initial data
     useEffect(() => {
         fetchCards();
         fetchThemes();
+        getCountries();
     }, []);
+
+    const empireOptions = countries
+        .map((c: any) => c.empire)
+        .filter((empire, index, self: any[]) => empire && self.indexOf(empire) === index)
+        .sort()
+        .map((empire: string) => ({ id: empire.toLowerCase(), name: empire }));
 
     // Handle pagination changes
     const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -718,12 +730,11 @@ export const AllCards = () => {
                                         render={({ field, fieldState: { error } }) => (
                                             <Autocomplete
                                                 id="empire-select"
-                                                options={EMPIRE_OPTIONS}
+                                                options={empireOptions}
                                                 value={
                                                     field.value
-                                                        ? EMPIRE_OPTIONS.find(
-                                                              (option) => option.name === field.value,
-                                                          ) || null
+                                                        ? empireOptions.find((option) => option.name === field.value) ||
+                                                          null
                                                         : null
                                                 }
                                                 getOptionLabel={(option) => option.name}
