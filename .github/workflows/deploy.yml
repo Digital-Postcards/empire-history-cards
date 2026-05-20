@@ -57,7 +57,9 @@ jobs:
 
           echo "::group::Deploying to production"
           echo "Copying frontend files to production directory..."
-          sudo -S cp -r build/* /var/www/digitalhum || { echo "Failed to copy files to production directory"; exit 1; }
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S cp -r build/* /var/www/digitalhum
+          echo "Frontend deployment completed."
+          echo "${{ secrets.SERVER_SSH_PASSWORD }}" | sudo -S cp -r build/* /var/www/digitalhum || { echo "Failed to copy files to production directory"; exit 1; }
           echo "Frontend deployment completed successfully"
           echo "::endgroup::"
 
