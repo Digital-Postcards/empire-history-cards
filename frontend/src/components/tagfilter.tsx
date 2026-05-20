@@ -23,9 +23,9 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
         return formattedOptions;
     };
 
-    const onChange = (option: readonly Option[]) => {
+    const onChange = (option: Option | null) => {
         if (props?.setFilterTags) {
-            const valuesArray = option.map((option: Option) => option.value);
+            const valuesArray = option ? [option.value] : [];
             props?.setFilterTags(valuesArray);
         }
     };
@@ -51,7 +51,6 @@ const TagFilter = (props: { filterOptions?: FilterItemProps; setFilterTags?: Dis
             {error && <p>Some error happened</p>}
             {!error && (
                 <AsyncSelect
-                    isMulti
                     cacheOptions={true}
                     defaultOptions
                     name="colors"
