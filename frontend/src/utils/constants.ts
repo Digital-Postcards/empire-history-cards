@@ -150,6 +150,17 @@ const ABOUT_PAGE_CONTENT = {
                 // google_scholar: "",
             },
         },
+        {
+            imageURL: "/images/about/Shweta.jpeg",
+            name: "Shweta Hooli",
+            role: "MSCY Student",
+            links: {
+                website: "https://github.com/sho29",
+                linkedin: "https://www.linkedin.com/in/shweta-hooli/",
+                email: "shwetahooli29@gmail.com",
+                // google_scholar: "",
+            },
+        },
     ],
 };
 
