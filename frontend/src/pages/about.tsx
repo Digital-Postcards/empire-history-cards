@@ -24,6 +24,11 @@ const About = () => {
                     imageURL="/images/about/history_team_2025.jpeg"
                     caption="In 2025, Arefa Khajanchi, Kay Reed, and Madison Moran worked on the project, analyzing postcards from the French, Dutch, and British empires."
                 />
+                <CardLookalikeWithImage
+                    rotate="-rotate-2"
+                    imageURL="/images/about/history_team_2026.jpeg"
+                    caption="In Spring 2026, TCNJ history majors Kayla Easton and Alex Stolz worked on the postcards and tradecards."
+                />
             </div>
             <p className="mt-12 text-justify" dangerouslySetInnerHTML={{ __html: ABOUT_PAGE_CONTENT.paragraph4 }} />
             <TeamSection teamMembers={ABOUT_PAGE_CONTENT.csTeam} />
