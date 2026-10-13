@@ -1,95 +1,92 @@
 import CardModel from "../models/card";
 import ImageModel from "../models/image";
 import TagModel from "../models/tag";
-import CountryModel from "../models/country";
+
+// Which fields mongo should return, e.g. { _id: true, item: true } or { _id: 1 }.
+type Projection = Record<string, boolean | 0 | 1>;
+
+// Front images are the ones whose filename ends in 'A' -- 1000A.jpeg is the
+// front of card 1000, 1000B.jpeg the back.
+function pickFrontImages(imageLinks: any) {
+  return (
+    imageLinks?.filter((image: any) => {
+      const link = image.link || "";
+      return /\/[^\/]*A\.(jpe?g|png)$/i.test(link);
+    }) || []
+  );
+}
+
+// The trimmed down card the scrapbook page renders: a description preview and
+// one front image.
+function toScrapbookCard(card: any) {
+  const frontImages = pickFrontImages(card?.imageLinks);
+  return {
+    _id: card?._id,
+    item: card?.item,
+    description: card?.description
+      ? card.description.slice(0, 300).trim() + "..."
+      : "",
+    themes: card?.themes?.map((theme: any) => theme?.name) || [],
+    image: frontImages[0]?.link ? "/public" + frontImages[0].link : "",
+  };
+}
+
+// The full card, with populated themes flattened back down to plain names.
+function toCardDto(card: any) {
+  return {
+    ...card?._doc,
+    themes: card?._doc?.themes?.map((item: any) => item?.name) || [],
+  };
+}
 
 export default class CardService {
-  public async getCardsByFilter(query: any, projection?: any) {
-    const {
-      type,
-      year,
-      withTags,
-      isInScrapbook,
-      originalLocation,
-      empire,
-      page = 1,
-      limit = 20,
-      isPopulate = true,
-    } = query;
+  public async getCardsByFilter(query: any, projection?: Projection) {
+    const { isPopulate = true } = query;
+    const _query = await this.buildCardFilter(query);
+    const cards = await this.findCards(_query, projection, isPopulate);
+    return cards.map(toCardDto);
+  }
+
+  public async getScrapbookCards(projection: Projection) {
+    const _query = await this.buildCardFilter({ isInScrapbook: true });
+    const cards = await this.findCards(_query, projection, true);
+    return cards.map(toScrapbookCard);
+  }
+
+  // Turns the query string filters into a single mongo filter object.
+  private async buildCardFilter(filters: any) {
+    const { type, year, withTags, isInScrapbook, originalLocation } = filters;
     const _query: any = {};
 
     if (type) _query.item = type;
     if (year) _query.date = { $regex: year };
     if (isInScrapbook) _query.isInScrapbook = isInScrapbook;
     if (originalLocation) _query.originalLocation = originalLocation;
-    if (empire) {
-      // get all countries for this empire
-      const empirecountries = await CountryModel.find({ empire });
-      const countryNames = empirecountries.map((c) => c.name);
-
-      // find cards by empire OR by country
-      _query.$or = [{ empire: empire }, { country: { $in: countryNames } }];
-    }
-    let cards;
     if (withTags) {
-      // Handle theme filtering using aggregation pipeline
-      const themeNames = Array.isArray(withTags) ? withTags : [withTags];
-      const themeNamesDecoded = themeNames.map((name) =>
-        decodeURIComponent(name),
-      );
-
-      // First, find the theme IDs for the given names
-      const themes = await TagModel.find({ name: { $in: themeNamesDecoded } });
-      const themeIds = themes.map((theme) => theme._id);
-
-      // Then find cards that have all the specified themes
-      _query.themes = { $all: themeIds };
-
-      if (!isPopulate) {
-        cards = await CardModel.find(_query, projection);
-      } else {
-        cards = await CardModel.find(_query, projection).populate(
-          "themes imageLinks",
-        );
-      }
-    } else {
-      // Regular query without theme filtering
-      if (!isPopulate) {
-        cards = await CardModel.find(_query, projection);
-      } else {
-        cards = await CardModel.find(_query, projection).populate(
-          "themes imageLinks",
-        );
-      }
+      // cards store theme ids, so the names have to be looked up first
+      _query.themes = { $all: await this.resolveThemeIds(withTags) };
     }
 
-    if (isInScrapbook) {
-      let cardsForScrapBook: any = [];
-      cards.forEach((card: any) => {
-        // Filter imageLinks to only include front images (those ending with 'A')
-        const frontImages =
-          card?.imageLinks?.filter((image: any) => {
-            const link = image.link || "";
-            return /\/[^\/]*A\.(jpe?g|png)$/i.test(link);
-          }) || [];
+    return _query;
+  }
 
-        cardsForScrapBook.push({
-          _id: card?._id,
-          item: card?.item,
-          description: card?.description
-            ? card.description.slice(0, 300).trim() + "..."
-            : "",
-          themes: card?.themes?.map((theme: any) => theme?.name) || [],
-          image: frontImages[0]?.link ? "/public" + frontImages[0].link : "",
-        });
-      });
-      return cardsForScrapBook;
-    }
+  // Theme names off the query string  the tag ids that cards actually store.
+  private async resolveThemeIds(withTags: string | string[]) {
+    const themeNames = Array.isArray(withTags) ? withTags : [withTags];
+    const themeNamesDecoded = themeNames.map((name) =>
+      decodeURIComponent(name),
+    );
+    const themes = await TagModel.find({ name: { $in: themeNamesDecoded } });
+    return themes.map((theme) => theme._id);
+  }
 
-    return cards.map((card: any) => ({
-      ...card?._doc,
-      themes: card?._doc?.themes?.map((item: any) => item?.name) || [],
-    }));
+  private async findCards(
+    _query: any,
+    projection: Projection | undefined,
+    isPopulate: boolean,
+  ) {
+    if (!isPopulate) return CardModel.find(_query, projection);
+    return CardModel.find(_query, projection).populate("themes imageLinks");
   }
 
   public async getCardById(id: string) {
@@ -187,7 +184,7 @@ export default class CardService {
         imageLinks: imageLinks,
         themes: themeIds,
       });
-
+      // temporary structure, catch themes? if save is done store in db
       const savedCard = await card.save();
 
       return {

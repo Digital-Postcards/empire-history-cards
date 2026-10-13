@@ -34,16 +34,13 @@ export class CardController {
 
   async getCardsForScrapbook(req: Request, res: Response, next: NextFunction) {
     try {
-      const cards = await this.cardService.getCardsByFilter(
-        { isInScrapbook: true },
-        {
-          _id: true,
-          item: true,
-          description: true,
-          imageLinks: true,
-          themes: true,
-        }
-      );
+      const cards = await this.cardService.getScrapbookCards({
+        _id: true,
+        item: true,
+        description: true,
+        imageLinks: true,
+        themes: true,
+      });
       res.status(200).json(cards);
     } catch (error) {
       res.status(400).json({ message: (error as Error).message });
