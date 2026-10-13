@@ -1,16 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "commonjs",                                /* Specify what module code is generated (CommonJS for Node.js). */
-    "rootDir": "./src",                                  /* Specify the root folder for your source TypeScript files. */
-    "outDir": "./dist",                                  /* Specify an output folder for all emitted JavaScript files. */
-    "esModuleInterop": true,                             /* Enable interop between CommonJS and ES Modules (necessary for imports/exports). */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
-    "strict": true,                                      /* Enable all strict type-checking options. */
+    "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "module": "commonjs" /* Specify what module code is generated (CommonJS for Node.js). */,
+    "rootDir": "./src" /* Specify the root folder for your source TypeScript files. */,
+    "types": ["jest", "node"],
+    "outDir": "./dist" /* Specify an output folder for all emitted JavaScript files. */,
+    "esModuleInterop": true /* Enable interop between CommonJS and ES Modules (necessary for imports/exports). */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "strict": true /* Enable all strict type-checking options. */,
     "skipLibCheck": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true                                /* Skip type checking of declaration files to speed up compilation. */
+    "emitDecoratorMetadata": true /* Skip type checking of declaration files to speed up compilation. */
   },
-  "include": ["src/**/*.ts"],                            /* Specify which files to include for compilation (all .ts files in the src directory). */
-  "exclude": ["node_modules"]                            /* Exclude the node_modules directory from compilation. */
+  "include": [
+    "src/**/*.ts"
+  ] /* Specify which files to include for compilation (all .ts files in the src directory). */,
+  "exclude": [
+    "node_modules"
+  ] /* Exclude the node_modules directory from compilation. */
 }
