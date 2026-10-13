@@ -1,7 +1,14 @@
 import { Request, Response } from 'express';
-import ImageModel from '../models/image';
+import ImageService from '../services/image';
 
 export class ImageController {
+  private imageService = new ImageService();
+
+  constructor() {
+    this.getImage = this.getImage.bind(this);
+    this.updateOrientation = this.updateOrientation.bind(this);
+  }
+
   /**
    * Update the orientation of an image
    * @param req Request with image ID and new orientation value
@@ -11,16 +18,15 @@ export class ImageController {
     try {
       const { id } = req.params;
       const { orientation } = req.body;
-      
+
       if (!orientation && orientation !== 0) {
         res.status(400).json({ error: 'Orientation value is required' });
         return;
       }
 
-      const updatedImage = await ImageModel.findByIdAndUpdate(
+      const updatedImage = await this.imageService.updateImageOrientation(
         id,
-        { orientation },
-        { new: true }
+        orientation,
       );
 
       if (!updatedImage) {
@@ -43,8 +49,8 @@ export class ImageController {
   public async getImage(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      
-      const image = await ImageModel.findById(id);
+
+      const image = await this.imageService.getImageById(id);
 
       if (!image) {
         res.status(404).json({ error: 'Image not found' });
