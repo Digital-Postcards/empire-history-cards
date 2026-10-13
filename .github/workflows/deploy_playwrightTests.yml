@@ -5,7 +5,13 @@ on:
     branches: ["main"]
 
 jobs:
+  # Run the Jest suite first (jest_tests.yml). If it fails, the Playwright job
+  # below never starts and this whole run fails, so deploy.yml won't deploy.
+  jest:
+    uses: ./.github/workflows/jest_tests.yml
+
   test:
+    needs: jest
     runs-on: ubuntu-latest
 
     services:

@@ -1,0 +1,42 @@
+name: Jest Tests
+# Runs on every pull request. On pushes to main it is called by
+# deploy_playwrightTests.yml (workflow_call), which only runs Playwright if
+# this passes -- so there's no separate push trigger here, to avoid running twice.
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "server/package-lock.json"
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: ./server
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        working-directory: ./server
+        run: npm test -- --ci
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: server-coverage
+          path: server/coverage/
+          retention-days: 30
