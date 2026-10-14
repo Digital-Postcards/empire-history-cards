@@ -4,7 +4,8 @@
 // The newer blocks below instead back UserModel with a small in-memory store
 // whose findOne mirrors how mongoose 8 really resolves these filters against
 // this schema (verified against a live mongo), so the assertions are toEqual
-// on what comes back or on what ended up stored.
+// on what comes back or on what ended up stored. bcrypt is the real library,
+// so hashing assertions check that the stored hash actually verifies.
 //
 // getUserById
 //  1. a valid ObjectId found by findById is returned, findOne never called
@@ -31,9 +32,56 @@
 // 18. silently does nothing for a case-mismatched email
 // 19. touches no user when the email is undefined
 // 20. propagates a db error, which is what can block a valid login
+//
+// getAllUsers
+// 21. returns every user, newest createdAt first
+// 22. returns an empty list when there are no users
+// 23. propagates a db error
+//
+// createUser
+// 24. stores a bcrypt hash that verifies, never the plain password
+// 25. returns the saved user
+// 26. overwrites the caller's userData.password with the hash
+// 27. rejects a user with no password (schema requires one), stores nothing
+// 28. rejects a duplicate email (unique index), stores nothing
+//
+// updateUser
+// 29. updates the user found by ObjectId and returns it
+// 30. hashes a new password before storing it
+// 31. leaves the stored password alone when none is sent
+// 32. falls back to the custom id field for a non-ObjectId id
+// 33. returns null and changes nobody when nothing matches
+// 34. propagates a db error
+//
+// deleteUser
+// 35. deletes the user found by ObjectId and returns true
+// 36. falls back to the custom id field for a non-ObjectId id
+// 37. returns false and deletes nobody when nothing matches
+// 38. an undefined id deletes an arbitrary user
+// 39. a null id deletes an arbitrary user
+// 40. propagates a db error
+//
+// changeUserRole
+// 41. changes the role of the user found by ObjectId
+// 42. falls back to the custom id field for a non-ObjectId id
+// 43. returns null and changes nobody when nothing matches
+// 44. stores a role outside UserRole, since updates skip schema validation
+// 45. propagates a db error
+//
+// verifyPassword
+// 46. true for the right password
+// 47. false for the wrong password
+// 48. false against a plain-text stored password
+//
+// migratePasswords
+// 49. hashes plain-text passwords and counts them as successes
+// 50. leaves $2b$ hashes untouched and doesn't count them
+// 51. counts a user with no password as failed and still migrates the rest
+// 52. re-hashes a valid $2a$ bcrypt hash, locking that user out
 
+import bcrypt from "bcrypt";
 import UserService from "../../../services/user";
-import UserModel from "../../../models/user";
+import UserModel, { UserRole } from "../../../models/user";
 
 jest.mock("../../../models/user");
 
@@ -104,6 +152,9 @@ describe("UserService.getUserById", () => {
 
 const ALICE_ID = "507f191e810c19729de860ea";
 const BOB_ID = "507f1f77bcf86cd799439011";
+const LEGACY_ID = "5f50c31e1c4ae5a1b4f0e1a7";
+// A well-formed ObjectId that no stored user has.
+const MISSING_ID = "507f1f77bcf86cd799439099";
 
 let usersDb: any[];
 
@@ -117,6 +168,7 @@ function freshUsers() {
       lastname: "Anderson",
       role: "manager",
       lastLogin: new Date("2020-01-01T00:00:00.000Z"),
+      createdAt: new Date("2019-01-01T00:00:00.000Z"),
     },
     {
       _id: BOB_ID,
@@ -126,8 +178,25 @@ function freshUsers() {
       lastname: "Brown",
       role: "super-admin",
       lastLogin: new Date("2020-01-01T00:00:00.000Z"),
+      createdAt: new Date("2021-01-01T00:00:00.000Z"),
     },
   ];
+}
+
+// A user stored with a custom `id` field. The schema doesn't declare one, but
+// mongoose 8 still filters on it, so `{ id: "legacy-7" }` matches this user.
+function legacyUser() {
+  return {
+    _id: LEGACY_ID,
+    id: "legacy-7",
+    email: "legacy@example.com",
+    password: "$2b$10$legacyHashedPassword",
+    firstname: "Lee",
+    lastname: "Gacy",
+    role: "manager",
+    lastLogin: new Date("2020-01-01T00:00:00.000Z"),
+    createdAt: new Date("2020-01-01T00:00:00.000Z"),
+  };
 }
 
 function findOneFake(filter: any) {
@@ -136,12 +205,64 @@ function findOneFake(filter: any) {
     if (wanted === undefined || wanted === null) return null;
     return usersDb.find((u) => u.email === wanted) ?? null;
   }
+  // An undefined or null id matches users that have no id field, so the first
+  // one in the collection comes back.
   if ("id" in filter) {
     if (filter.id === undefined || filter.id === null)
       return usersDb[0] ?? null;
-    return null;
+    return usersDb.find((u) => u.id === filter.id) ?? null;
+  }
+  if ("_id" in filter) {
+    return usersDb.find((u) => u._id === String(filter._id)) ?? null;
   }
   return usersDb[0] ?? null;
+}
+
+// UserModel.find() returns a query that can either be awaited directly
+// (migratePasswords) or chained with .sort() first (getAllUsers).
+function findFake() {
+  const docs = [...usersDb];
+  return {
+    sort: async (spec: Record<string, number>) => {
+      const [[key, direction]] = Object.entries(spec);
+      return docs.sort((a, b) => (a[key] - b[key]) * direction);
+    },
+    then: (resolve: any, reject: any) =>
+      Promise.resolve(docs).then(resolve, reject),
+  };
+}
+
+// What `new UserModel(doc).save()` does: the schema requires a password and
+// the email has a unique index; anything else is stored with a new _id.
+function newUserFake(doc: any) {
+  return {
+    ...doc,
+    save: async () => {
+      if (!doc.password) {
+        const err = new Error(
+          "IUser validation failed: password: Path `password` is required.",
+        );
+        err.name = "ValidationError";
+        throw err;
+      }
+      if (usersDb.some((u) => u.email === doc.email)) {
+        throw new Error(
+          "E11000 duplicate key error collection: database.iusers index: email_1",
+        );
+      }
+      const saved = { ...doc, _id: `new-user-${usersDb.length + 1}` };
+      usersDb.push(saved);
+      return saved;
+    },
+  };
+}
+
+// findByIdAndUpdate / findOneAndUpdate with { new: true }: apply $set to the
+// matched user and hand back the updated user, or null if nothing matched.
+function applyUpdate(target: any, update: any) {
+  if (!target) return null;
+  Object.assign(target, update.$set);
+  return target;
 }
 
 function installUserMocks() {
@@ -163,7 +284,32 @@ function installUserMocks() {
       return { matchedCount: 1, modifiedCount: 1 };
     },
   );
+
+  (UserModel.find as unknown as jest.Mock).mockImplementation(findFake);
+
+  (UserModel as unknown as jest.Mock).mockImplementation(newUserFake);
+
+  (UserModel.findByIdAndUpdate as unknown as jest.Mock).mockImplementation(
+    async (id: any, update: any) =>
+      applyUpdate(usersDb.find((u) => u._id === String(id)), update),
+  );
+
+  (UserModel.findOneAndUpdate as unknown as jest.Mock).mockImplementation(
+    async (filter: any, update: any) =>
+      applyUpdate(findOneFake(filter), update),
+  );
+
+  (UserModel.deleteOne as unknown as jest.Mock).mockImplementation(
+    async (filter: any) => {
+      const target = findOneFake(filter);
+      if (!target) return { acknowledged: true, deletedCount: 0 };
+      usersDb = usersDb.filter((u) => u !== target);
+      return { acknowledged: true, deletedCount: 1 };
+    },
+  );
 }
+
+const emailsInDb = () => usersDb.map((u) => u.email);
 
 describe("UserService.getUserById - outliers", () => {
   let userService: UserService;
@@ -301,5 +447,360 @@ describe("UserService.updateLastLogin", () => {
     await expect(
       userService.updateLastLogin("alice@example.com"),
     ).rejects.toThrow("write failed");
+  });
+});
+
+describe("UserService.getAllUsers", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+    jest.clearAllMocks();
+    installUserMocks();
+  });
+
+  it("returns every user, newest createdAt first", async () => {
+    usersDb.push(legacyUser());
+
+    const result = await userService.getAllUsers();
+
+    expect(result.map((u) => u.email)).toEqual([
+      "bob@example.com",
+      "legacy@example.com",
+      "alice@example.com",
+    ]);
+  });
+
+  it("returns an empty list when there are no users", async () => {
+    usersDb = [];
+
+    const result = await userService.getAllUsers();
+
+    expect(result).toEqual([]);
+  });
+
+  it("propagates a db error", async () => {
+    (UserModel.find as unknown as jest.Mock).mockImplementation(() => ({
+      sort: async () => {
+        throw new Error("db down");
+      },
+    }));
+
+    await expect(userService.getAllUsers()).rejects.toThrow("db down");
+  });
+});
+
+describe("UserService.createUser", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+    jest.clearAllMocks();
+    installUserMocks();
+  });
+
+  it("stores a bcrypt hash that verifies, never the plain password", async () => {
+    await userService.createUser({
+      email: "carol@example.com",
+      password: "carol-password",
+    });
+
+    const stored = usersDb.find((u) => u.email === "carol@example.com");
+    expect(stored.password).not.toEqual("carol-password");
+    expect(await bcrypt.compare("carol-password", stored.password)).toBe(true);
+  });
+
+  it("returns the saved user", async () => {
+    const result = await userService.createUser({
+      email: "carol@example.com",
+      password: "carol-password",
+    });
+
+    expect(result).toEqual(usersDb.find((u) => u.email === "carol@example.com"));
+  });
+
+  it("overwrites the caller's userData.password with the hash", async () => {
+    const userData = { email: "carol@example.com", password: "carol-password" };
+
+    await userService.createUser(userData);
+
+    expect(userData.password).not.toEqual("carol-password");
+    expect(await bcrypt.compare("carol-password", userData.password)).toBe(true);
+  });
+
+  it("rejects a user with no password, since the schema requires one, and stores nothing", async () => {
+    await expect(
+      userService.createUser({ email: "carol@example.com" }),
+    ).rejects.toThrow("Path `password` is required");
+
+    expect(emailsInDb()).toEqual(["alice@example.com", "bob@example.com"]);
+  });
+
+  it("rejects a duplicate email and stores nothing", async () => {
+    await expect(
+      userService.createUser({
+        email: "alice@example.com",
+        password: "another-password",
+      }),
+    ).rejects.toThrow("E11000 duplicate key error");
+
+    expect(emailsInDb()).toEqual(["alice@example.com", "bob@example.com"]);
+  });
+});
+
+describe("UserService.updateUser", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+    jest.clearAllMocks();
+    installUserMocks();
+  });
+
+  it("updates the user found by ObjectId and returns it", async () => {
+    const result = await userService.updateUser(ALICE_ID, {
+      firstname: "Alicia",
+    });
+
+    expect(result).toEqual({ ...freshUsers()[0], firstname: "Alicia" });
+    expect(usersDb[0].firstname).toEqual("Alicia");
+  });
+
+  it("hashes a new password before storing it", async () => {
+    await userService.updateUser(ALICE_ID, { password: "new-password" });
+
+    expect(usersDb[0].password).not.toEqual("new-password");
+    expect(await bcrypt.compare("new-password", usersDb[0].password)).toBe(true);
+  });
+
+  it("leaves the stored password alone when none is sent", async () => {
+    await userService.updateUser(ALICE_ID, { firstname: "Alicia" });
+
+    expect(usersDb[0].password).toEqual("$2b$10$aliceHashedPassword");
+  });
+
+  it("falls back to the custom id field for a non-ObjectId id", async () => {
+    usersDb.push(legacyUser());
+
+    const result = await userService.updateUser("legacy-7", {
+      firstname: "Leo",
+    });
+
+    expect(result).toEqual({ ...legacyUser(), firstname: "Leo" });
+  });
+
+  it("returns null and changes nobody when nothing matches", async () => {
+    const result = await userService.updateUser(MISSING_ID, {
+      firstname: "Ghost",
+    });
+
+    expect(result).toBeNull();
+    expect(usersDb).toEqual(freshUsers());
+  });
+
+  it("propagates a db error", async () => {
+    (UserModel.findByIdAndUpdate as unknown as jest.Mock).mockRejectedValue(
+      new Error("db down"),
+    );
+
+    await expect(
+      userService.updateUser(ALICE_ID, { firstname: "Alicia" }),
+    ).rejects.toThrow("db down");
+  });
+});
+
+describe("UserService.deleteUser", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+    jest.clearAllMocks();
+    installUserMocks();
+  });
+
+  it("deletes the user found by ObjectId and returns true", async () => {
+    const result = await userService.deleteUser(ALICE_ID);
+
+    expect(result).toBe(true);
+    expect(emailsInDb()).toEqual(["bob@example.com"]);
+  });
+
+  it("falls back to the custom id field for a non-ObjectId id", async () => {
+    usersDb.push(legacyUser());
+
+    const result = await userService.deleteUser("legacy-7");
+
+    expect(result).toBe(true);
+    expect(emailsInDb()).toEqual(["alice@example.com", "bob@example.com"]);
+  });
+
+  it("returns false and deletes nobody when nothing matches", async () => {
+    const result = await userService.deleteUser(MISSING_ID);
+
+    expect(result).toBe(false);
+    expect(emailsInDb()).toEqual(["alice@example.com", "bob@example.com"]);
+  });
+
+  // deleteOne({ id: undefined }) matches any user without an id field, so a
+  // missing id deletes whoever comes first instead of nobody.
+  it("deletes an arbitrary user when the id is undefined", async () => {
+    const result = await userService.deleteUser(undefined as any);
+
+    expect(result).toBe(true);
+    expect(emailsInDb()).toEqual(["bob@example.com"]);
+  });
+
+  it("deletes an arbitrary user when the id is null", async () => {
+    const result = await userService.deleteUser(null as any);
+
+    expect(result).toBe(true);
+    expect(emailsInDb()).toEqual(["bob@example.com"]);
+  });
+
+  it("propagates a db error", async () => {
+    (UserModel.deleteOne as unknown as jest.Mock).mockRejectedValue(
+      new Error("db down"),
+    );
+
+    await expect(userService.deleteUser(ALICE_ID)).rejects.toThrow("db down");
+  });
+});
+
+describe("UserService.changeUserRole", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+    jest.clearAllMocks();
+    installUserMocks();
+  });
+
+  it("changes the role of the user found by ObjectId", async () => {
+    const result = await userService.changeUserRole(
+      ALICE_ID,
+      UserRole.SUPER_ADMIN,
+    );
+
+    expect(result).toEqual({ ...freshUsers()[0], role: "super_admin" });
+  });
+
+  it("falls back to the custom id field for a non-ObjectId id", async () => {
+    usersDb.push(legacyUser());
+
+    const result = await userService.changeUserRole(
+      "legacy-7",
+      UserRole.SUPER_ADMIN,
+    );
+
+    expect(result).toEqual({ ...legacyUser(), role: "super_admin" });
+  });
+
+  it("returns null and changes nobody when nothing matches", async () => {
+    const result = await userService.changeUserRole(
+      MISSING_ID,
+      UserRole.SUPER_ADMIN,
+    );
+
+    expect(result).toBeNull();
+    expect(usersDb).toEqual(freshUsers());
+  });
+
+  // findByIdAndUpdate doesn't run schema validators unless asked to, so the
+  // role enum isn't enforced here.
+  it("stores a role outside UserRole, since updates skip schema validation", async () => {
+    await userService.changeUserRole(ALICE_ID, "owner" as UserRole);
+
+    expect(usersDb[0].role).toEqual("owner");
+  });
+
+  it("propagates a db error", async () => {
+    (UserModel.findByIdAndUpdate as unknown as jest.Mock).mockRejectedValue(
+      new Error("db down"),
+    );
+
+    await expect(
+      userService.changeUserRole(ALICE_ID, UserRole.SUPER_ADMIN),
+    ).rejects.toThrow("db down");
+  });
+});
+
+describe("UserService.verifyPassword", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+  });
+
+  it("returns true for the right password", async () => {
+    const hash = await bcrypt.hash("right-password", 10);
+
+    expect(await userService.verifyPassword("right-password", hash)).toBe(true);
+  });
+
+  it("returns false for the wrong password", async () => {
+    const hash = await bcrypt.hash("right-password", 10);
+
+    expect(await userService.verifyPassword("wrong-password", hash)).toBe(false);
+  });
+
+  it("returns false against a plain-text stored password, even an identical one", async () => {
+    expect(
+      await userService.verifyPassword("plain-password", "plain-password"),
+    ).toBe(false);
+  });
+});
+
+describe("UserService.migratePasswords", () => {
+  let userService: UserService;
+
+  beforeEach(() => {
+    userService = new UserService();
+    jest.clearAllMocks();
+    installUserMocks();
+  });
+
+  it("hashes plain-text passwords and counts them as successes", async () => {
+    usersDb.push({ _id: "carol-id", email: "carol@example.com", password: "carol-plain" });
+
+    const result = await userService.migratePasswords();
+
+    expect(result).toEqual({ success: 1, failed: 0 });
+    expect(await bcrypt.compare("carol-plain", usersDb[2].password)).toBe(true);
+  });
+
+  it("leaves $2b$ hashes untouched and doesn't count them", async () => {
+    const result = await userService.migratePasswords();
+
+    expect(result).toEqual({ success: 0, failed: 0 });
+    expect(usersDb).toEqual(freshUsers());
+  });
+
+  it("counts a user with no password as failed and still migrates the rest", async () => {
+    usersDb.push(
+      { _id: "nopassword-id", email: "nopassword@example.com" },
+      { _id: "carol-id", email: "carol@example.com", password: "carol-plain" },
+    );
+
+    const result = await userService.migratePasswords();
+
+    expect(result).toEqual({ success: 1, failed: 1 });
+    expect(await bcrypt.compare("carol-plain", usersDb[3].password)).toBe(true);
+  });
+
+  // Only "$2b$" counts as already hashed, but "$2a$" (older bcrypt libraries)
+  // is just as valid. Hashing that hash again means the real password stops
+  // working.
+  it("re-hashes a valid $2a$ bcrypt hash, locking that user out", async () => {
+    const twoAHash = (await bcrypt.hash("carol-password", 10)).replace(
+      /^\$2b\$/,
+      "$2a$",
+    );
+    expect(await bcrypt.compare("carol-password", twoAHash)).toBe(true);
+    usersDb.push({ _id: "carol-id", email: "carol@example.com", password: twoAHash });
+
+    const result = await userService.migratePasswords();
+
+    expect(result).toEqual({ success: 1, failed: 0 });
+    expect(await bcrypt.compare("carol-password", usersDb[2].password)).toBe(false);
   });
 });
