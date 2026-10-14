@@ -1,9 +1,8 @@
 name: Jest Tests
-# Runs on every pull request. On pushes to main it is called by
-# deploy_playwrightTests.yml (workflow_call), which only runs Playwright if
-# this passes -- so there's no separate push trigger here, to avoid running twice.
+# Doesn't run on its own. On pushes to main (including merged PRs) it is called
+# by deploy_playwrightTests.yml (workflow_call), which only runs Playwright if
+# this passes.
 on:
-  pull_request:
   workflow_call:
 
 jobs:
