@@ -310,7 +310,11 @@ describe("loggerMiddleware: who the entry is attributed to", () => {
   // The cookie is read with jwt.decode, which doesn't check the signature.
   it("records whoever a forged token names, even though authenticate rejected it", async () => {
     const forged = jwt.sign(
-      { userId: ADMIN_ID, username: "admin@example.com", userRole: "super_admin" },
+      {
+        userId: ADMIN_ID,
+        username: "admin@example.com",
+        userRole: "super_admin",
+      },
       "not-the-real-secret",
     );
 
@@ -358,7 +362,8 @@ describe("loggerMiddleware: action and information text", () => {
 
     expect(lastEntry()).toMatchObject({
       action: "admin@example.com created a new user",
-      information: "admin@example.com created new manager user: new@example.com",
+      information:
+        "admin@example.com created new manager user: new@example.com",
     });
   });
 
@@ -576,9 +581,6 @@ describe("loggerMiddleware: what the entry records", () => {
   });
 });
 
-// index.ts mounts every router with app.use("/api/...", router). Inside the
-// router, Express strips the mount path from req.url, and that's when the
-// response ends and the logger reads req.path.
 describe("loggerMiddleware: router-mounted routes", () => {
   const mountedApp = express();
   mountedApp.use(express.json());
@@ -621,7 +623,12 @@ describe("generateCurlCommand", () => {
     return logEntry("log_1", {
       method: "POST",
       path: "/api/cards",
-      requestDetails: { headers: {}, body: {}, queryParams: {}, ...requestDetails },
+      requestDetails: {
+        headers: {},
+        body: {},
+        queryParams: {},
+        ...requestDetails,
+      },
       ...overrides,
     });
   }
@@ -716,9 +723,12 @@ describe("generateCurlCommand", () => {
   });
 
   it("sends a JSON or untyped body with -d, passwords redacted", () => {
-    const body = { email: "a@example.com", password: "p", confirmPassword: "p" };
-    const sent =
-      `  -d '{"email":"a@example.com","password":"[REDACTED]","confirmPassword":"[REDACTED]"}'`;
+    const body = {
+      email: "a@example.com",
+      password: "p",
+      confirmPassword: "p",
+    };
+    const sent = `  -d '{"email":"a@example.com","password":"[REDACTED]","confirmPassword":"[REDACTED]"}'`;
 
     expect(
       generateCurlCommand(

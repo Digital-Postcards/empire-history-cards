@@ -13,5 +13,9 @@ process.env.SECRET_KEY = "test-secret";
 
 // utils/fileUpload.ts throws at import time if this is unset, which breaks
 // every integration test that imports the app. Points at a temp dir so tests
-// never write into the real images directory.
-process.env.IMAGES_DIR = path.join(os.tmpdir(), "empire-history-cards-test-images");
+// never write into the real images directory. Set TEST_IMAGES_DIR to use a
+// folder of your choice instead (e.g. to keep uploaded files around as proof).
+process.env.IMAGES_DIR =
+  "/Users/shwetahooli/Desktop/empire-history-cards/testing";
+process.env.TEST_IMAGES_DIR ||
+  path.join(os.tmpdir(), "empire-history-cards-test-images");
