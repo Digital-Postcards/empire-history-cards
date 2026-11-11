@@ -18,6 +18,7 @@ import { Camera, Eye, EyeOff, Save, X } from "lucide-react";
 import { ApplicationContext } from "../../contexts/ApplicationContext";
 import { API_URL } from "../../utils/constants";
 import { userService } from "../../services/userService";
+import { getPasswordError, PASSWORD_HINT } from "../../utils/passwordRules";
 import actions from "../../utils/actions";
 
 export default function SettingsPage() {
@@ -130,8 +131,9 @@ export default function SettingsPage() {
 
         // Only validate password if user is trying to change it
         if (password || confirmPassword) {
-            if (password.length < 8) {
-                newErrors.password = "Password must be at least 8 characters";
+            const passwordError = getPasswordError(password);
+            if (passwordError) {
+                newErrors.password = passwordError;
             }
 
             if (password !== confirmPassword) {
@@ -283,7 +285,7 @@ export default function SettingsPage() {
                                             onChange={(e) => setPassword(e.target.value)}
                                             fullWidth
                                             error={!!errors.password}
-                                            helperText={errors.password}
+                                            helperText={errors.password || PASSWORD_HINT}
                                             InputProps={{
                                                 endAdornment: (
                                                     <InputAdornment position="end">

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { UserRole } from "../models/user";
+import { isLoggedOut } from "../utils/loggedOutTokens";
 
 // Extend Request interface to include userId, userRole, and username
 interface AuthenticatedRequest extends Request {
@@ -38,6 +39,13 @@ export const authenticate = (
       token,
       process.env.SECRET_KEY as jwt.Secret,
     ) as CustomJwtPayload;
+
+    // A valid token can still have been logged out
+    if (isLoggedOut(data.jti)) {
+      res.sendStatus(401);
+      return;
+    }
+
     req.userId = data.userId;
     req.userRole = data.userRole;
     req.username = data.username; // Attach the username to the request
@@ -47,7 +55,6 @@ export const authenticate = (
     console.log("u", req.userId);
     console.log("role", req.userRole);
     console.log("name", req.username);
-    console.log("secret", process.env.SECRET_KEY);
     res.status(401).json({ message: `Authentication error: ${error}` });
   }
   return;
@@ -66,6 +73,26 @@ export const requireSuperAdmin = (
     res
       .status(403)
       .json({ message: "Access denied. Super Admin role required." });
+    return;
+  }
+  next();
+};
+
+/**
+ * Middleware function for routes on a single user (/:id).
+ * Super admins can act on any user, everyone else only on themselves.
+ */
+export const requireSelfOrSuperAdmin = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
+  if (req.userRole !== UserRole.SUPER_ADMIN && req.userId !== req.params.id) {
+    res
+      .status(403)
+      .json({
+        message: "You are not authorized to update other users' profiles",
+      });
     return;
   }
   next();

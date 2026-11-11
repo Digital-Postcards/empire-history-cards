@@ -10,24 +10,20 @@
 // createUser
 //  3. returns 201 and the user really is stored
 //  4. returns 500 with the error detail when the service throws
-// updateUser  (the authorisation rules)
-//  5. a manager updating someone else is refused, and nothing changes
+// updateUser  (which fields each caller may change; who may call it at all is
+//              requireSelfOrSuperAdmin on the route, see the users route tests)
+//  5. a manager changing their own role is refused, and nothing changes
 //  6. a manager updating their own profile succeeds
 //  7. a super admin updating someone else succeeds
 //  8. a manager changing their own email is refused
 //  9. a manager resubmitting their existing email is allowed
-// 10. a super admin changing someone else's email is allowed
+// 10. a super admin changing someone else's email is refused
 // 11. an unknown id returns 404
 // 12. returns 500 when the service throws
 // deleteUser
 // 13. returns 200 and the user is gone from the store
 // 14. returns 404 for an unknown id
 // 15. returns 500 when the service throws
-// changeUserRole
-// 16. rejects a role outside the enum, leaving the role untouched
-// 17. rejects a missing role
-// 18. applies a valid role and returns the updated user
-// 19. returns 404 for an unknown id
 // 20. returns 500 when the service throws
 
 import { Request } from "express";
@@ -90,12 +86,10 @@ function installUserServiceFake() {
     return true;
   });
 
-  svc.changeUserRole.mockImplementation(async (id: string, role: string) => {
-    const user = usersDb.find((u) => u._id === id);
-    if (!user) return null;
-    user.role = role;
-    return user;
-  });
+  // the password rule itself is real, not faked
+  svc.isValidPassword.mockImplementation(
+    jest.requireActual("../../../services/user").default.prototype.isValidPassword,
+  );
 }
 
 describe("UserController", () => {
@@ -136,7 +130,7 @@ describe("UserController", () => {
   describe("createUser", () => {
     it("returns 201 and the user really is stored", async () => {
       const req = {
-        body: { email: "carol@example.com", password: "secret" },
+        body: { email: "carol@example.com", password: "secret1234" },
       } as any as Request;
       const res = mockRes();
 
@@ -155,7 +149,7 @@ describe("UserController", () => {
       (UserService.prototype as any).createUser.mockRejectedValue(
         new Error("duplicate key"),
       );
-      const req = { body: {} } as any as Request;
+      const req = { body: { password: "secret1234" } } as any as Request;
       const res = mockRes();
 
       await controller.createUser(req, res, jest.fn());
@@ -183,25 +177,23 @@ describe("UserController", () => {
       } as any as Request & { userId?: string; userRole?: string };
     }
 
-    it("refuses a manager updating someone else, and changes nothing", async () => {
+    it("refuses a manager changing their own role, and changes nothing", async () => {
       const res = mockRes();
 
       await controller.updateUser(
         updateReq({
-          targetId: BOB_ID,
+          targetId: ALICE_ID,
           callerId: ALICE_ID,
           callerRole: UserRole.MANAGER,
-          body: { firstname: "Alice" },
+          body: { role: UserRole.SUPER_ADMIN },
         }),
         res,
         jest.fn(),
       );
 
       expect(res.statusCode).toBe(403);
-      expect(res.body).toEqual({
-        message: "You are not authorized to update other users' profiles",
-      });
-      expect(usersDb[1].firstname).toEqual("Bob");
+      expect(res.body).toEqual({ message: "You are not allowed to change: role" });
+      expect(usersDb[0].role).toEqual(UserRole.MANAGER);
     });
 
     it("lets a manager update their own profile", async () => {
@@ -255,9 +247,7 @@ describe("UserController", () => {
       );
 
       expect(res.statusCode).toBe(403);
-      expect(res.body).toEqual({
-        message: "Managers cannot change their email address",
-      });
+      expect(res.body).toEqual({ message: "You are not allowed to change: email" });
       expect(usersDb[0].email).toEqual("alice@example.com");
     });
 
@@ -279,7 +269,7 @@ describe("UserController", () => {
       expect(usersDb[0].firstname).toEqual("Alicia");
     });
 
-    it("allows a super admin to change someone else's email", async () => {
+    it("refuses a super admin changing someone else's email", async () => {
       const res = mockRes();
 
       await controller.updateUser(
@@ -293,8 +283,9 @@ describe("UserController", () => {
         jest.fn(),
       );
 
-      expect(res.statusCode).toBe(200);
-      expect(usersDb[0].email).toEqual("newalice@example.com");
+      expect(res.statusCode).toBe(403);
+      expect(res.body).toEqual({ message: "You are not allowed to change: email" });
+      expect(usersDb[0].email).toEqual("alice@example.com");
     });
 
     it("returns 404 when the target user doesn't exist", async () => {
@@ -379,78 +370,4 @@ describe("UserController", () => {
     });
   });
 
-  describe("changeUserRole", () => {
-    it("rejects a role outside the enum, leaving the role untouched", async () => {
-      const req = {
-        params: { id: ALICE_ID },
-        body: { role: "overlord" },
-      } as any as Request;
-      const res = mockRes();
-
-      await controller.changeUserRole(req, res, jest.fn());
-
-      expect(res.statusCode).toBe(400);
-      expect(res.body).toEqual({ message: "Invalid role" });
-      expect(usersDb[0].role).toEqual(UserRole.MANAGER);
-    });
-
-    it("rejects a missing role", async () => {
-      const req = {
-        params: { id: ALICE_ID },
-        body: {},
-      } as any as Request;
-      const res = mockRes();
-
-      await controller.changeUserRole(req, res, jest.fn());
-
-      expect(res.statusCode).toBe(400);
-      expect(res.body).toEqual({ message: "Invalid role" });
-    });
-
-    it("applies a valid role and returns the updated user", async () => {
-      const req = {
-        params: { id: ALICE_ID },
-        body: { role: UserRole.SUPER_ADMIN },
-      } as any as Request;
-      const res = mockRes();
-
-      await controller.changeUserRole(req, res, jest.fn());
-
-      expect(res.statusCode).toBe(200);
-      expect(usersDb[0].role).toEqual(UserRole.SUPER_ADMIN);
-      expect(res.body).toEqual(usersDb[0]);
-    });
-
-    it("returns 404 for an unknown id", async () => {
-      const req = {
-        params: { id: "doesnotexist" },
-        body: { role: UserRole.MANAGER },
-      } as any as Request;
-      const res = mockRes();
-
-      await controller.changeUserRole(req, res, jest.fn());
-
-      expect(res.statusCode).toBe(404);
-      expect(res.body).toEqual({ message: "User not found" });
-    });
-
-    it("returns 500 when the service throws", async () => {
-      (UserService.prototype as any).changeUserRole.mockRejectedValue(
-        new Error("db down"),
-      );
-      const req = {
-        params: { id: ALICE_ID },
-        body: { role: UserRole.MANAGER },
-      } as any as Request;
-      const res = mockRes();
-
-      await controller.changeUserRole(req, res, jest.fn());
-
-      expect(res.statusCode).toBe(500);
-      expect(res.body).toEqual({
-        message: "Error changing user role",
-        details: "db down",
-      });
-    });
-  });
 });

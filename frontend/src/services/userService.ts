@@ -51,7 +51,10 @@ export const userService = {
     updateUser: async (userId: string, userData: Partial<User>): Promise<UserApiResponse> => {
         try {
             console.log("Making API call to update user with ID:", userId);
-            const response = await instance.put(`/users/${userId}`, userData);
+            const changes = { ...userData };
+            delete changes.permissions;
+            delete changes.lastLogin;
+            const response = await instance.patch(`/users/${userId}`, changes);
             return { success: true, data: response.data };
         } catch (error: any) {
             console.error("Error updating user:", error);
@@ -76,15 +79,15 @@ export const userService = {
     },
 
     // Change user role
-    changeUserRole: async (userId: string, role: string): Promise<UserApiResponse> => {
-        try {
-            const response = await instance.put(`/users/${userId}/role`, { role });
-            return { success: true, data: response.data };
-        } catch (error: any) {
-            return {
-                success: false,
-                message: error.response?.data?.message || "Failed to change user role",
-            };
-        }
-    },
+    // changeUserRole: async (userId: string, role: string): Promise<UserApiResponse> => {
+    //     try {
+    //         const response = await instance.put(`/users/${userId}/role`, { role });
+    //         return { success: true, data: response.data };
+    //     } catch (error: any) {
+    //         return {
+    //             success: false,
+    //             message: error.response?.data?.message || "Failed to change user role",
+    //         };
+    //     }
+    // },
 };

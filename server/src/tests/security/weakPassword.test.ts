@@ -62,16 +62,24 @@ const cookie = authCookie(
   }),
 );
 
-const ofLength = (n: number) => "a".repeat(n);
+// letters with a number at the end, so only the length decides
+const ofLength = (n: number) => "a".repeat(n - 1) + "1";
+
+// passwords of a valid length that break the letter / number rule
+const wrongMix: [string, unknown][] = [
+  ["only numbers", "12345678"],
+  ["only letters", "abcdefgh"],
+  ["a raw number", 12345678],
+];
 
 beforeEach(() => {
   UserModel.saved.length = 0;
   UserModel.admin.password = STORED_HASH;
 });
 
-describe("TB3-T1: backend accepts any password, length rules are frontend only", () => {
+describe("TB3-T1: backend password rules, 8-12 characters with a letter and a number", () => {
   describe("POST /api/users (new user)", () => {
-    const createWith = (password: string) =>
+    const createWith = (password: unknown) =>
       request(app)
         .post("/api/users")
         .set("Cookie", [cookie])
@@ -90,10 +98,17 @@ describe("TB3-T1: backend accepts any password, length rules are frontend only",
       expect(res.status).toBe(201);
       expect(UserModel.saved).toHaveLength(1);
     });
+
+    it.each(wrongMix)("rejects %s", async (_, password) => {
+      const res = await createWith(password);
+
+      expect(res.status).toBe(400);
+      expect(UserModel.saved).toHaveLength(0);
+    });
   });
 
   describe("PATCH /api/users/:id (password change)", () => {
-    const changeTo = (password: string) =>
+    const changeTo = (password: unknown) =>
       request(app)
         .patch(`/api/users/${ADMIN_ID}`)
         .set("Cookie", [cookie])
@@ -118,5 +133,12 @@ describe("TB3-T1: backend accepts any password, length rules are frontend only",
         expect(UserModel.admin.password).not.toBe(STORED_HASH);
       },
     );
+
+    it.each(wrongMix)("rejects changing to %s", async (_, password) => {
+      const res = await changeTo(password);
+
+      expect(res.status).toBe(400);
+      expect(UserModel.admin.password).toBe(STORED_HASH);
+    });
   });
 });

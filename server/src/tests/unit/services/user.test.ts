@@ -61,13 +61,6 @@
 // 39. a null id deletes an arbitrary user
 // 40. propagates a db error
 //
-// changeUserRole
-// 41. changes the role of the user found by ObjectId
-// 42. falls back to the custom id field for a non-ObjectId id
-// 43. returns null and changes nobody when nothing matches
-// 44. stores a role outside UserRole, since updates skip schema validation
-// 45. propagates a db error
-//
 // verifyPassword
 // 46. true for the right password
 // 47. false for the wrong password
@@ -663,64 +656,6 @@ describe("UserService.deleteUser", () => {
     );
 
     await expect(userService.deleteUser(ALICE_ID)).rejects.toThrow("db down");
-  });
-});
-
-describe("UserService.changeUserRole", () => {
-  let userService: UserService;
-
-  beforeEach(() => {
-    userService = new UserService();
-    jest.clearAllMocks();
-    installUserMocks();
-  });
-
-  it("changes the role of the user found by ObjectId", async () => {
-    const result = await userService.changeUserRole(
-      ALICE_ID,
-      UserRole.SUPER_ADMIN,
-    );
-
-    expect(result).toEqual({ ...freshUsers()[0], role: "super_admin" });
-  });
-
-  it("falls back to the custom id field for a non-ObjectId id", async () => {
-    usersDb.push(legacyUser());
-
-    const result = await userService.changeUserRole(
-      "legacy-7",
-      UserRole.SUPER_ADMIN,
-    );
-
-    expect(result).toEqual({ ...legacyUser(), role: "super_admin" });
-  });
-
-  it("returns null and changes nobody when nothing matches", async () => {
-    const result = await userService.changeUserRole(
-      MISSING_ID,
-      UserRole.SUPER_ADMIN,
-    );
-
-    expect(result).toBeNull();
-    expect(usersDb).toEqual(freshUsers());
-  });
-
-  // findByIdAndUpdate doesn't run schema validators unless asked to, so the
-  // role enum isn't enforced here.
-  it("stores a role outside UserRole, since updates skip schema validation", async () => {
-    await userService.changeUserRole(ALICE_ID, "owner" as UserRole);
-
-    expect(usersDb[0].role).toEqual("owner");
-  });
-
-  it("propagates a db error", async () => {
-    (UserModel.findByIdAndUpdate as unknown as jest.Mock).mockRejectedValue(
-      new Error("db down"),
-    );
-
-    await expect(
-      userService.changeUserRole(ALICE_ID, UserRole.SUPER_ADMIN),
-    ).rejects.toThrow("db down");
   });
 });
 

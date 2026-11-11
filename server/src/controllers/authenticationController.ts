@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import UserService from "../services/user";
 import bcrypt from "bcrypt";
 import { IUser } from "../models/user";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { randomUUID } from "crypto";
+import { markLoggedOut } from "../utils/loggedOutTokens";
 
 const secretKey = process.env.SECRET_KEY || "secret"; // TODO: change this later
 
@@ -77,15 +79,18 @@ export class AuthenticationController {
         userRole: userDetails.role || "manager", // Default to manager if no role is set
       };
 
+      // jwtid gives every token its own id, so logout can end just this one
       const token = jwt.sign(tokenPayload, secretKey as jwt.Secret, {
-        expiresIn: "1d",
+        expiresIn: "1h",
+        jwtid: randomUUID(),
       });
 
       return res
         .cookie("access_token", token, {
           httpOnly: true,
+          sameSite: "strict",
           secure: process.env.NODE_ENV !== "development",
-          expires: new Date(Date.now() + 86400000), // 1 day in ms
+          expires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour, same as the token
         })
         .status(200)
         .json({
@@ -119,6 +124,13 @@ export class AuthenticationController {
     next: NextFunction,
   ): Promise<any> => {
     try {
+      // authenticate already checked this token, so decode is enough here.
+      // Remember it as logged out, so a copy of the cookie stops working too.
+      const data = jwt.decode(req.cookies?.access_token) as JwtPayload | null;
+      if (data?.jti && data.exp) {
+        markLoggedOut(data.jti, data.exp);
+      }
+
       return res
         .clearCookie("access_token")
         .status(200)
