@@ -36,10 +36,6 @@ jest.mock("../../services/user", () => {
     async deleteUser(id: string) {
       return true;
     }
-
-    async changeUserRole(id: string, role: string) {
-      return { ...fakeAdmin, role };
-    }
   };
 });
 

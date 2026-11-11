@@ -2,9 +2,7 @@ const request = require("supertest");
 import app from "../..";
 import { generateTestToken, authCookie } from "../helpers/jwt";
 
-// Who may change which field through PUT /api/users/:id.
-// Super admin changing another user's role is left out on purpose (allowed,
-// still to be decided).
+// Who may change which field through PATCH /api/users/:id.
 
 const MANAGER_ID = "507f191e810c19729de860e1";
 const SUPER_ADMIN_ID = "507f191e810c19729de860e2";
@@ -85,7 +83,7 @@ const cookieFor = (role: "manager" | "super_admin") =>
   );
 
 const update = (as: "manager" | "super_admin", id: string, body: any) =>
-  request(app).put(`/api/users/${id}`).set("Cookie", [cookieFor(as)]).send(body);
+  request(app).patch(`/api/users/${id}`).set("Cookie", [cookieFor(as)]).send(body);
 
 const NEW_PROFILE = { firstname: "New", lastname: "Name", profilePictureUrl: "new.png" };
 const NEW_PASSWORD = { password: "goodpass12" }; // 10 chars, valid under the 8-12 rule
@@ -112,7 +110,7 @@ async function expectRefused(send: () => Promise<any>, id: string) {
   expect(UserModel.stored(id)).toEqual(before);
 }
 
-describe("E3 (#45/#46): PUT /api/users/:id as a manager", () => {
+describe("E3 (#45/#46): PATCH /api/users/:id as a manager", () => {
   it("can change own firstname, lastname, profilePictureUrl", async () => {
     expectSaved(await update("manager", MANAGER_ID, NEW_PROFILE), MANAGER_ID, NEW_PROFILE);
   });
@@ -152,7 +150,7 @@ describe("E3 (#45/#46): PUT /api/users/:id as a manager", () => {
   });
 });
 
-describe("E3 (#45/#46) and E4: PUT /api/users/:id as a super admin", () => {
+describe("E3 (#45/#46) and E4: PATCH /api/users/:id as a super admin", () => {
   it("can change own firstname, lastname, profilePictureUrl", async () => {
     expectSaved(await update("super_admin", SUPER_ADMIN_ID, NEW_PROFILE), SUPER_ADMIN_ID, NEW_PROFILE);
   });
@@ -165,8 +163,21 @@ describe("E3 (#45/#46) and E4: PUT /api/users/:id as a super admin", () => {
     expectSaved(await update("super_admin", OTHER_ID, NEW_PROFILE), OTHER_ID, NEW_PROFILE);
   });
 
-  it("E4: cannot change another user's password", async () => {
-    await expectRefused(() => update("super_admin", OTHER_ID, NEW_PASSWORD), OTHER_ID);
+  it("can change another user's role", async () => {
+    const body = { role: "manager" };
+    expectSaved(await update("super_admin", OTHER_ID, body), OTHER_ID, body);
+  });
+
+  it("cannot set another user's role to something that isn't a role", async () => {
+    const before = { ...UserModel.stored(OTHER_ID) };
+    const res = await update("super_admin", OTHER_ID, { role: "owner" });
+
+    expect(res.status).toBe(400);
+    expect(UserModel.stored(OTHER_ID)).toEqual(before);
+  });
+
+  it("can change another user's password", async () => {
+    expectSaved(await update("super_admin", OTHER_ID, NEW_PASSWORD), OTHER_ID, NEW_PASSWORD);
   });
 
   it("cannot change own email", async () => {

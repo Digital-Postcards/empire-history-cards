@@ -23,6 +23,10 @@ jest.mock("../../models/user", () => {
       return filter.email === manager.email ? manager : null;
     },
 
+    async findById(id: string) {
+      return id === manager._id ? manager : null;
+    },
+
     async updateOne(filter: any, update: any) {
       if (filter.email === manager.email) Object.assign(manager, update.$set);
     },
@@ -50,7 +54,7 @@ async function loginAsManager() {
 }
 
 describe("TB2-E1: manager can make themselves super admin", () => {
-  it("PUT /api/users/:id does not let a manager set their own role to super_admin", async () => {
+  it("PATCH /api/users/:id does not let a manager set their own role to super_admin", async () => {
     const managerCookie = await loginAsManager();
 
     const before = await request(app)
@@ -60,7 +64,7 @@ describe("TB2-E1: manager can make themselves super admin", () => {
     expect(before.status).toBe(403);
 
     const putRes = await request(app)
-      .put(`/api/users/${MANAGER_ID}`)
+      .patch(`/api/users/${MANAGER_ID}`)
       .set("Cookie", [managerCookie])
       .send({ role: "super_admin" });
 

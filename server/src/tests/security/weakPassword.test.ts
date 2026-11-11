@@ -92,10 +92,10 @@ describe("TB3-T1: backend accepts any password, length rules are frontend only",
     });
   });
 
-  describe("PUT /api/users/:id (password change)", () => {
+  describe("PATCH /api/users/:id (password change)", () => {
     const changeTo = (password: string) =>
       request(app)
-        .put(`/api/users/${ADMIN_ID}`)
+        .patch(`/api/users/${ADMIN_ID}`)
         .set("Cookie", [cookie])
         .send({ password });
 
