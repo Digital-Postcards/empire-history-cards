@@ -37,18 +37,12 @@ const limiter = rateLimit({
 
 // Use middlewares
 app.set("trust proxy", 1);
-app.use(express.json({ limit: '50mb' }));  // Increased payload limit to handle larger requests
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));  // Added for form data with larger limit
+app.use(express.json({ limit: "50mb" })); // Increased payload limit to handle larger requests
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Added for form data with larger limit
 app.use(cookieParser());
-app.use(session(SESSION_CONFIG));
+// app.use(session(SESSION_CONFIG));
 
-// Override imported CORS config to make sure it allows requests from frontend
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://visualdomesticlaborhistory.khoury.northeastern.edu'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(CORS_CONFIG));
 
 // app.use(
 //   OpenApiValidator.middleware({
@@ -68,15 +62,15 @@ app.use(
   STATIC_FILES_CONFIG.paths.postcards,
   express.static(
     STATIC_FILES_CONFIG.imageDirectory + "/postcards",
-    STATIC_FILES_CONFIG.options
-  )
+    STATIC_FILES_CONFIG.options,
+  ),
 );
 app.use(
   STATIC_FILES_CONFIG.paths.tradecards,
   express.static(
     STATIC_FILES_CONFIG.imageDirectory + "/tradecards",
-    STATIC_FILES_CONFIG.options
-  )
+    STATIC_FILES_CONFIG.options,
+  ),
 );
 
 // Use routes

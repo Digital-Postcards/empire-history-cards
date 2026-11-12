@@ -1,6 +1,10 @@
 import express, { Router } from "express";
 import { UserController } from "../controllers/userController";
-import { authenticate, requireSuperAdmin } from "../middleware/authentication";
+import {
+  authenticate,
+  requireSuperAdmin,
+  requireSelfOrSuperAdmin,
+} from "../middleware/authentication";
 
 const userRouter: Router = express.Router();
 const userController = new UserController();
@@ -12,9 +16,10 @@ userRouter.use(authenticate);
 userRouter.get("/", requireSuperAdmin, userController.getAllUsers);
 userRouter.post("/", requireSuperAdmin, userController.createUser);
 userRouter.delete("/:id", requireSuperAdmin, userController.deleteUser);
-userRouter.patch("/:id/role", requireSuperAdmin, userController.changeUserRole);
+// userRouter.patch("/:id/role", requireSuperAdmin, userController.changeUserRole);
 
-// Allow users to update their own profile (but controller will handle restrictions)
-userRouter.put("/:id", userController.updateUser);
+// Users can update their own profile, super admins can update anyone.
+// Which fields each of them can change is checked in the controller.
+userRouter.patch("/:id", requireSelfOrSuperAdmin, userController.updateUser);
 
 export default userRouter;

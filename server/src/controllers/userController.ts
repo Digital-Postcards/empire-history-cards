@@ -2,6 +2,24 @@ import { Request, Response, NextFunction } from "express";
 import UserService from "../services/user";
 import { UserRole } from "../models/user";
 
+const PASSWORD_RULES_MESSAGE =
+  "Password must be 8-12 characters and include at least one letter and one number";
+
+// Fields that can be changed through PATCH /api/users/:id
+const OWN_PROFILE_FIELDS = [
+  "firstname",
+  "lastname",
+  "profilePictureUrl",
+  "password",
+];
+const OTHER_USER_FIELDS = [
+  "firstname",
+  "lastname",
+  "profilePictureUrl",
+  "password",
+  "role",
+];
+
 export class UserController {
   private userService = new UserService();
 
@@ -35,6 +53,12 @@ export class UserController {
   ): Promise<void> => {
     try {
       const userData = req.body;
+
+      if (!this.userService.isValidPassword(userData.password)) {
+        res.status(400).json({ message: PASSWORD_RULES_MESSAGE });
+        return;
+      }
+
       await this.userService.createUser(userData);
       res.status(201).json("User created successfully");
     } catch (error) {
@@ -48,8 +72,11 @@ export class UserController {
 
   /**
    * Update a user
-   * - Super admins can update any user
-   * - Managers can only update their own profile and cannot change their email
+   * - requireSelfOrSuperAdmin on the route decides who can get here
+   * - this decides which fields they can change:
+   *   on your own profile: name, profile picture and password
+   *   a super admin on someone else: name, profile picture, password and role
+   * - nobody can change an email here
    */
   public updateUser = async (
     req: Request & { userId?: string; userRole?: string },
@@ -60,29 +87,44 @@ export class UserController {
       const { id } = req.params;
       const userData = req.body;
 
-      // Check if the user is trying to update their own profile or someone else's
-      const isSelfUpdate = req.userId === id;
-      const isSuperAdmin = req.userRole === UserRole.SUPER_ADMIN;
-
-      // Only super admins can update other users' profiles
-      if (!isSelfUpdate && !isSuperAdmin) {
-        res
-          .status(403)
-          .json({
-            message: "You are not authorized to update other users' profiles",
-          });
+      const currentUser = await this.userService.getUserById(id);
+      if (!currentUser) {
+        res.status(404).json({ message: "User not found" });
         return;
       }
 
-      // If it's a manager updating their own profile, prevent email changes
-      if (isSelfUpdate && !isSuperAdmin && userData.email) {
-        const currentUser = await this.userService.getUserById(id);
-        if (currentUser && currentUser.email !== userData.email) {
-          res
-            .status(403)
-            .json({ message: "Managers cannot change their email address" });
-          return;
-        }
+      const allowedFields =
+        req.userId === id ? OWN_PROFILE_FIELDS : OTHER_USER_FIELDS;
+
+      // The frontend sends the whole form, so a field that isn't allowed is
+      // fine as long as its value hasn't changed
+      const blockedFields = Object.keys(userData).filter(
+        (field) =>
+          !allowedFields.includes(field) &&
+          userData[field] !== currentUser[field as keyof typeof currentUser],
+      );
+
+      if (blockedFields.length > 0) {
+        res.status(403).json({
+          message: `You are not allowed to change: ${blockedFields.join(", ")}`,
+        });
+        return;
+      }
+
+      if (
+        userData.role !== undefined &&
+        !Object.values(UserRole).includes(userData.role)
+      ) {
+        res.status(400).json({ message: "Invalid role" });
+        return;
+      }
+
+      if (
+        userData.password !== undefined &&
+        !this.userService.isValidPassword(userData.password)
+      ) {
+        res.status(400).json({ message: PASSWORD_RULES_MESSAGE });
+        return;
       }
 
       const updatedUser = await this.userService.updateUser(id, userData);
@@ -112,6 +154,20 @@ export class UserController {
   ): Promise<void> => {
     try {
       const { id } = req.params;
+      const user = await this.userService.getUserById(id);
+      if (user?.role === UserRole.SUPER_ADMIN) {
+        const users = await this.userService.getAllUsers();
+        const superAdmins = users.filter(
+          (u) => u.role === UserRole.SUPER_ADMIN,
+        );
+
+        if (superAdmins.length <= 1) {
+          res
+            .status(400)
+            .json({ message: "You can't delete the last super admin" });
+          return;
+        }
+      }
       const deleted = await this.userService.deleteUser(id);
 
       if (!deleted) {
@@ -132,35 +188,35 @@ export class UserController {
   /**
    * Change a user's role - only accessible to super admins
    */
-  public changeUserRole = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const { role } = req.body;
+  //   public changeUserRole = async (
+  //     req: Request,
+  //     res: Response,
+  //     next: NextFunction,
+  //   ): Promise<void> => {
+  //     try {
+  //       const { id } = req.params;
+  //       const { role } = req.body;
 
-      // Validate role
-      if (!Object.values(UserRole).includes(role)) {
-        res.status(400).json({ message: "Invalid role" });
-        return;
-      }
+  //       // Validate role
+  //       if (!Object.values(UserRole).includes(role)) {
+  //         res.status(400).json({ message: "Invalid role" });
+  //         return;
+  //       }
 
-      const updatedUser = await this.userService.changeUserRole(id, role);
+  //       const updatedUser = await this.userService.changeUserRole(id, role);
 
-      if (!updatedUser) {
-        res.status(404).json({ message: "User not found" });
-        return;
-      }
+  //       if (!updatedUser) {
+  //         res.status(404).json({ message: "User not found" });
+  //         return;
+  //       }
 
-      res.status(200).json(updatedUser);
-    } catch (error) {
-      console.error("Error changing user role:", error);
-      res.status(500).json({
-        message: "Error changing user role",
-        details: error instanceof Error ? error.message : undefined,
-      });
-    }
-  };
+  //       res.status(200).json(updatedUser);
+  //     } catch (error) {
+  //       console.error("Error changing user role:", error);
+  //       res.status(500).json({
+  //         message: "Error changing user role",
+  //         details: error instanceof Error ? error.message : undefined,
+  //       });
+  //     }
+  //   };
 }

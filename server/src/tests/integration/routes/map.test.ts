@@ -13,7 +13,7 @@
 // 5. test that a numeric-looking empire value stays a plain string
 // 6. test that no empire reaches the service as undefined
 //
-// PATCH /countries/:id
+// PATCH /countries/:id (needs a login cookie)
 // 7. test that a valid id updates and returns the country
 // 8. test that an id missing from the database returns not found
 // 9. test that a db error returns a server error
@@ -21,10 +21,14 @@
 // 11. test that a wrong-length coordinates array is not validated
 // 12. test that non-numeric coordinates are not validated
 // 13. test that a too-long id is passed through with no length validation
+// 14. test that a request with no cookie returns 401 and never touches the service
 
 const request = require("supertest");
 import app from "../../..";
 import MapService from "../../../services/map";
+import { generateTestToken, authCookie } from "../../helpers/jwt";
+
+const cookie = authCookie(generateTestToken({ userId: "507f191e810c19729de860ea" }));
 
 const validCountry = {
   _id: "69e7b4decaadd2995940977f",
@@ -127,6 +131,7 @@ describe("PATCH /api/map/countries/:id", () => {
 
     const res = await request(app)
       .patch("/api/map/countries/69e7b4decaadd2995940977f")
+      .set("Cookie", [cookie])
       .send({ coordinates: [344, 242] });
 
     expect(spy).toHaveBeenCalledWith("69e7b4decaadd2995940977f", [344, 242]);
@@ -141,6 +146,7 @@ describe("PATCH /api/map/countries/:id", () => {
 
     const res = await request(app)
       .patch("/api/map/countries/000000000000000000000000")
+      .set("Cookie", [cookie])
       .send({ coordinates: [1, 2] });
 
     expect(spy).toHaveBeenCalledWith("000000000000000000000000", [1, 2]);
@@ -155,6 +161,7 @@ describe("PATCH /api/map/countries/:id", () => {
 
     const res = await request(app)
       .patch("/api/map/countries/not-a-valid-id")
+      .set("Cookie", [cookie])
       .send({ coordinates: [1, 2] });
 
     expect(res.status).toBe(500);
@@ -166,7 +173,10 @@ describe("PATCH /api/map/countries/:id", () => {
       .spyOn(MapService.prototype, "updateCountryCoordinates")
       .mockResolvedValue({ ...validCountry, coordinates: undefined } as any);
 
-    const res = await request(app).patch("/api/map/countries/abc123").send({});
+    const res = await request(app)
+      .patch("/api/map/countries/abc123")
+      .set("Cookie", [cookie])
+      .send({});
 
     expect(spy).toHaveBeenCalledWith("abc123", undefined);
     expect(res.status).toBe(200);
@@ -179,6 +189,7 @@ describe("PATCH /api/map/countries/:id", () => {
 
     const res = await request(app)
       .patch("/api/map/countries/abc123")
+      .set("Cookie", [cookie])
       .send({ coordinates: [1, 2, 3] });
 
     expect(spy).toHaveBeenCalledWith("abc123", [1, 2, 3]);
@@ -192,6 +203,7 @@ describe("PATCH /api/map/countries/:id", () => {
 
     const res = await request(app)
       .patch("/api/map/countries/abc123")
+      .set("Cookie", [cookie])
       .send({ coordinates: ["a", "b"] });
 
     expect(spy).toHaveBeenCalledWith("abc123", ["a", "b"]);
@@ -204,10 +216,22 @@ describe("PATCH /api/map/countries/:id", () => {
       .mockResolvedValue(null);
 
     const res = await request(app)
-      .patch("/api/map/countries/69e7b4decaadd2995940977f0") // 25 chars, one more than a real ObjectId
+      .patch("/api/map/countries/69e7b4decaadd2995940977f0")
+      .set("Cookie", [cookie]) // 25 chars, one more than a real ObjectId
       .send({ coordinates: [1, 2] });
 
     expect(spy).toHaveBeenCalledWith("69e7b4decaadd2995940977f0", [1, 2]);
     expect(res.status).toBe(404);
+  });
+
+  it("returns 401 with no cookie and never touches the service", async () => {
+    const spy = jest.spyOn(MapService.prototype, "updateCountryCoordinates");
+
+    const res = await request(app)
+      .patch("/api/map/countries/69e7b4decaadd2995940977f")
+      .send({ coordinates: [0, 0] });
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(res.status).toBe(401);
   });
 });

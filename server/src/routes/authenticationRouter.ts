@@ -1,4 +1,5 @@
 import express, { Router, Request, Response, NextFunction } from "express";
+import rateLimit from "express-rate-limit";
 import { authenticate } from "../middleware/authentication";
 import { AuthenticationController } from "../controllers/authenticationController";
 import UserService from "../services/user";
@@ -6,6 +7,17 @@ import UserService from "../services/user";
 const authenticationRouter: Router = express.Router();
 const authenticationController = new AuthenticationController();
 const userService = new UserService();
+
+// After 5 failed logins from the same IP, block that IP for a while.
+// Successful logins don't count. No Retry-After or X-RateLimit-* headers,
+// so we don't tell anyone exactly when they can try again.
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  skipSuccessfulRequests: true,
+  legacyHeaders: false,
+  message: { status: 429, message: "Too many failed login attempts. Try again later." },
+});
 
 // Check if user is authenticated and return user data
 authenticationRouter.get(
@@ -43,6 +55,7 @@ authenticationRouter.get(
 
 authenticationRouter.post(
   "/authenticateCredentials",
+  loginLimiter,
   authenticationController.authenticateCredentials
 );
 

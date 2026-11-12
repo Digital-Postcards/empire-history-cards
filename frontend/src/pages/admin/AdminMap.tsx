@@ -61,11 +61,15 @@ const AdminMap = () => {
         const [x, y] = latLngToPixel(lat, lng);
         setSaveStatus("saving");
         try {
-            await fetch(`${process.env.REACT_APP_SERVER_URL}/api/map/countries/${countryId}`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/map/countries/${countryId}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ coordinates: [x, y] }),
+                credentials: "include",
             });
+            if (!response.ok) {
+                throw new Error(`Saving coordinates failed with ${response.status}`);
+            }
             setCountries((prev) => prev.map((c) => (c._id === countryId ? { ...c, coordinates: [x, y] } : c)));
             setSaveStatus("saved");
             setTimeout(() => setSaveStatus("idle"), 2000);

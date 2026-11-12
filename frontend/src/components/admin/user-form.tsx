@@ -20,6 +20,7 @@ import {
 import { Upload, X, Camera } from "lucide-react";
 import { User, Permission, Role } from "../../pages/admin/users-management";
 import { API_URL } from "../../utils/constants";
+import { getPasswordError, PASSWORD_HINT } from "../../utils/passwordRules";
 
 interface UserFormProps {
     user: User | null;
@@ -138,8 +139,9 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
 
         if (!user && !password?.trim()) {
             newErrors.password = "Password is required for new users";
-        } else if (password?.trim() && password.length < 8) {
-            newErrors.password = "Password must be at least 8 characters";
+        } else if (password?.trim()) {
+            const passwordError = getPasswordError(password);
+            if (passwordError) newErrors.password = passwordError;
         }
 
         if (!role) {
@@ -229,7 +231,10 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
                                 fullWidth
                                 required={!user}
                                 error={!!errors.password}
-                                helperText={user ? "Leave blank to keep current password" : errors.password}
+                                helperText={
+                                    errors.password ||
+                                    (user ? `Leave blank to keep current password. ${PASSWORD_HINT}` : PASSWORD_HINT)
+                                }
                             />
                         </Grid>
 

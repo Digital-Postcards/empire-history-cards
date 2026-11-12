@@ -43,7 +43,6 @@
 // 24. PUT /api/users/:id on yourself with nothing recognisable
 // 25. PUT /api/users/:id with only lastname isn't reported as a name change
 // 26. DELETE /api/users/:id names the deleted user
-// 27. PATCH /api/users/:id/role names the user and the new role
 // 28. PATCH /api/users/:id/role without a role says unknown role
 // 29. upload-card reads the card type and number from cardData JSON
 // 30. upload-card falls back to unknown when cardData has no item or number
@@ -432,18 +431,6 @@ describe("loggerMiddleware: action and information text", () => {
     expect(lastEntry()).toMatchObject({
       action: `admin@example.com deleted user ${OTHER_ID}`,
       information: `admin@example.com deleted user ${OTHER_ID}`,
-    });
-  });
-
-  it("names the user and the new role for PATCH /api/users/:id/role", async () => {
-    await request(app)
-      .patch(`/api/users/${OTHER_ID}/role`)
-      .set("Cookie", [adminCookie()])
-      .send({ role: "super_admin" });
-
-    expect(lastEntry()).toMatchObject({
-      action: `admin@example.com changed role for user ${OTHER_ID}`,
-      information: `admin@example.com changed user ${OTHER_ID}'s role to super_admin`,
     });
   });
 
