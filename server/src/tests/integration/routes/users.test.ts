@@ -177,9 +177,12 @@ describe("/api/users routes", () => {
     });
 
     it("returns 200 for DELETE /:id and deletes that id", async () => {
-      const spy = jest
+      jest
         .spyOn(UserService.prototype, "getUserById")
         .mockResolvedValue(fakeUser(OTHER_USER_ID) as any);
+      const spy = jest
+        .spyOn(UserService.prototype, "deleteUser")
+        .mockResolvedValue(true);
 
       const res = await request(app)
         .delete(`/api/users/${OTHER_USER_ID}`)

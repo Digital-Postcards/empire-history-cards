@@ -56,7 +56,7 @@
 // 36. the body with password, confirmPassword, token and accessToken redacted,
 //     including inside nested objects and arrays
 // 37. the query params
-// 38. the raw Cookie header, live access_token included
+// 38. the Cookie header redacted, so the access_token never reaches the log
 //
 // router-mounted routes (how index.ts mounts every router)
 // 39. record the path relative to the router, so the /api/users text never applies
@@ -555,16 +555,15 @@ describe("loggerMiddleware: what the entry records", () => {
     });
   });
 
-  it("stores the raw Cookie header, live access_token included", async () => {
+  it("redacts the Cookie header, so the access_token never reaches the log", async () => {
     const token = adminToken();
 
     await request(app)
       .delete("/api/cards/7")
       .set("Cookie", [authCookie(token)]);
 
-    expect(lastEntry().requestDetails.headers.cookie).toEqual(
-      `access_token=${token}`,
-    );
+    expect(lastEntry().requestDetails.headers.cookie).toEqual("[REDACTED]");
+    expect(JSON.stringify(lastEntry())).not.toContain(token);
   });
 });
 
