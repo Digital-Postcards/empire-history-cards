@@ -69,7 +69,10 @@ test.describe("Admin Map : Drag and Drop Pin Editor", () => {
         console.log(`${pinsAfter} pins visible after selecting British`);
     });
 
-    test("dragging a pin updates coordinates in database", async ({ request }) => {
+    // page.request shares the logged-in page's cookies; the standalone request
+    // fixture doesn't, and saving a pin requires login
+    test("dragging a pin updates coordinates in database", async ({ page }) => {
+        const request = page.request;
         const countriesRes = await request.get(`${API_URL}/api/map/countries?empire=British`);
         const countries = await countriesRes.json();
         const targetCountry = countries[0];
